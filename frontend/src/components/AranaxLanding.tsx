@@ -49,21 +49,21 @@ const services: Service[] = [
 
 const projects: Project[] = [
     {
-        tag: "Customer Intelligence",
-        name: "NeuraChat Platform",
-        note: "AI-powered customer service handling 40k+ conversations monthly with 94% satisfaction score.",
+        tag: "Email Assistant",
+        name: "EMA - Smarter Inbox Management",
+        note: "AI email assistant that helps you manage your inbox, draft replies, organize conversations, and save time with smarter email workflows.",
         visual: "ema",
     },
     {
-        tag: "Data Intelligence",
-        name: "DataLens AI",
-        note: "Natural language analytics platform cutting reporting time by 80%.",
+        tag: "Legal document summariser",
+        name: "DocuNova AI",
+        note: "Upload a PDF or DOCX. Get a structured one-page brief with key dates, obligations, red flags, and renewal clauses — in plain English.",
         visual: "docunova",
     },
     {
-        tag: "Voice AI",
-        name: "VoiceFlow Assistant",
-        note: "Multilingual voice AI deployed across 12 enterprise call centres worldwide.",
+        tag: "Chatbot for University",
+        name: "UniChat - Conversational AI",
+        note: "Multilingual text & voice based chatbot for university and higher education.",
         visual: "voice",
     },
 ];
