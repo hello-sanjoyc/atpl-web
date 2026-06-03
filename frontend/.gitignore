@@ -1,7 +1,64 @@
-.next
-node_modules
-out
-dist
-.env*.local
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Production
 *.tsbuildinfo
+
+# Environment files
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# PM2 logs / local process files
+.pm2/
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime data
+tmp/
+temp/
+.cache/
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ESLint / Prettier cache
+.eslintcache
+.prettiercache
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Optional: uploaded files / local storage
+uploads/
+storage/

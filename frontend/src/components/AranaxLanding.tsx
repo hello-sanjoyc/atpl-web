@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { About } from "./landing/About";
 import { Contact } from "./landing/Contact";
@@ -17,7 +17,6 @@ export function AranaxLanding() {
     const [loaderGone, setLoaderGone] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [navScrolled, setNavScrolled] = useState(false);
-    const [sent, setSent] = useState(false);
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout>;
@@ -171,10 +170,6 @@ export function AranaxLanding() {
     }, []);
 
     const closeMenu = () => setMenuOpen(false);
-    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setSent(true);
-    };
 
     return (
         <>
@@ -193,7 +188,7 @@ export function AranaxLanding() {
             <Services />
             <Work />
             <About />
-            <Contact sent={sent} onSubmit={onSubmit} />
+            <Contact />
             <Footer />
         </>
     );

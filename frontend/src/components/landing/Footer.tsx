@@ -4,7 +4,7 @@ export function Footer() {
             <div className="wrap">
                 <div className="footer-in">
                     <div className="f-logo">
-                        Aranax<span>.</span>
+                        Aranax Technologies<span>.</span>
                     </div>
                     <p className="f-copy">
                         &copy; 2026 Aranax Technologies. All rights reserved.
