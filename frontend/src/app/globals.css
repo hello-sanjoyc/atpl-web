@@ -49,8 +49,8 @@ html {
     --muted: #5a6b99;
     --lt: #f4f6fb;
     --lt-m: #8fa3cc;
-    --serif: "Cormorant Garamond", Georgia, serif;
-    --sans: "Outfit", system-ui, sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -69,6 +69,41 @@ body {
     .cursor,
     .cursor-dot {
         display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #loader,
+    .grain {
+        display: none;
+    }
+
+    .blob,
+    .contact-glow {
+        display: none;
+        filter: none;
+        animation: none;
+    }
+
+    #nav,
+    .wc-link-icon {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .marquee-track {
+        animation: none;
+    }
+
+    .reveal,
+    .hero-line-inner,
+    .hero-bottom,
+    .hero-eyebrow,
+    .scroll-cue {
+        opacity: 1;
+        transform: none;
+        animation: none;
+        transition: none;
     }
 }
 
@@ -867,13 +902,20 @@ img {
 }
 
 .wc {
+    display: block;
     position: relative;
     border-radius: 1.25rem;
     overflow: hidden;
+    color: inherit;
+    text-decoration: none;
     cursor: none;
     transition:
         transform 0.5s var(--ease),
         box-shadow 0.5s;
+}
+.wc:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
 }
 .wc:first-child {
     grid-row: span 2;
@@ -881,6 +923,32 @@ img {
 .wc:hover {
     transform: translateY(-5px);
     box-shadow: 0 28px 64px rgba(7, 26, 74, 0.14);
+}
+.wc-link-icon {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid rgba(244, 246, 251, 0.38);
+    border-radius: 999px;
+    color: var(--lt);
+    background: rgba(5, 15, 42, 0.52);
+    backdrop-filter: blur(10px);
+    transition:
+        transform 0.3s var(--ease),
+        border-color 0.3s,
+        background 0.3s;
+}
+.wc:hover .wc-link-icon,
+.wc:focus-visible .wc-link-icon {
+    transform: translate(3px, -3px);
+    border-color: var(--accent);
+    background: rgba(250, 97, 33, 0.82);
 }
 
 .wc-vis {
@@ -1161,8 +1229,8 @@ img {
     margin-bottom: 0.4rem;
 }
 .wc-note {
-    font-size: 0.8rem;
-    color: var(--lt-m);
+    font-size: 0.95rem;
+    color: var(--lt);
     opacity: 0;
     transform: translateY(6px);
     transition:
