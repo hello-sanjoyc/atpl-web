@@ -49,7 +49,7 @@ export const projects: Project[] = [
         tag: "Email Assistant",
         name: "EMA - Smarter Inbox Management",
         note: "AI email assistant that helps you manage your inbox, draft replies, organize conversations, and save time with smarter email workflows.",
-        url: "#",
+        url: "https://ema.aranax.tech",
         visual: "ema",
     },
     {
@@ -61,9 +61,9 @@ export const projects: Project[] = [
     },
     {
         tag: "Chatbot for University",
-        name: "UniChat - Conversational AI",
+        name: "UniEcho - Conversational AI",
         note: "Multilingual text & voice based chatbot for university and higher education.",
-        url: "#",
+        url: "https://uniecho.io",
         visual: "voice",
     },
 ];
