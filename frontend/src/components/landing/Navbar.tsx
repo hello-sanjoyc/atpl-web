@@ -46,8 +46,8 @@ export function Navbar({
                     </a>
                 </li>
                 <li>
-                    <a href="#work" onClick={onCloseMenu}>
-                        Work
+                    <a href="#case-studies" onClick={onCloseMenu}>
+                        Case Studies
                     </a>
                 </li>
                 <li>

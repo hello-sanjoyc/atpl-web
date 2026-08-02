@@ -121,6 +121,29 @@ export function ServiceIcon({ icon }: { icon: Service["icon"] }) {
 }
 
 export function ProjectVisual({ visual }: { visual: Project["visual"] }) {
+    const projectImages: Record<Project["visual"], string> = {
+        ema: "/assets/images/casestudies/ema.webp",
+        docunova: "/assets/images/casestudies/docunova.webp",
+        uniecho: "/assets/images/casestudies/uniecho.webp",
+        doubtace: "/assets/images/casestudies/doubtace.webp",
+        gloziia: "/assets/images/casestudies/gloziia.webp",
+        glamsync: "/assets/images/casestudies/glamsync.webp",
+    };
+
+    return (
+        <div className="wc-vis" aria-hidden="true">
+            <Image
+                className="case-study-image"
+                src={projectImages[visual]}
+                alt=""
+                width={1920}
+                height={1080}
+                sizes="(max-width: 680px) 100vw, (max-width: 960px) 55vw, 600px"
+                loading="lazy"
+            />
+        </div>
+    );
+
     if (visual === "ema") {
         return (
             <div className="wc-vis wv-ema" aria-hidden="true">
@@ -178,167 +201,52 @@ export function ProjectVisual({ visual }: { visual: Project["visual"] }) {
         );
     }
 
-    if (visual === "radar") {
+    if (visual === "uniecho") {
         return (
-            <div className="wc-vis wv1" aria-hidden="true">
-                <svg
-                    className="wc-svg"
-                    width="220"
-                    height="220"
-                    viewBox="0 0 220 220"
-                    fill="none"
-                >
-                    <circle
-                        cx="110"
-                        cy="110"
-                        r="80"
-                        stroke="#C4813A"
-                        strokeWidth=".6"
+            <div className="wc-vis wv-docunova" aria-hidden="true">
+                <div className="docunova-grid" />
+                <div className="docunova-panels">
+                    <Image
+                        className="docunova-panel docunova-summary"
+                        src="/assets/images/uniecho_how.webp"
+                        alt=""
+                        width={808}
+                        height={473}
+                        sizes="(max-width: 768px) 42vw, 280px"
+                        loading="lazy"
                     />
-                    <circle
-                        cx="110"
-                        cy="110"
-                        r="56"
-                        stroke="#C4813A"
-                        strokeWidth=".6"
+                    <Image
+                        className="docunova-panel docunova-chat"
+                        src="/assets/images/uniecho_solution.webp"
+                        alt=""
+                        width={420}
+                        height={494}
+                        sizes="(max-width: 768px) 38vw, 250px"
+                        loading="lazy"
                     />
-                    <circle
-                        cx="110"
-                        cy="110"
-                        r="32"
-                        stroke="#C4813A"
-                        strokeWidth=".6"
-                    />
-                    <line
-                        x1="30"
-                        y1="110"
-                        x2="190"
-                        y2="110"
-                        stroke="#C4813A"
-                        strokeWidth=".5"
-                    />
-                    <line
-                        x1="110"
-                        y1="30"
-                        x2="110"
-                        y2="190"
-                        stroke="#C4813A"
-                        strokeWidth=".5"
-                    />
-                    <line
-                        x1="53"
-                        y1="53"
-                        x2="167"
-                        y2="167"
-                        stroke="#C4813A"
-                        strokeWidth=".4"
-                    />
-                    <line
-                        x1="167"
-                        y1="53"
-                        x2="53"
-                        y2="167"
-                        stroke="#C4813A"
-                        strokeWidth=".4"
-                    />
-                    <circle cx="110" cy="110" r="6" fill="#C4813A" />
-                </svg>
+                </div>
             </div>
         );
     }
 
-    if (visual === "bars") {
-        return (
-            <div className="wc-vis wv2" aria-hidden="true">
-                <svg
-                    className="wc-svg"
-                    width="180"
-                    height="180"
-                    viewBox="0 0 180 180"
-                    fill="none"
-                >
-                    <rect
-                        x="20"
-                        y="60"
-                        width="140"
-                        height="7"
-                        rx="3.5"
-                        fill="#3A5444"
-                    />
-                    <rect
-                        x="20"
-                        y="80"
-                        width="100"
-                        height="7"
-                        rx="3.5"
-                        fill="#3A5444"
-                    />
-                    <rect
-                        x="20"
-                        y="100"
-                        width="120"
-                        height="7"
-                        rx="3.5"
-                        fill="#3A5444"
-                    />
-                    <rect
-                        x="20"
-                        y="120"
-                        width="75"
-                        height="7"
-                        rx="3.5"
-                        fill="#3A5444"
-                    />
-                    <rect
-                        x="138"
-                        y="20"
-                        width="22"
-                        height="140"
-                        rx="4"
-                        fill="#3A5444"
-                        opacity=".5"
-                    />
-                    <circle cx="50" cy="38" r="14" fill="#3A5444" />
-                    <circle cx="50" cy="38" r="6" fill="#2A3C32" />
-                </svg>
-            </div>
-        );
-    }
+    // TODO: Replace these intentionally named product placeholders with final
+    // product screenshots when DoubtAce, Gloziia, and GlamSync assets are available.
+    const placeholderLabels = {
+        doubtace: ["Solved with AI", "Step-by-step explanation", "Board-aware guidance"],
+        gloziia: ["Discover salons", "Upcoming appointments", "Partner dashboard"],
+        glamsync: ["Today’s schedule", "Client profiles", "Business workspace"],
+    } as const;
 
+    const labels = placeholderLabels[visual as keyof typeof placeholderLabels];
     return (
-        <div className="wc-vis wv3" aria-hidden="true">
-            <svg
-                className="wc-svg"
-                width="180"
-                height="180"
-                viewBox="0 0 180 180"
-                fill="none"
-            >
-                <path
-                    d="M40 140 Q90 38 140 140"
-                    stroke="#7C5CBF"
-                    strokeWidth="1"
-                    fill="none"
-                />
-                <path
-                    d="M55 135 Q90 55 125 135"
-                    stroke="#7C5CBF"
-                    strokeWidth=".6"
-                    fill="none"
-                />
-                <circle cx="40" cy="140" r="5" fill="#7C5CBF" />
-                <circle cx="90" cy="62" r="5" fill="#7C5CBF" />
-                <circle cx="140" cy="140" r="5" fill="#7C5CBF" />
-                <rect
-                    x="78"
-                    y="80"
-                    width="24"
-                    height="16"
-                    rx="8"
-                    fill="#7C5CBF"
-                    opacity=".35"
-                />
-            </svg>
+        <div className={`wc-vis wc-placeholder wc-placeholder-${visual}`} aria-hidden="true">
+            <div className="placeholder-window">
+                <div className="placeholder-bar"><i /><i /><i /></div>
+                <strong>{labels[0]}</strong>
+                <span>{labels[1]}</span>
+                <div className="placeholder-chart" />
+                <small>{labels[2]}</small>
+            </div>
         </div>
     );
 }

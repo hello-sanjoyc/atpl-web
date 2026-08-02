@@ -12,6 +12,7 @@ import { Navbar } from "./landing/Navbar";
 import { Services } from "./landing/Services";
 import { Ticker } from "./landing/Ticker";
 import { Work } from "./landing/Work";
+import { WhyAranax } from "./landing/WhyAranax";
 
 export function AranaxLanding() {
     const [loaderGone, setLoaderGone] = useState(false);
@@ -186,6 +187,7 @@ export function AranaxLanding() {
             <Hero />
             <Ticker />
             <Services />
+            <WhyAranax />
             <Work />
             <About />
             <Contact />

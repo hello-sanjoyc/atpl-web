@@ -9,7 +9,7 @@ export function Footer() {
                     <p className="f-copy">
                         &copy; 2026 Aranax Technologies. All rights reserved.
                     </p>
-                    <ul className="f-links" role="list">
+                    {/* <ul className="f-links" role="list">
                         <li>
                             <a href="#">Privacy</a>
                         </li>
@@ -19,7 +19,7 @@ export function Footer() {
                         <li>
                             <a href="#">Careers</a>
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
             </div>
         </footer>

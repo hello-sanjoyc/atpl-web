@@ -14,32 +14,44 @@ export function Hero() {
                 <h1 className="hero-title" id="hero-h1">
                     <span className="hero-line">
                         <span className="hero-line-inner">
-                            We build intelligence
+                            Build an <em>AI product</em>
                         </span>
                     </span>
                     <span className="hero-line">
                         <span className="hero-line-inner">
-                            that <em>works.</em>
+                            that <em>works beyond</em> the demo.
                         </span>
                     </span>
                 </h1>
                 <div className="hero-bottom">
                     <p className="hero-desc">
-                        Aranax Technologies crafts AI-powered solutions -
-                        conversational chatbots, intelligent tools, and custom
-                        automation - that give businesses an unfair advantage.
+                        Aranax Technologies helps startups, agencies and
+                        enterprises design, build and scale secure AI SaaS
+                        platforms, RAG applications, intelligent agents and
+                        workflow automation.
+                        <br />
+                        <br />
+                        From technical feasibility and system architecture to
+                        product development, deployment and optimisation, we
+                        turn complex AI ideas into dependable software products.
                     </p>
                     <div className="hero-actions">
-                        <a className="btn-a" href="#work">
-                            View Our Work
+                        <a className="btn-a" href="#contact">
+                            Discuss Your AI Product
                             <ArrowUpRight />
                         </a>
-                        <a className="btn-ghost" href="#contact">
-                            Start a project
+                        <a className="btn-ghost" href="#case-studies">
+                            View Our Case Studies
                             <ArrowRight />
                         </a>
                     </div>
                 </div>
+                <ul className="hero-trust-strip" aria-label="Our capabilities">
+                    <li>12+ Yrs. in Product Development</li>
+                    <li>Architecture-First Development</li>
+                    <li>AI, Web and Mobile Engineering</li>
+                    <li>Supporting Clients Worldwide</li>
+                </ul>
             </div>
 
             <div className="scroll-cue" aria-hidden="true">

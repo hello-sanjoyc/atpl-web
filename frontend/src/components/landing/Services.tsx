@@ -13,15 +13,16 @@ export function Services() {
                         </SectionChip>
                         <h2 className="svc-title reveal d1" id="svc-h2">
                             <span className="title-nowrap">
-                                AI that <em>transforms</em>
+                                AI products built for
+                                <br />
+                                <em>real-world use</em>
                             </span>
-                            <br />
-                            businesses.
                         </h2>
                     </div>
                     <p className="svc-sub reveal d2">
-                        From conversational AI to custom intelligence platforms,
-                        we engineer solutions tailored to your exact context.
+                        From RAG applications and intelligent agents to complete
+                        AI SaaS platforms, we design secure, scalable solutions
+                        around your data, workflows and business goals.
                     </p>
                 </div>
 

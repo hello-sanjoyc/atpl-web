@@ -4,54 +4,88 @@ import { SectionChip } from "./SectionChip";
 
 export function Work() {
     return (
-        <section id="work" aria-labelledby="work-h2">
+        <section id="case-studies" aria-labelledby="work-h2">
             <div className="wrap">
                 <div className="work-header">
                     <div>
                         <SectionChip className="reveal">
-                            Selected Work
+                            Selected Case Studies
                         </SectionChip>
                         <h2 className="work-title reveal d1" id="work-h2">
-                            Built for <em>impact.</em>
+                            Products engineered around{" "}
+                            <em>real business problems.</em>
                         </h2>
+                        <div className="work-title-copy reveal d2">
+                            <p>
+                                From AI assistants to industry-specific SaaS
+                                platforms, we help founders and businesses turn
+                                complex ideas into secure, scalable and
+                                production-ready digital products.
+                            </p>
+                        </div>
                     </div>
-                    <a
-                        className="work-all reveal d2"
-                        href="#contact"
-                        aria-label="Start a new project"
-                    >
-                        Start a project
-                        <ArrowRight />
-                    </a>
                 </div>
 
                 <div className="work-grid reveal">
                     {projects.map((project) => (
                         <a
-                            className={`wc ${project.visual === "ema" ? "wc-featured" : ""} ${project.visual === "docunova" ? "wc-docunova" : ""}`}
+                            className={`wc wc-${project.visual}`}
                             href={project.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`Open ${project.name} project in a new window`}
                             key={project.name}
                         >
-                            <span
-                                className="wc-link-icon"
-                                aria-hidden="true"
-                            >
-                                <ArrowUpRight />
-                            </span>
-                            <ProjectVisual visual={project.visual} />
                             <div className="wc-over">
-                                <div className="wc-heading">
+                                <header className="wc-card-header">
                                     <span className="wc-tag">
-                                        {project.tag}
+                                        {project.category}
                                     </span>
-                                    <h3 className="wc-name">
-                                        {project.name}
-                                    </h3>
+                                    <h3 className="wc-name">{project.name}</h3>
+                                    <p className="wc-tagline">
+                                        {project.tagline}
+                                    </p>
+                                </header>
+                                <div className="wc-card-main">
+                                    <div className="wc-media">
+                                        <ProjectVisual
+                                            visual={project.visual}
+                                        />
+                                    </div>
+                                    <div className="wc-details">
+                                        <div>
+                                            <h4>Challenge</h4>
+                                            <p>{project.challenge}</p>
+                                        </div>
+                                        <div>
+                                            <h4>Solution</h4>
+                                            <p>{project.description}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="wc-note">{project.note}</p>
+                                <div className="wc-card-footer">
+                                    <div>
+                                        <h4>Outcome</h4>
+                                        <p>{project.outcome}</p>
+                                    </div>
+                                    <div>
+                                        <h4>Contribution</h4>
+                                        <p>{project.contribution}</p>
+                                    </div>
+                                    <div className="wc-actions">
+                                        <ul
+                                            className="wc-tags"
+                                            aria-label="Capabilities"
+                                        >
+                                            {project.tags.map((tag) => (
+                                                <li key={tag}>{tag}</li>
+                                            ))}
+                                        </ul>
+                                        <span className="wc-cta">
+                                            View Product <ArrowUpRight />
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     ))}

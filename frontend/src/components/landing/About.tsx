@@ -1,4 +1,5 @@
 import { team } from "./data";
+import { ArrowUpRight } from "./icons";
 import { SectionChip } from "./SectionChip";
 
 export function About() {
@@ -7,33 +8,43 @@ export function About() {
             <div className="wrap">
                 <div className="about-grid">
                     <div>
-                        <SectionChip className="reveal">
-                            Our Story
-                        </SectionChip>
+                        <SectionChip className="reveal">Our Story</SectionChip>
                         <h2 className="about-title reveal d1" id="about-h2">
-                            We don&apos;t
-                            <br />
-                            follow AI trends.
-                            <br />
-                            <em>We set them.</em>
+                            We build <em>beyond</em> the <em>AI prototype</em>.
                         </h2>
                         <p className="about-body reveal d2">
-                            Founded in 2015, Aranax Technologies emerged from a
-                            singular belief: artificial intelligence should
-                            augment human potential, not replace it. We partner
-                            with forward-thinking companies to design and build
-                            AI systems that are intelligent, ethical, and
-                            relentlessly effective.
+                            Founded in 2015, Aranax Technologies helps startups,
+                            agencies and enterprises design, build and scale AI
+                            SaaS, RAG, web and mobile products.
+                            <br />
+                            <br />
+                            Led by more than 25 years of software architecture
+                            experience, our team combines strategic thinking
+                            with practical engineering to create secure,
+                            scalable systems built for real-world use.
                         </p>
                         <div className="stats-row reveal d3">
                             <div>
                                 <div className="stat-n">
-                                    <span className="cnt" data-to="3">
+                                    <span className="cnt" data-to="25">
                                         0
                                     </span>
                                     <sup>+</sup>
                                 </div>
-                                <div className="stat-l">Years in AI</div>
+                                <div className="stat-l">
+                                    Years in Software Architecture
+                                </div>
+                            </div>
+                            <div>
+                                <div className="stat-n">
+                                    <span className="cnt" data-to="10">
+                                        0
+                                    </span>
+                                    <sup>+</sup>
+                                </div>
+                                <div className="stat-l">
+                                    Years Building Products
+                                </div>
                             </div>
                             <div>
                                 <div className="stat-n">
@@ -42,16 +53,7 @@ export function About() {
                                     </span>
                                     <sup>+</sup>
                                 </div>
-                                <div className="stat-l">Projects Shipped</div>
-                            </div>
-                            <div>
-                                <div className="stat-n">
-                                    <span className="cnt" data-to="18">
-                                        0
-                                    </span>
-                                    <sup>+</sup>
-                                </div>
-                                <div className="stat-l">Clients Worldwide</div>
+                                <div className="stat-l">Projects Delivered</div>
                             </div>
                             <div>
                                 <div className="stat-n">
@@ -67,11 +69,14 @@ export function About() {
                     <div className="reveal d2">
                         <p className="team-hd">Core Team</p>
                         <div className="team-list" role="list">
-                            {team.map(([initials, name, role, avatar]) => (
-                                <article
+                            {team.map(([initials, name, role, avatar, url]) => (
+                                <a
                                     className="team-card"
                                     role="listitem"
-                                    tabIndex={0}
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`${name} on LinkedIn (opens in a new tab)`}
                                     key={name}
                                 >
                                     <div
@@ -84,7 +89,13 @@ export function About() {
                                         <div className="team-name">{name}</div>
                                         <div className="team-role">{role}</div>
                                     </div>
-                                </article>
+                                    <span
+                                        className="team-link-icon"
+                                        aria-hidden="true"
+                                    >
+                                        <ArrowUpRight size={12} />
+                                    </span>
+                                </a>
                             ))}
                         </div>
                     </div>
