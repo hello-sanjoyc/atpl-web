@@ -1,10 +1,8 @@
-import { marqueeItems } from "./data";
-
-export function Ticker() {
+export function Ticker({ items }: { items: string[] }) {
     return (
         <div className="marquee-wrap" aria-hidden="true" role="presentation">
             <div className="marquee-track">
-                {[...marqueeItems, ...marqueeItems].map((item, index) => (
+                {[...items, ...items].map((item, index) => (
                     <span className="mi" key={`${item}-${index}`}>
                         {item}
                         <span className="mi-dot" />

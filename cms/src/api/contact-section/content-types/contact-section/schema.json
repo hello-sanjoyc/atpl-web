@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contact_sections",
+  "info": {
+    "singularName": "contact-section",
+    "pluralName": "contact-sections",
+    "displayName": "Contact Section",
+    "description": "Homepage contact call-to-action and contact details"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "eyebrow": { "type": "string", "required": true },
+    "heading": { "type": "text", "required": true },
+    "description": { "type": "text", "required": true },
+    "email": { "type": "email", "required": true },
+    "location": { "type": "string", "required": true }
+  }
+}

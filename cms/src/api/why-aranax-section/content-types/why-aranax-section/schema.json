@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "why_aranax_sections",
+  "info": {
+    "singularName": "why-aranax-section",
+    "pluralName": "why-aranax-sections",
+    "displayName": "Why Aranax Section",
+    "description": "Why Aranax positioning and architecture considerations"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "eyebrow": { "type": "string", "required": true },
+    "heading": { "type": "text", "required": true },
+    "description": { "type": "text", "required": true },
+    "listHeading": { "type": "string", "required": true },
+    "considerations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item",
+      "required": true,
+      "min": 1
+    },
+    "outcome": { "type": "text", "required": true }
+  }
+}

@@ -1,33 +1,30 @@
-import { projects } from "./data";
+import type { LandingPageContent } from "./data";
+import { CmsText } from "./CmsText";
 import { ArrowRight, ArrowUpRight, ProjectVisual } from "./icons";
 import { SectionChip } from "./SectionChip";
 
-export function Work() {
+export function Work({ content }: { content: LandingPageContent["caseStudiesSection"] }) {
     return (
         <section id="case-studies" aria-labelledby="work-h2">
             <div className="wrap">
                 <div className="work-header">
                     <div>
                         <SectionChip className="reveal">
-                            Selected Case Studies
+                            {content.eyebrow}
                         </SectionChip>
                         <h2 className="work-title reveal d1" id="work-h2">
-                            Products engineered around{" "}
-                            <em>real business problems.</em>
+                            <CmsText text={content.heading} />
                         </h2>
                         <div className="work-title-copy reveal d2">
                             <p>
-                                From AI assistants to industry-specific SaaS
-                                platforms, we help founders and businesses turn
-                                complex ideas into secure, scalable and
-                                production-ready digital products.
+                                {content.description}
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div className="work-grid reveal">
-                    {projects.map((project) => (
+                    {content.caseStudies.map((project) => (
                         <a
                             className={`wc wc-${project.visual}`}
                             href={project.url}
@@ -50,6 +47,7 @@ export function Work() {
                                     <div className="wc-media">
                                         <ProjectVisual
                                             visual={project.visual}
+                                            imageUrl={project.imageUrl}
                                         />
                                     </div>
                                     <div className="wc-details">

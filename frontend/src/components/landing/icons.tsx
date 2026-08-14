@@ -120,7 +120,13 @@ export function ServiceIcon({ icon }: { icon: Service["icon"] }) {
     );
 }
 
-export function ProjectVisual({ visual }: { visual: Project["visual"] }) {
+export function ProjectVisual({
+    visual,
+    imageUrl,
+}: {
+    visual: Project["visual"];
+    imageUrl?: string;
+}) {
     const projectImages: Record<Project["visual"], string> = {
         ema: "/assets/images/casestudies/ema.webp",
         docunova: "/assets/images/casestudies/docunova.webp",
@@ -134,119 +140,13 @@ export function ProjectVisual({ visual }: { visual: Project["visual"] }) {
         <div className="wc-vis" aria-hidden="true">
             <Image
                 className="case-study-image"
-                src={projectImages[visual]}
+                src={imageUrl ?? projectImages[visual]}
                 alt=""
                 width={1920}
                 height={1080}
                 sizes="(max-width: 680px) 100vw, (max-width: 960px) 55vw, 600px"
                 loading="lazy"
             />
-        </div>
-    );
-
-    if (visual === "ema") {
-        return (
-            <div className="wc-vis wv-ema" aria-hidden="true">
-                <div className="ema-orbit ema-orbit-top" />
-                <div className="ema-orbit ema-orbit-center" />
-                <div className="ema-shots">
-                    <Image
-                        className="ema-shot ema-shot-left"
-                        src="/assets/images/ema_01.webp"
-                        alt=""
-                        width={640}
-                        height={1292}
-                        sizes="(max-width: 768px) 34vw, 240px"
-                        loading="lazy"
-                    />
-                    <Image
-                        className="ema-shot ema-shot-right"
-                        src="/assets/images/ema_02.webp"
-                        alt=""
-                        width={640}
-                        height={1292}
-                        sizes="(max-width: 768px) 34vw, 240px"
-                        loading="lazy"
-                    />
-                </div>
-            </div>
-        );
-    }
-
-    if (visual === "docunova") {
-        return (
-            <div className="wc-vis wv-docunova" aria-hidden="true">
-                <div className="docunova-grid" />
-                <div className="docunova-panels">
-                    <Image
-                        className="docunova-panel docunova-summary"
-                        src="/assets/images/docunova_summary.webp"
-                        alt=""
-                        width={560}
-                        height={500}
-                        sizes="(max-width: 768px) 42vw, 280px"
-                        loading="lazy"
-                    />
-                    <Image
-                        className="docunova-panel docunova-chat"
-                        src="/assets/images/docunova_chat.webp"
-                        alt=""
-                        width={420}
-                        height={494}
-                        sizes="(max-width: 768px) 38vw, 250px"
-                        loading="lazy"
-                    />
-                </div>
-            </div>
-        );
-    }
-
-    if (visual === "uniecho") {
-        return (
-            <div className="wc-vis wv-docunova" aria-hidden="true">
-                <div className="docunova-grid" />
-                <div className="docunova-panels">
-                    <Image
-                        className="docunova-panel docunova-summary"
-                        src="/assets/images/uniecho_how.webp"
-                        alt=""
-                        width={808}
-                        height={473}
-                        sizes="(max-width: 768px) 42vw, 280px"
-                        loading="lazy"
-                    />
-                    <Image
-                        className="docunova-panel docunova-chat"
-                        src="/assets/images/uniecho_solution.webp"
-                        alt=""
-                        width={420}
-                        height={494}
-                        sizes="(max-width: 768px) 38vw, 250px"
-                        loading="lazy"
-                    />
-                </div>
-            </div>
-        );
-    }
-
-    // TODO: Replace these intentionally named product placeholders with final
-    // product screenshots when DoubtAce, Gloziia, and GlamSync assets are available.
-    const placeholderLabels = {
-        doubtace: ["Solved with AI", "Step-by-step explanation", "Board-aware guidance"],
-        gloziia: ["Discover salons", "Upcoming appointments", "Partner dashboard"],
-        glamsync: ["Today’s schedule", "Client profiles", "Business workspace"],
-    } as const;
-
-    const labels = placeholderLabels[visual as keyof typeof placeholderLabels];
-    return (
-        <div className={`wc-vis wc-placeholder wc-placeholder-${visual}`} aria-hidden="true">
-            <div className="placeholder-window">
-                <div className="placeholder-bar"><i /><i /><i /></div>
-                <strong>{labels[0]}</strong>
-                <span>{labels[1]}</span>
-                <div className="placeholder-chart" />
-                <small>{labels[2]}</small>
-            </div>
         </div>
     );
 }

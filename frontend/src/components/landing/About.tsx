@@ -1,93 +1,73 @@
-import { team } from "./data";
+import Image from "next/image";
+
+import type { LandingPageContent } from "./data";
+import { CmsText } from "./CmsText";
 import { ArrowUpRight } from "./icons";
 import { SectionChip } from "./SectionChip";
 
-export function About() {
+export function About({ content }: { content: LandingPageContent["aboutSection"] }) {
     return (
         <section id="about" aria-labelledby="about-h2">
             <div className="wrap">
                 <div className="about-grid">
                     <div>
-                        <SectionChip className="reveal">Our Story</SectionChip>
+                        <SectionChip className="reveal">{content.eyebrow}</SectionChip>
                         <h2 className="about-title reveal d1" id="about-h2">
-                            We build <em>beyond</em> the <em>AI prototype</em>.
+                            <CmsText text={content.heading} />
                         </h2>
                         <p className="about-body reveal d2">
-                            Founded in 2015, Aranax Technologies helps startups,
-                            agencies and enterprises design, build and scale AI
-                            SaaS, RAG, web and mobile products.
-                            <br />
-                            <br />
-                            Led by more than 25 years of software architecture
-                            experience, our team combines strategic thinking
-                            with practical engineering to create secure,
-                            scalable systems built for real-world use.
+                            <CmsText text={content.description} />
                         </p>
                         <div className="stats-row reveal d3">
-                            <div>
-                                <div className="stat-n">
-                                    <span className="cnt" data-to="25">
-                                        0
-                                    </span>
-                                    <sup>+</sup>
+                            {content.statistics.map((statistic) => (
+                                <div key={statistic.label}>
+                                    <div className="stat-n">
+                                        <span
+                                            className="cnt"
+                                            data-to={statistic.value.toString()}
+                                        >
+                                            0
+                                        </span>
+                                        {statistic.suffix ? <sup>{statistic.suffix}</sup> : null}
+                                    </div>
+                                    <div className="stat-l">{statistic.label}</div>
                                 </div>
-                                <div className="stat-l">
-                                    Years in Software Architecture
-                                </div>
-                            </div>
-                            <div>
-                                <div className="stat-n">
-                                    <span className="cnt" data-to="10">
-                                        0
-                                    </span>
-                                    <sup>+</sup>
-                                </div>
-                                <div className="stat-l">
-                                    Years Building Products
-                                </div>
-                            </div>
-                            <div>
-                                <div className="stat-n">
-                                    <span className="cnt" data-to="32">
-                                        0
-                                    </span>
-                                    <sup>+</sup>
-                                </div>
-                                <div className="stat-l">Projects Delivered</div>
-                            </div>
-                            <div>
-                                <div className="stat-n">
-                                    <span className="cnt" data-to="14">
-                                        0
-                                    </span>
-                                </div>
-                                <div className="stat-l">Team Members</div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
                     <div className="reveal d2">
-                        <p className="team-hd">Core Team</p>
+                        <p className="team-hd">{content.teamHeading}</p>
                         <div className="team-list" role="list">
-                            {team.map(([initials, name, role, avatar, url]) => (
+                            {content.teamMembers.map((member) => (
                                 <a
                                     className="team-card"
                                     role="listitem"
-                                    href={url}
+                                    href={member.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    aria-label={`${name} on LinkedIn (opens in a new tab)`}
-                                    key={name}
+                                    aria-label={`${member.name} on LinkedIn (opens in a new tab)`}
+                                    key={member.name}
                                 >
                                     <div
-                                        className={`team-av ${avatar}`}
+                                        className={`team-av ${member.avatar}`}
                                         aria-hidden="true"
                                     >
-                                        {initials}
+                                        {member.photoUrl ? (
+                                            <Image
+                                                src={member.photoUrl}
+                                                alt=""
+                                                width={72}
+                                                height={72}
+                                                sizes="72px"
+                                            />
+                                        ) : (
+                                            member.initials
+                                        )}
                                     </div>
                                     <div>
-                                        <div className="team-name">{name}</div>
-                                        <div className="team-role">{role}</div>
+                                        <div className="team-name">{member.name}</div>
+                                        <div className="team-role">{member.role}</div>
                                     </div>
                                     <span
                                         className="team-link-icon"

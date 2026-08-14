@@ -1,0 +1,72 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Settings",
+    "description": "Global brand, navigation, ticker and footer content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "siteName": {
+      "type": "string",
+      "required": true
+    },
+    "siteUrl": {
+      "type": "string",
+      "required": true,
+      "default": "https://aranax.tech"
+    },
+    "favicon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "defaultShareImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "twitterHandle": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "logoAssetPath": {
+      "type": "string",
+      "required": true
+    },
+    "logoAlternativeText": {
+      "type": "string",
+      "required": true
+    },
+    "navigation": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link",
+      "required": true,
+      "min": 1
+    },
+    "expertiseTicker": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item",
+      "required": true,
+      "min": 1
+    },
+    "footerText": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

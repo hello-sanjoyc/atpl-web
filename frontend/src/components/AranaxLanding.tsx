@@ -13,8 +13,9 @@ import { Services } from "./landing/Services";
 import { Ticker } from "./landing/Ticker";
 import { Work } from "./landing/Work";
 import { WhyAranax } from "./landing/WhyAranax";
+import type { LandingPageContent } from "./landing/data";
 
-export function AranaxLanding() {
+export function AranaxLanding({ content }: { content: LandingPageContent }) {
     const [loaderGone, setLoaderGone] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const [navScrolled, setNavScrolled] = useState(false);
@@ -176,22 +177,23 @@ export function AranaxLanding() {
         <>
             <div className="grain" aria-hidden="true" />
 
-            <Loader gone={loaderGone} />
+            <Loader gone={loaderGone} siteName={content.site.siteName} />
             <CursorChrome />
             <Navbar
                 menuOpen={menuOpen}
                 navScrolled={navScrolled}
                 onCloseMenu={closeMenu}
                 onToggleMenu={() => setMenuOpen((open) => !open)}
+                settings={content.site}
             />
-            <Hero />
-            <Ticker />
-            <Services />
-            <WhyAranax />
-            <Work />
-            <About />
-            <Contact />
-            <Footer />
+            <Hero content={content.hero} />
+            <Ticker items={content.site.expertiseTicker} />
+            <Services content={content.servicesSection} />
+            <WhyAranax content={content.whyAranaxSection} />
+            <Work content={content.caseStudiesSection} />
+            <About content={content.aboutSection} />
+            <Contact content={content.contactSection} />
+            <Footer settings={content.site} />
         </>
     );
 }

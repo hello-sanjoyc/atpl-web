@@ -2,6 +2,8 @@ import { ChangeEvent, FormEvent, FocusEvent, useState } from "react";
 
 import { ArrowUpRight, Check, MailIcon, PinIcon } from "./icons";
 import { SectionChip } from "./SectionChip";
+import { CmsText } from "./CmsText";
+import type { LandingPageContent } from "./data";
 
 type FormValues = {
     fname: string;
@@ -69,7 +71,11 @@ function FieldError({ id, message }: { id: string; message?: string }) {
     ) : null;
 }
 
-export function Contact() {
+export function Contact({
+    content,
+}: {
+    content: LandingPageContent["contactSection"];
+}) {
     const [values, setValues] = useState<FormValues>(initialValues);
     const [errors, setErrors] = useState<FormErrors>({});
     const [sent, setSent] = useState(false);
@@ -165,28 +171,22 @@ export function Contact() {
                 <div className="contact-grid">
                     <div>
                         <SectionChip light className="reveal">
-                            Get in Touch
+                            {content.eyebrow}
                         </SectionChip>
                         <h2 className="contact-title reveal d1" id="contact-h2">
-                            Let&apos;s build
-                            <br />
-                            something
-                            <br />
-                            <em>extraordinary.</em>
+                            <CmsText text={content.heading} />
                         </h2>
                         <p className="contact-sub reveal d2">
-                            Whether you have a clear brief or just a spark of an
-                            idea, we&apos;d love to hear from you. Our team
-                            typically responds within 24 hours.
+                            {content.description}
                         </p>
                         <div className="contact-info reveal d3">
                             <div className="ci">
                                 <MailIcon />
-                                hello@aranax.tech
+                                {content.email}
                             </div>
                             <div className="ci">
                                 <PinIcon />
-                                Kolkata, India - Richmond, USA
+                                {content.location}
                             </div>
                         </div>
                     </div>
@@ -232,7 +232,7 @@ export function Contact() {
                                     type="text"
                                     id="ln"
                                     name="lname"
-                                    placeholder="Rajan"
+                                    placeholder="Gardner"
                                     autoComplete="family-name"
                                     value={values.lname}
                                     onBlur={validateOnBlur}
@@ -262,10 +262,7 @@ export function Contact() {
                                 aria-describedby="em-error"
                                 required
                             />
-                            <FieldError
-                                id="em-error"
-                                message={errors.email}
-                            />
+                            <FieldError id="em-error" message={errors.email} />
                         </div>
                         <div className="fg">
                             <label htmlFor="proj">What are you building?</label>

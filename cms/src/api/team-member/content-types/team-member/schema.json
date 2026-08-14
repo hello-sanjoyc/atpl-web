@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "team_members",
+  "info": {
+    "singularName": "team-member",
+    "pluralName": "team-members",
+    "displayName": "Team Member",
+    "description": "People displayed in the Core Team list"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "initials": {
+      "type": "string",
+      "required": true,
+      "maxLength": 4
+    },
+    "role": {
+      "type": "string",
+      "required": true
+    },
+    "profileUrl": {
+      "type": "string",
+      "required": true
+    },
+    "avatarStyle": {
+      "type": "enumeration",
+      "enum": ["av1", "av2", "av3", "av4"],
+      "required": true
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "sortOrder": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0
+    }
+  }
+}

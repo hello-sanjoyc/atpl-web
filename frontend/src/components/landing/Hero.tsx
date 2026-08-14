@@ -1,6 +1,8 @@
 import { ArrowRight, ArrowUpRight } from "./icons";
+import { CmsText } from "./CmsText";
+import type { LandingPageContent } from "./data";
 
-export function Hero() {
+export function Hero({ content }: { content: LandingPageContent["hero"] }) {
     return (
         <section id="hero" aria-labelledby="hero-h1">
             <div className="blob blob-amber" aria-hidden="true" />
@@ -9,48 +11,46 @@ export function Hero() {
             <div className="hero-inner wrap">
                 <p className="hero-eyebrow" aria-hidden="true">
                     <span className="eyebrow-dot" />
-                    AI Development Agency
+                    {content.eyebrow}
                 </p>
                 <h1 className="hero-title" id="hero-h1">
-                    <span className="hero-line">
-                        <span className="hero-line-inner">
-                            Build an <em>AI product</em>
+                    {content.heading.split("\n").map((line, index) => (
+                        <span className="hero-line" key={`${line}-${index}`}>
+                            <span className="hero-line-inner">
+                                <CmsText text={line} />
+                            </span>
                         </span>
-                    </span>
-                    <span className="hero-line">
-                        <span className="hero-line-inner">
-                            that <em>works beyond</em> the demo.
-                        </span>
-                    </span>
+                    ))}
                 </h1>
                 <div className="hero-bottom">
                     <p className="hero-desc">
-                        Aranax Technologies helps startups, agencies and
-                        enterprises design, build and scale secure AI SaaS
-                        platforms, RAG applications, intelligent agents and
-                        workflow automation.
-                        <br />
-                        <br />
-                        From technical feasibility and system architecture to
-                        product development, deployment and optimisation, we
-                        turn complex AI ideas into dependable software products.
+                        <CmsText text={content.description} />
                     </p>
                     <div className="hero-actions">
-                        <a className="btn-a" href="#contact">
-                            Discuss Your AI Product
+                        <a
+                            className="btn-a"
+                            href={content.primaryCta.href}
+                            target={content.primaryCta.openInNewTab ? "_blank" : undefined}
+                            rel={content.primaryCta.openInNewTab ? "noopener noreferrer" : undefined}
+                        >
+                            {content.primaryCta.label}
                             <ArrowUpRight />
                         </a>
-                        <a className="btn-ghost" href="#case-studies">
-                            View Our Case Studies
+                        <a
+                            className="btn-ghost"
+                            href={content.secondaryCta.href}
+                            target={content.secondaryCta.openInNewTab ? "_blank" : undefined}
+                            rel={content.secondaryCta.openInNewTab ? "noopener noreferrer" : undefined}
+                        >
+                            {content.secondaryCta.label}
                             <ArrowRight />
                         </a>
                     </div>
                 </div>
                 <ul className="hero-trust-strip" aria-label="Our capabilities">
-                    <li>12+ Yrs. in Product Development</li>
-                    <li>Architecture-First Development</li>
-                    <li>AI, Web and Mobile Engineering</li>
-                    <li>Supporting Clients Worldwide</li>
+                    {content.trustItems.map((item) => (
+                        <li key={item}>{item}</li>
+                    ))}
                 </ul>
             </div>
 

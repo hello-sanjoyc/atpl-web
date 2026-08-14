@@ -1,0 +1,74 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contact_submissions",
+  "info": {
+    "singularName": "contact-submission",
+    "pluralName": "contact-submissions",
+    "displayName": "Contact Submission",
+    "description": "Project enquiries submitted through the website contact form"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "config": {
+    "settings": {
+      "bulkable": true,
+      "filterable": true,
+      "searchable": true,
+      "pageSize": 10,
+      "mainField": "email",
+      "defaultSortBy": "createdAt",
+      "defaultSortOrder": "DESC",
+      "relationOpenMode": "modal"
+    }
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "lastName": {
+      "type": "string",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "maxLength": 254
+    },
+    "project": {
+      "type": "string",
+      "required": true,
+      "minLength": 2,
+      "maxLength": 300
+    },
+    "message": {
+      "type": "text",
+      "required": true,
+      "minLength": 10,
+      "maxLength": 5000
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["new", "read", "replied", "archived", "spam"],
+      "required": true,
+      "default": "new"
+    },
+    "source": {
+      "type": "string",
+      "required": true,
+      "default": "website",
+      "maxLength": 100
+    },
+    "internalNotes": {
+      "type": "text",
+      "private": true,
+      "maxLength": 5000
+    }
+  }
+}

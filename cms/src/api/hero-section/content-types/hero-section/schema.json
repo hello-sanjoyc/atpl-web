@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hero_sections",
+  "info": {
+    "singularName": "hero-section",
+    "pluralName": "hero-sections",
+    "displayName": "Hero Section",
+    "description": "Reusable homepage hero content"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "eyebrow": { "type": "string", "required": true },
+    "heading": { "type": "text", "required": true },
+    "description": { "type": "text", "required": true },
+    "primaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.link",
+      "required": true
+    },
+    "secondaryCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.link",
+      "required": true
+    },
+    "trustItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.text-item",
+      "required": true,
+      "min": 1
+    }
+  }
+}

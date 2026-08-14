@@ -1,13 +1,15 @@
-export function Footer() {
+import type { LandingPageContent } from "./data";
+
+export function Footer({ settings }: { settings: LandingPageContent["site"] }) {
     return (
         <footer role="contentinfo">
             <div className="wrap">
                 <div className="footer-in">
                     <div className="f-logo">
-                        Aranax Technologies<span>.</span>
+                        {settings.siteName}<span>.</span>
                     </div>
                     <p className="f-copy">
-                        &copy; 2026 Aranax Technologies. All rights reserved.
+                        {settings.footerText}
                     </p>
                     {/* <ul className="f-links" role="list">
                         <li>

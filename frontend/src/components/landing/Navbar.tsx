@@ -1,10 +1,13 @@
 import Image from "next/image";
 
+import type { LandingPageContent } from "./data";
+
 type NavbarProps = {
     menuOpen: boolean;
     navScrolled: boolean;
     onCloseMenu: () => void;
     onToggleMenu: () => void;
+    settings: LandingPageContent["site"];
 };
 
 export function Navbar({
@@ -12,6 +15,7 @@ export function Navbar({
     navScrolled,
     onCloseMenu,
     onToggleMenu,
+    settings,
 }: NavbarProps) {
     return (
         <nav
@@ -23,47 +27,36 @@ export function Navbar({
             <a
                 className="nav-logo"
                 href="#"
-                aria-label="Aranax Technologies home"
+                aria-label={`${settings.siteName} home`}
                 onClick={onCloseMenu}
             >
                 <Image
-                    src="/assets/images/logo.png"
-                    alt=""
+                    src={settings.logoUrl}
+                    alt={settings.logoAlternativeText}
                     width={218}
                     height={72}
                     priority
                 />
-                <span className="sr-only">Aranax Technologies</span>
+                <span className="sr-only">{settings.siteName}</span>
             </a>
             <ul
                 className={`nav-links ${menuOpen ? "open" : ""}`}
                 id="navLinks"
                 role="list"
             >
-                <li>
-                    <a href="#services" onClick={onCloseMenu}>
-                        Services
-                    </a>
-                </li>
-                <li>
-                    <a href="#case-studies" onClick={onCloseMenu}>
-                        Case Studies
-                    </a>
-                </li>
-                <li>
-                    <a href="#about" onClick={onCloseMenu}>
-                        About
-                    </a>
-                </li>
-                <li>
-                    <a
-                        href="#contact"
-                        className="nav-cta"
-                        onClick={onCloseMenu}
-                    >
-                        Let&apos;s Talk
-                    </a>
-                </li>
+                {settings.navigation.map((link) => (
+                    <li key={`${link.href}-${link.label}`}>
+                        <a
+                            href={link.href}
+                            className={link.style === "primary" ? "nav-cta" : undefined}
+                            target={link.openInNewTab ? "_blank" : undefined}
+                            rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+                            onClick={onCloseMenu}
+                        >
+                            {link.label}
+                        </a>
+                    </li>
+                ))}
             </ul>
             <button
                 className={`hamburger ${menuOpen ? "open" : ""}`}

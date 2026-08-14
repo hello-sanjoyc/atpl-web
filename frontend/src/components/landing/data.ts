@@ -17,6 +17,7 @@ export type Project = {
     outcome: string;
     contribution: string;
     url: string;
+    imageUrl?: string;
     visual:
         | "ema"
         | "docunova"
@@ -24,6 +25,99 @@ export type Project = {
         | "doubtace"
         | "gloziia"
         | "glamsync";
+};
+
+export type TeamMember = {
+    initials: string;
+    name: string;
+    role: string;
+    avatar: "av1" | "av2" | "av3" | "av4";
+    url: string;
+    photoUrl?: string;
+};
+
+export type CmsLink = {
+    label: string;
+    href: string;
+    openInNewTab?: boolean;
+    style?: "default" | "primary" | "secondary";
+};
+
+export type SeoContent = {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string[];
+    canonicalUrl?: string;
+    preventIndexing: boolean;
+    preventFollowing: boolean;
+    openGraphTitle?: string;
+    openGraphDescription?: string;
+    openGraphType?: "website" | "article";
+    shareImageUrl?: string;
+    twitterCard?: "summary" | "summary_large_image";
+    twitterTitle?: string;
+    twitterDescription?: string;
+    twitterImageUrl?: string;
+    structuredData?: Record<string, unknown>;
+};
+
+export type LandingPageContent = {
+    site: {
+        siteName: string;
+        siteUrl: string;
+        logoUrl: string;
+        logoAlternativeText: string;
+        faviconUrl?: string;
+        defaultShareImageUrl?: string;
+        twitterHandle?: string;
+        navigation: CmsLink[];
+        expertiseTicker: string[];
+        footerText: string;
+    };
+    seo: SeoContent;
+    hero: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        primaryCta: CmsLink;
+        secondaryCta: CmsLink;
+        trustItems: string[];
+    };
+    servicesSection: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        services: Service[];
+    };
+    whyAranaxSection: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        listHeading: string;
+        considerations: string[];
+        outcome: string;
+    };
+    caseStudiesSection: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        caseStudies: Project[];
+    };
+    aboutSection: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        teamHeading: string;
+        statistics: Array<{ value: number; suffix: string; label: string }>;
+        teamMembers: TeamMember[];
+    };
+    contactSection: {
+        eyebrow: string;
+        heading: string;
+        description: string;
+        email: string;
+        location: string;
+    };
 };
 
 export const services: Service[] = [
@@ -156,36 +250,36 @@ export const projects: Project[] = [
     },
 ];
 
-export const team = [
-    [
-        "SC",
-        "Sanjoy Chowdhury",
-        "Founder & AI SaaS Architect",
-        "av1",
-        "https://www.linkedin.com/in/sanjoyc/",
-    ],
-    [
-        "KP",
-        "Kausik Pan",
-        "Product Manager & Web Solutions Lead",
-        "av2",
-        "https://www.linkedin.com/in/kousik-pan-395a21116/",
-    ],
-    [
-        "ST",
-        "Sabyasachi Tripathi",
-        "Full-Stack & AI Engineer",
-        "av3",
-        "https://www.linkedin.com/in/sabyasachi-tripathy-a402381a9/",
-    ],
-    [
-        "AD",
-        "Avigyan Das",
-        "Head of Design",
-        "av4",
-        "https://www.linkedin.com/in/avigyandas/",
-    ],
-] as const;
+export const team: TeamMember[] = [
+    {
+        initials: "SC",
+        name: "Sanjoy Chowdhury",
+        role: "Founder & AI SaaS Architect",
+        avatar: "av1",
+        url: "https://www.linkedin.com/in/sanjoyc/",
+    },
+    {
+        initials: "KP",
+        name: "Kausik Pan",
+        role: "Product Manager & Web Solutions Lead",
+        avatar: "av2",
+        url: "https://www.linkedin.com/in/kousik-pan-395a21116/",
+    },
+    {
+        initials: "ST",
+        name: "Sabyasachi Tripathi",
+        role: "Full-Stack & AI Engineer",
+        avatar: "av3",
+        url: "https://www.linkedin.com/in/sabyasachi-tripathy-a402381a9/",
+    },
+    {
+        initials: "AD",
+        name: "Avigyan Das",
+        role: "Head of Design",
+        avatar: "av4",
+        url: "https://www.linkedin.com/in/avigyandas/",
+    },
+];
 
 export const marqueeItems = [
     "AI Strategy",
@@ -197,3 +291,117 @@ export const marqueeItems = [
     "Voice AI",
     "RAG Systems",
 ];
+
+export const fallbackLandingPage: LandingPageContent = {
+    site: {
+        siteName: "Aranax Technologies",
+        siteUrl: "https://aranax.tech",
+        logoUrl: "/assets/images/logo.png",
+        logoAlternativeText: "Aranax Technologies",
+        defaultShareImageUrl: "/assets/images/og-image.webp",
+        navigation: [
+            { label: "Services", href: "#services" },
+            { label: "Case Studies", href: "#case-studies" },
+            { label: "About", href: "#about" },
+            { label: "Let's Talk", href: "#contact", style: "primary" },
+        ],
+        expertiseTicker: marqueeItems,
+        footerText: "© 2026 Aranax Technologies. All rights reserved.",
+    },
+    seo: {
+        metaTitle:
+            "AI SaaS Development Company | RAG & Agentic AI | Aranax Technologies",
+        metaDescription:
+            "Aranax Technologies designs and builds scalable AI SaaS platforms, RAG applications, intelligent agents and workflow automation for startups, agencies and enterprises.",
+        keywords: [
+            "AI SaaS development",
+            "RAG applications",
+            "agentic AI",
+            "AI workflow automation",
+            "LLM integration",
+        ],
+        canonicalUrl: "https://aranax.tech/",
+        preventIndexing: false,
+        preventFollowing: false,
+        openGraphType: "website",
+        twitterCard: "summary_large_image",
+    },
+    hero: {
+        eyebrow: "AI Development Agency",
+        heading: "Build an *AI product*\nthat *works beyond* the demo.",
+        description:
+            "Aranax Technologies helps startups, agencies and enterprises design, build and scale secure AI SaaS platforms, RAG applications, intelligent agents and workflow automation.\n\nFrom technical feasibility and system architecture to product development, deployment and optimisation, we turn complex AI ideas into dependable software products.",
+        primaryCta: {
+            label: "Discuss Your AI Product",
+            href: "#contact",
+            style: "primary",
+        },
+        secondaryCta: {
+            label: "View Our Case Studies",
+            href: "#case-studies",
+            style: "secondary",
+        },
+        trustItems: [
+            "12+ Yrs. in Product Development",
+            "Architecture-First Development",
+            "AI, Web and Mobile Engineering",
+            "Supporting Clients Worldwide",
+        ],
+    },
+    servicesSection: {
+        eyebrow: "What We Build",
+        heading: "AI products built for\n*real-world use*",
+        description:
+            "From RAG applications and intelligent agents to complete AI SaaS platforms, we design secure, scalable solutions around your data, workflows and business goals.",
+        services,
+    },
+    whyAranaxSection: {
+        eyebrow: "Why Aranax",
+        heading: "Architecture first.\n*AI second.*\nBusiness outcome always.",
+        description:
+            "Many AI prototypes look impressive during a demonstration but fail when exposed to real customers, unreliable data, high usage and security requirements.\nAranax approaches AI development as product engineering.",
+        listHeading: "We consider",
+        considerations: [
+            "Multi-tenant architecture",
+            "Data privacy and user permissions",
+            "Retrieval quality and hallucination controls",
+            "AI evaluation and observability",
+            "Human review and escalation",
+            "Token consumption and infrastructure costs",
+            "API reliability and failure handling",
+            "Product analytics and usage limits",
+            "Security, deployment and long-term maintainability",
+        ],
+        outcome:
+            "The result is not simply an AI feature. It is a product designed to operate reliably in production.",
+    },
+    caseStudiesSection: {
+        eyebrow: "Selected Case Studies",
+        heading: "Products engineered around *real business problems.*",
+        description:
+            "From AI assistants to industry-specific SaaS platforms, we help founders and businesses turn complex ideas into secure, scalable and production-ready digital products.",
+        caseStudies: projects,
+    },
+    aboutSection: {
+        eyebrow: "Our Story",
+        heading: "We build *beyond* the *AI prototype*.",
+        description:
+            "Founded in 2015, Aranax Technologies helps startups, agencies and enterprises design, build and scale AI SaaS, RAG, web and mobile products.\n\nLed by more than 25 years of software architecture experience, our team combines strategic thinking with practical engineering to create secure, scalable systems built for real-world use.",
+        teamHeading: "Core Team",
+        statistics: [
+            { value: 25, suffix: "+", label: "Years in Software Architecture" },
+            { value: 10, suffix: "+", label: "Years Building Products" },
+            { value: 32, suffix: "+", label: "Projects Delivered" },
+            { value: 14, suffix: "", label: "Team Members" },
+        ],
+        teamMembers: team,
+    },
+    contactSection: {
+        eyebrow: "Get in Touch",
+        heading: "Let's build\nsomething\n*extraordinary.*",
+        description:
+            "Whether you have a clear brief or just a spark of an idea, we'd love to hear from you. Our team typically responds within 24 hours.",
+        email: "hello@aranax.tech",
+        location: "Kolkata, India - Richmond, USA",
+    },
+};

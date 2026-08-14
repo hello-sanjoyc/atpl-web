@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "case_studies_sections",
+  "info": {
+    "singularName": "case-studies-section",
+    "pluralName": "case-studies-sections",
+    "displayName": "Case Studies Section",
+    "description": "Homepage case studies introduction and featured projects"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "eyebrow": { "type": "string", "required": true },
+    "heading": { "type": "text", "required": true },
+    "description": { "type": "text", "required": true },
+    "caseStudies": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::case-study.case-study"
+    }
+  }
+}

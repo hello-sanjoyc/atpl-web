@@ -1,33 +1,30 @@
-import { services } from "./data";
+import type { LandingPageContent } from "./data";
+import { CmsText } from "./CmsText";
 import { ServiceIcon } from "./icons";
 import { SectionChip } from "./SectionChip";
 
-export function Services() {
+export function Services({ content }: { content: LandingPageContent["servicesSection"] }) {
     return (
         <section id="services" aria-labelledby="svc-h2">
             <div className="wrap">
                 <div className="svc-header">
                     <div>
                         <SectionChip light className="reveal">
-                            What We Build
+                            {content.eyebrow}
                         </SectionChip>
                         <h2 className="svc-title reveal d1" id="svc-h2">
                             <span className="title-nowrap">
-                                AI products built for
-                                <br />
-                                <em>real-world use</em>
+                                <CmsText text={content.heading} />
                             </span>
                         </h2>
                     </div>
                     <p className="svc-sub reveal d2">
-                        From RAG applications and intelligent agents to complete
-                        AI SaaS platforms, we design secure, scalable solutions
-                        around your data, workflows and business goals.
+                        {content.description}
                     </p>
                 </div>
 
                 <div className="svc-grid" role="list">
-                    {services.map((service) => (
+                    {content.services.map((service) => (
                         <article
                             className={`svc-card reveal ${service.delay ?? ""}`}
                             role="listitem"

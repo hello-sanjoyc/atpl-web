@@ -1,0 +1,157 @@
+# =========================================================
+# Dependencies
+# =========================================================
+
+frontend/node_modules/
+cms/node_modules/
+node_modules/
+
+# =========================================================
+# PNPM
+# =========================================================
+
+.pnpm-store/
+frontend/.pnpm-store/
+cms/.pnpm-store/
+
+pnpm-debug.log*
+debug.log*
+
+# IMPORTANT:
+# Do NOT ignore pnpm-lock.yaml.
+# Lockfiles should be committed.
+
+
+# =========================================================
+# Environment variables
+# =========================================================
+
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+frontend/.env.test
+
+cms/.env
+cms/.env.local
+cms/.env.development
+cms/.env.production
+cms/.env.test
+
+# Keep example environment files
+!.env.example
+!frontend/.env.example
+!cms/.env.example
+
+
+# =========================================================
+# Next.js - frontend/
+# =========================================================
+
+frontend/.next/
+frontend/out/
+frontend/dist/
+
+# Next.js generated TypeScript declarations
+frontend/next-env.d.ts
+
+# Vercel
+frontend/.vercel/
+
+# Next.js / Node cache
+frontend/.cache/
+
+# Testing / coverage
+frontend/coverage/
+
+# TypeScript incremental build
+frontend/*.tsbuildinfo
+
+
+# =========================================================
+# Strapi - cms/
+# =========================================================
+
+# Strapi cache/temp
+cms/.cache/
+cms/.tmp/
+cms/.strapi/
+cms/.strapi-updater.json
+
+# Build output
+cms/build/
+cms/dist/
+
+
+# =========================================================
+# Strapi uploaded media
+# =========================================================
+
+cms/public/uploads/*
+!cms/public/uploads/.gitkeep
+
+
+# =========================================================
+# Logs
+# =========================================================
+
+*.log
+
+frontend/logs/
+cms/logs/
+
+
+# =========================================================
+# Testing
+# =========================================================
+
+coverage/
+.nyc_output/
+
+
+# =========================================================
+# Operating system
+# =========================================================
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+
+# =========================================================
+# IDE / Editors
+# =========================================================
+
+.idea/
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+*.swp
+*.swo
+*~
+
+
+# =========================================================
+# Misc
+# =========================================================
+
+*.pem
+*.key
+*.crt
+
+tmp/
+temp/
+
+# macOS
+.DS_Store
+**/.DS_Store
