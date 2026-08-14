@@ -26,28 +26,15 @@ debug.log*
 # Environment variables
 # =========================================================
 
+# Environment files
 .env
-.env.local
-.env.development
-.env.production
-.env.test
+.env.*
+**/.env
+**/.env.*
 
-frontend/.env
-frontend/.env.local
-frontend/.env.development
-frontend/.env.production
-frontend/.env.test
-
-cms/.env
-cms/.env.local
-cms/.env.development
-cms/.env.production
-cms/.env.test
-
-# Keep example environment files
+# Allow example env files
 !.env.example
-!frontend/.env.example
-!cms/.env.example
+!**/.env.example
 
 
 # =========================================================
