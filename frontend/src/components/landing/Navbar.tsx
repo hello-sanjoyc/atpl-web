@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import type { LandingPageContent } from "./data";
 
 type NavbarProps = {
@@ -8,6 +6,7 @@ type NavbarProps = {
     onCloseMenu: () => void;
     onToggleMenu: () => void;
     settings: LandingPageContent["site"];
+    homeHref?: string;
 };
 
 export function Navbar({
@@ -16,6 +15,7 @@ export function Navbar({
     onCloseMenu,
     onToggleMenu,
     settings,
+    homeHref = "#",
 }: NavbarProps) {
     return (
         <nav
@@ -26,16 +26,15 @@ export function Navbar({
         >
             <a
                 className="nav-logo"
-                href="#"
+                href={homeHref}
                 aria-label={`${settings.siteName} home`}
                 onClick={onCloseMenu}
             >
-                <Image
+                <img
                     src={settings.logoUrl}
                     alt={settings.logoAlternativeText}
                     width={218}
                     height={72}
-                    priority
                 />
                 <span className="sr-only">{settings.siteName}</span>
             </a>

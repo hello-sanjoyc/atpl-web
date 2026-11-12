@@ -47,9 +47,11 @@ export async function POST(request: Request) {
         // A payload is useful for auditing, but not required for invalidation.
     }
 
-    revalidateTag(CMS_CACHE_TAGS.content);
-    revalidateTag(CMS_CACHE_TAGS.homePage);
-    revalidateTag(CMS_CACHE_TAGS.siteSettings);
+    // Next.js 16 requires an explicit cache-life profile for tag revalidation.
+    // "max" serves stale content while the cache is refreshed in the background.
+    revalidateTag(CMS_CACHE_TAGS.content, "max");
+    revalidateTag(CMS_CACHE_TAGS.homePage, "max");
+    revalidateTag(CMS_CACHE_TAGS.siteSettings, "max");
     revalidatePath("/");
 
     return NextResponse.json(

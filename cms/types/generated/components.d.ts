@@ -1,5 +1,16 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface SharedFaqItem extends Struct.ComponentSchema {
+  collectionName: 'components_shared_faq_items';
+  info: {
+    displayName: 'FAQ Item';
+  };
+  attributes: {
+    answer: Schema.Attribute.Text & Schema.Attribute.Required;
+    question: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedLink extends Struct.ComponentSchema {
   collectionName: 'components_shared_links';
   info: {
@@ -21,6 +32,10 @@ export interface SharedSeo extends Struct.ComponentSchema {
     displayName: 'SEO';
   };
   attributes: {
+    answerSummary: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 350;
+      }>;
     canonicalUrl: Schema.Attribute.String;
     focusKeyword: Schema.Attribute.String;
     keywords: Schema.Attribute.Component<'shared.text-item', true>;
@@ -48,6 +63,7 @@ export interface SharedSeo extends Struct.ComponentSchema {
       Schema.Attribute.DefaultTo<false>;
     preventIndexing: Schema.Attribute.Boolean &
       Schema.Attribute.DefaultTo<false>;
+    questions: Schema.Attribute.Component<'shared.faq-item', true>;
     shareImage: Schema.Attribute.Media<'images'>;
     structuredData: Schema.Attribute.JSON;
     twitterCard: Schema.Attribute.Enumeration<
@@ -99,6 +115,7 @@ export interface SharedTextItem extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export namespace Public {
     export interface ComponentSchemas {
+      'shared.faq-item': SharedFaqItem;
       'shared.link': SharedLink;
       'shared.seo': SharedSeo;
       'shared.statistic': SharedStatistic;

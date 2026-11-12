@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 
 import { AranaxLanding } from "@/components/AranaxLanding";
-import {
-    fallbackLandingPage,
-    type LandingPageContent,
-} from "@/components/landing/data";
+import type { LandingPageContent } from "@/components/landing/data";
 import { getLandingPageContent } from "@/lib/cms/cache.server";
+import { cmsJsonLd } from "@/lib/seo/json-ld";
+
+export const dynamic = "force-dynamic";
 
 async function getPageContent(): Promise<LandingPageContent> {
     try {
         return await getLandingPageContent();
     } catch (error) {
         console.error("Unable to load landing-page content from Strapi:", error);
-        return fallbackLandingPage;
+        throw error;
     }
 }
 
@@ -59,11 +59,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
     const content = await getPageContent();
-    const structuredData = content.seo.structuredData;
+    const structuredData = cmsJsonLd(content.seo);
 
     return (
         <>
-            {structuredData ? (
+            {structuredData.length > 0 ? (
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{

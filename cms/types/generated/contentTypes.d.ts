@@ -469,7 +469,10 @@ export interface ApiAboutSectionAboutSection
     > &
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
+    pageContent: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.Required;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     statistics: Schema.Attribute.Component<'shared.statistic', true> &
       Schema.Attribute.Required &
@@ -556,6 +559,7 @@ export interface ApiCaseStudyCaseStudy extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     outcome: Schema.Attribute.Text & Schema.Attribute.Required;
+    pageContent: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
@@ -759,6 +763,7 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
       'oneToOne',
       'api::about-section.about-section'
     >;
+    buyerSegments: Schema.Attribute.JSON & Schema.Attribute.Required;
     caseStudiesSection: Schema.Attribute.Relation<
       'oneToOne',
       'api::case-studies-section.case-studies-section'
@@ -770,6 +775,8 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    faqSection: Schema.Attribute.JSON & Schema.Attribute.Required;
+    finalCta: Schema.Attribute.JSON & Schema.Attribute.Required;
     heroSection: Schema.Attribute.Relation<
       'oneToOne',
       'api::hero-section.hero-section'
@@ -780,6 +787,7 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
       'api::home-page.home-page'
     > &
       Schema.Attribute.Private;
+    processSection: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false> &
       Schema.Attribute.Required;
@@ -816,6 +824,7 @@ export interface ApiServiceService extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text & Schema.Attribute.Required;
+    heroImage: Schema.Attribute.Media<'images'>;
     icon: Schema.Attribute.Enumeration<['spark', 'chat', 'grid']> &
       Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -830,7 +839,10 @@ export interface ApiServiceService extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 3;
       }>;
+    pageContent: Schema.Attribute.JSON & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false> &
+      Schema.Attribute.Required;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
     sortOrder: Schema.Attribute.Integer &
       Schema.Attribute.Required &

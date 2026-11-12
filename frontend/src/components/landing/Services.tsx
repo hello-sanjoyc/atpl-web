@@ -3,7 +3,11 @@ import { CmsText } from "./CmsText";
 import { ServiceIcon } from "./icons";
 import { SectionChip } from "./SectionChip";
 
-export function Services({ content }: { content: LandingPageContent["servicesSection"] }) {
+export function Services({
+    content,
+}: {
+    content: LandingPageContent["servicesSection"];
+}) {
     return (
         <section id="services" aria-labelledby="svc-h2">
             <div className="wrap">
@@ -18,23 +22,21 @@ export function Services({ content }: { content: LandingPageContent["servicesSec
                             </span>
                         </h2>
                     </div>
-                    <p className="svc-sub reveal d2">
-                        {content.description}
-                    </p>
+                    <p className="svc-sub reveal d2">{content.description}</p>
                 </div>
 
                 <div className="svc-grid" role="list">
                     {content.services.map((service) => (
                         <article
-                            className={`svc-card reveal ${service.delay ?? ""}`}
+                            className="svc-card reveal"
                             role="listitem"
-                            tabIndex={0}
-                            aria-label={`${service.name} service`}
                             key={service.name}
                         >
                             <div className="svc-top">
                                 <div className="svc-icon" aria-hidden="true">
-                                    <ServiceIcon icon={service.icon} />
+                                    <ServiceIcon
+                                        icon={service.icon}
+                                    />
                                 </div>
                                 <span className="svc-num">
                                     {service.number}
@@ -49,6 +51,12 @@ export function Services({ content }: { content: LandingPageContent["servicesSec
                                     </span>
                                 ))}
                             </div>
+                            <a
+                                className="svc-link"
+                                href={`/services/${service.slug}`}
+                            >
+                                {service.name} <span aria-hidden="true">→</span>
+                            </a>
                         </article>
                     ))}
                 </div>

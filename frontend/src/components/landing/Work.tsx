@@ -3,6 +3,13 @@ import { CmsText } from "./CmsText";
 import { ArrowRight, ArrowUpRight, ProjectVisual } from "./icons";
 import { SectionChip } from "./SectionChip";
 
+function CaseStudyCardTitle({ name }: { name: string }) {
+    const match = name.match(/^(.*?)\s+[-—]\s+(.*)$/);
+    if (!match) return name;
+
+    return <>{match[1]} <span aria-hidden="true">-</span> <span className="wc-name-detail">{match[2]}</span></>;
+}
+
 export function Work({ content }: { content: LandingPageContent["caseStudiesSection"] }) {
     return (
         <section id="case-studies" aria-labelledby="work-h2">
@@ -25,67 +32,49 @@ export function Work({ content }: { content: LandingPageContent["caseStudiesSect
 
                 <div className="work-grid reveal">
                     {content.caseStudies.map((project) => (
-                        <a
+                        <article
                             className={`wc wc-${project.visual}`}
-                            href={project.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Open ${project.name} project in a new window`}
                             key={project.name}
                         >
+                            <a
+                                className="wc-card-link"
+                                href={`/case-studies/${project.slug}`}
+                                aria-label={`Read the ${project.name} case study`}
+                            />
                             <div className="wc-over">
                                 <header className="wc-card-header">
                                     <span className="wc-tag">
                                         {project.category}
                                     </span>
-                                    <h3 className="wc-name">{project.name}</h3>
+                                    <h3 className="wc-name"><CaseStudyCardTitle name={project.name} /></h3>
                                     <p className="wc-tagline">
                                         {project.tagline}
                                     </p>
                                 </header>
+                                <a className="wc-top-product" href={project.url} target="_blank" rel="noopener noreferrer">
+                                    Visit Product <ArrowUpRight />
+                                </a>
                                 <div className="wc-card-main">
                                     <div className="wc-media">
                                         <ProjectVisual
                                             visual={project.visual}
                                             imageUrl={project.imageUrl}
+                                            alt={`${project.name} cover image`}
                                         />
                                     </div>
-                                    <div className="wc-details">
-                                        <div>
-                                            <h4>Challenge</h4>
-                                            <p>{project.challenge}</p>
-                                        </div>
-                                        <div>
-                                            <h4>Solution</h4>
-                                            <p>{project.description}</p>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div className="wc-card-footer">
-                                    <div>
-                                        <h4>Outcome</h4>
-                                        <p>{project.outcome}</p>
-                                    </div>
-                                    <div>
-                                        <h4>Contribution</h4>
-                                        <p>{project.contribution}</p>
-                                    </div>
-                                    <div className="wc-actions">
-                                        <ul
-                                            className="wc-tags"
-                                            aria-label="Capabilities"
-                                        >
-                                            {project.tags.map((tag) => (
-                                                <li key={tag}>{tag}</li>
-                                            ))}
-                                        </ul>
-                                        <span className="wc-cta">
-                                            View Product <ArrowUpRight />
-                                        </span>
+                                <div className="wc-card-actions">
+                                    <ul className="wc-tags" aria-label="Capabilities">
+                                        {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                                    </ul>
+                                    <div className="wc-cta-links">
+                                        <a className="wc-cta" href={`/case-studies/${project.slug}`}>
+                                            Read Case Study <ArrowRight />
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </article>
                     ))}
                 </div>
             </div>

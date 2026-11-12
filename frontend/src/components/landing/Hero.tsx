@@ -3,6 +3,8 @@ import { CmsText } from "./CmsText";
 import type { LandingPageContent } from "./data";
 
 export function Hero({ content }: { content: LandingPageContent["hero"] }) {
+    const hero = content;
+
     return (
         <section id="hero" aria-labelledby="hero-h1">
             <div className="blob blob-amber" aria-hidden="true" />
@@ -11,10 +13,10 @@ export function Hero({ content }: { content: LandingPageContent["hero"] }) {
             <div className="hero-inner wrap">
                 <p className="hero-eyebrow" aria-hidden="true">
                     <span className="eyebrow-dot" />
-                    {content.eyebrow}
+                    {hero.eyebrow}
                 </p>
                 <h1 className="hero-title" id="hero-h1">
-                    {content.heading.split("\n").map((line, index) => (
+                    {hero.heading.split("\n").map((line, index) => (
                         <span className="hero-line" key={`${line}-${index}`}>
                             <span className="hero-line-inner">
                                 <CmsText text={line} />
@@ -24,31 +26,27 @@ export function Hero({ content }: { content: LandingPageContent["hero"] }) {
                 </h1>
                 <div className="hero-bottom">
                     <p className="hero-desc">
-                        <CmsText text={content.description} />
+                        <CmsText text={hero.description} />
                     </p>
                     <div className="hero-actions">
                         <a
                             className="btn-a"
-                            href={content.primaryCta.href}
-                            target={content.primaryCta.openInNewTab ? "_blank" : undefined}
-                            rel={content.primaryCta.openInNewTab ? "noopener noreferrer" : undefined}
+                            href={hero.primaryCta.href}
                         >
-                            {content.primaryCta.label}
+                            {hero.primaryCta.label}
                             <ArrowUpRight />
                         </a>
                         <a
                             className="btn-ghost"
-                            href={content.secondaryCta.href}
-                            target={content.secondaryCta.openInNewTab ? "_blank" : undefined}
-                            rel={content.secondaryCta.openInNewTab ? "noopener noreferrer" : undefined}
+                            href={hero.secondaryCta.href}
                         >
-                            {content.secondaryCta.label}
+                            {hero.secondaryCta.label}
                             <ArrowRight />
                         </a>
                     </div>
                 </div>
                 <ul className="hero-trust-strip" aria-label="Our capabilities">
-                    {content.trustItems.map((item) => (
+                    {hero.trustItems.map((item) => (
                         <li key={item}>{item}</li>
                     ))}
                 </ul>

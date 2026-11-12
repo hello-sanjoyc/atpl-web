@@ -1,4 +1,4 @@
-import Image from "next/image";
+"use client";
 
 import type { Project, Service } from "./data";
 
@@ -123,9 +123,11 @@ export function ServiceIcon({ icon }: { icon: Service["icon"] }) {
 export function ProjectVisual({
     visual,
     imageUrl,
+    alt = "",
 }: {
     visual: Project["visual"];
     imageUrl?: string;
+    alt?: string;
 }) {
     const projectImages: Record<Project["visual"], string> = {
         ema: "/assets/images/casestudies/ema.webp",
@@ -138,14 +140,15 @@ export function ProjectVisual({
 
     return (
         <div className="wc-vis" aria-hidden="true">
-            <Image
+            <img
                 className="case-study-image"
                 src={imageUrl ?? projectImages[visual]}
-                alt=""
-                width={1920}
-                height={1080}
-                sizes="(max-width: 680px) 100vw, (max-width: 960px) 55vw, 600px"
+                alt={alt}
                 loading="lazy"
+                onError={(event) => {
+                    if (event.currentTarget.src.endsWith(projectImages[visual])) return;
+                    event.currentTarget.src = projectImages[visual];
+                }}
             />
         </div>
     );

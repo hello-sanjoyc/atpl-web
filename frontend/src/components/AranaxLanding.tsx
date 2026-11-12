@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 import { About } from "./landing/About";
+import { BuyerSegments } from "./landing/BuyerSegments";
 import { Contact } from "./landing/Contact";
 import { CursorChrome } from "./landing/CursorChrome";
 import { Footer } from "./landing/Footer";
+import { Faq } from "./landing/Faq";
+import { FinalCta } from "./landing/FinalCta";
 import { Hero } from "./landing/Hero";
+import { HowWeWork } from "./landing/HowWeWork";
 import { Loader } from "./landing/Loader";
 import { Navbar } from "./landing/Navbar";
 import { Services } from "./landing/Services";
@@ -20,7 +24,22 @@ export function AranaxLanding({ content }: { content: LandingPageContent }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [navScrolled, setNavScrolled] = useState(false);
 
+    const loaderSessionKey = "aranax-home-loader-seen";
+
+    // Run before paint when returning from a service page, avoiding a loader flash.
+    useLayoutEffect(() => {
+        if (window.sessionStorage.getItem(loaderSessionKey) === "true") {
+            setLoaderGone(true);
+        }
+    }, []);
+
     useEffect(() => {
+        if (window.sessionStorage.getItem(loaderSessionKey) === "true") {
+            setLoaderGone(true);
+            return;
+        }
+
+        window.sessionStorage.setItem(loaderSessionKey, "true");
         let timer: ReturnType<typeof setTimeout>;
         const hideLoader = () => {
             timer = setTimeout(() => setLoaderGone(true), 2100);
@@ -188,10 +207,14 @@ export function AranaxLanding({ content }: { content: LandingPageContent }) {
             />
             <Hero content={content.hero} />
             <Ticker items={content.site.expertiseTicker} />
+            {content.buyerSegments ? <BuyerSegments content={content.buyerSegments} /> : null}
             <Services content={content.servicesSection} />
             <WhyAranax content={content.whyAranaxSection} />
             <Work content={content.caseStudiesSection} />
+            {content.processSection ? <HowWeWork content={content.processSection} /> : null}
             <About content={content.aboutSection} />
+            {content.faqSection ? <Faq content={content.faqSection} /> : null}
+            {content.finalCta ? <FinalCta content={content.finalCta} /> : null}
             <Contact content={content.contactSection} />
             <Footer settings={content.site} />
         </>

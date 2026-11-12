@@ -41,20 +41,27 @@ export type CmsSeo = {
     twitterDescription?: string | null;
     twitterImage?: CmsMedia | null;
     structuredData?: Record<string, unknown> | null;
+    answerSummary?: string | null;
+    questions?: Array<{ id: number; question: string; answer: string }>;
 };
 
 export type CmsService = {
     documentId: string;
+    slug: string;
     name: string;
     number: string;
     description: string;
     tags?: CmsTextItem[];
     icon: "spark" | "chat" | "grid";
     sortOrder: number;
+    pageContent?: Record<string, unknown> | null;
+    heroImage?: CmsMedia | null;
+    seo?: CmsSeo | null;
 };
 
 export type CmsCaseStudy = {
     documentId: string;
+    slug: string;
     name: string;
     category: string;
     tagline: string;
@@ -67,6 +74,8 @@ export type CmsCaseStudy = {
     visual: "ema" | "docunova" | "uniecho" | "doubtace" | "gloziia" | "glamsync";
     coverImage?: CmsMedia | null;
     sortOrder: number;
+    pageContent?: Record<string, unknown> | null;
+    seo?: CmsSeo | null;
 };
 
 export type CmsTeamMember = {
@@ -124,6 +133,8 @@ export type CmsHomePage = {
             label: string;
         }>;
         teamMembers?: CmsTeamMember[];
+        pageContent?: Record<string, unknown> | null;
+        seo?: CmsSeo | null;
     } | null;
     contactSection: {
         eyebrow: string;
@@ -132,7 +143,13 @@ export type CmsHomePage = {
         email: string;
         location: string;
     } | null;
+    buyerSegments?: LandingPageJson | null;
+    processSection?: LandingPageJson | null;
+    faqSection?: LandingPageJson | null;
+    finalCta?: LandingPageJson | null;
 };
+
+export type LandingPageJson = Record<string, unknown>;
 
 export type CmsSiteSettings = {
     documentId: string;
