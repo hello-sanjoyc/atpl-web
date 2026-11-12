@@ -1,6 +1,6 @@
 import type { LandingPageContent } from "./data";
 import { CmsText } from "./CmsText";
-import { ArrowRight, ArrowUpRight, ProjectVisual } from "./icons";
+import { ArrowUpRight, ProjectVisual } from "./icons";
 import { SectionChip } from "./SectionChip";
 
 function CaseStudyCardTitle({ name }: { name: string }) {
@@ -67,11 +67,6 @@ export function Work({ content }: { content: LandingPageContent["caseStudiesSect
                                     <ul className="wc-tags" aria-label="Capabilities">
                                         {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
                                     </ul>
-                                    <div className="wc-cta-links">
-                                        <a className="wc-cta" href={`/case-studies/${project.slug}`}>
-                                            Read Case Study <ArrowRight />
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </article>
