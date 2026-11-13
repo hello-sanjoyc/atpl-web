@@ -33,8 +33,66 @@ const homepageSeo = {
   answerSummary:
     'Aranax Technologies helps startups, growing businesses and digital agencies build AI-powered SaaS platforms, custom software, web applications and mobile applications through architecture-led, full-stack engineering.',
   questions: [
-    { question: 'What does Aranax Technologies build?', answer: 'Aranax builds AI-powered SaaS platforms, custom software, RAG assistants, workflow automation, web applications and mobile applications.' },
-    { question: 'Can Aranax support an AI SaaS MVP?', answer: 'Yes. Engagements can begin with discovery and a focused MVP scope before progressing to a production-ready application.' },
+    {
+      question: 'What does Aranax Technologies build?',
+      answer:
+        'Aranax builds AI-powered SaaS platforms, custom software, RAG assistants, workflow automation, web applications and mobile applications.',
+    },
+    {
+      question: 'Can Aranax support an AI SaaS MVP?',
+      answer:
+        'Yes. Engagements can begin with discovery and a focused MVP scope before progressing to a production-ready application.',
+    },
+    {
+      question: 'What happens during product discovery?',
+      answer:
+        'We clarify the users, key workflows, success measures, technical constraints and the smallest useful release, then turn those decisions into a practical delivery plan.',
+    },
+    {
+      question: 'Can you work with an existing product or engineering team?',
+      answer:
+        'Yes. We can work alongside your team with agreed responsibilities, communication routines, delivery standards and handover expectations.',
+    },
+    {
+      question: 'Do you build RAG assistants from our company knowledge?',
+      answer:
+        'Yes. We can build retrieval-augmented assistants that use approved documents, websites and business data, with source-aware answers, access controls and evaluation.',
+    },
+    {
+      question: 'How do you approach AI reliability and human oversight?',
+      answer:
+        'We design AI workflows around grounded information, clear boundaries, evaluations, review or approval steps where appropriate, and visibility into failures or uncertain results.',
+    },
+    {
+      question: 'Can you integrate with our existing tools and APIs?',
+      answer:
+        'Yes. Integrations are planned around the systems, data flows, authentication requirements and operational workflows that the product needs to support.',
+    },
+    {
+      question: 'How do you approach security and user permissions?',
+      answer:
+        'Security considerations begin during architecture. We account for access controls, user roles, data boundaries, authentication, sensitive workflows and operational requirements.',
+    },
+    {
+      question: 'Can you build a multi-tenant SaaS application?',
+      answer:
+        'Yes. We design SaaS products with tenant-aware data models, roles and permissions, account administration, data isolation and foundations for reliable growth.',
+    },
+    {
+      question: 'Do you provide web and mobile application development?',
+      answer:
+        'Yes. Our work includes web applications, mobile experiences, backend APIs, databases and integrations for new products, internal tools and modernisation programmes.',
+    },
+    {
+      question: 'Can agencies engage Aranax as a white-label engineering partner?',
+      answer:
+        'Yes. We support agencies with configurable engineering capacity while aligning to their client relationship, delivery process, technical standards and ownership model.',
+    },
+    {
+      question: 'What support is available after launch?',
+      answer:
+        'We can provide ongoing maintenance, monitoring, improvements and feature delivery based on the product roadmap and the needs of the operating team.',
+    },
   ],
   structuredData: {
     '@context': 'https://schema.org',
@@ -111,6 +169,147 @@ const relevantWorkByService: Record<string, Array<{ name: string; url: string; d
   ],
 };
 
+type ServicePageDetail = {
+  architecture: string;
+  process: Array<{ title: string; description: string }>;
+  faqs: Array<{ question: string; answer: string }>;
+};
+
+const servicePageDetails: Record<string, ServicePageDetail> = {
+  'AI SaaS Development': {
+    architecture:
+      'We balance the speed of an MVP with the foundations needed for a SaaS product: tenant boundaries, roles, billing and usage controls, API contracts, observability, model costs and a deployment path that will not block the next stage of growth.',
+    process: [
+      { title: 'Product discovery', description: 'Map the customer workflow, product boundary and smallest paid-for outcome before estimating features.' },
+      { title: 'Platform design', description: 'Define tenant model, permissions, core data, AI touchpoints, integrations and the operational foundations.' },
+      { title: 'Incremental build', description: 'Deliver the application in reviewable slices, prioritising the workflows users need to adopt first.' },
+      { title: 'Launch readiness', description: 'Test critical journeys, production configuration, monitoring and the handover needed to operate the product.' },
+    ],
+    faqs: [
+      { question: 'What is included in an AI SaaS MVP?', answer: 'An MVP is scoped around a clear customer workflow and typically includes the application experience, essential roles and data model, selected AI capability, APIs and a production deployment path.' },
+      { question: 'How do you control AI usage and model costs?', answer: 'We plan model selection, request limits, usage visibility, fallback behaviour and the product controls needed to keep costs understandable as usage grows.' },
+      { question: 'Can subscriptions and billing be added?', answer: 'Yes. Billing, plans, trials and usage-aware entitlements can be designed as part of the account and product architecture.' },
+      { question: 'How do you avoid building too much before launch?', answer: 'Discovery identifies the narrowest valuable workflow, technical dependencies and deferred capabilities so the first release can be tested with real users sooner.' },
+      { question: 'Can you take over an existing prototype?', answer: 'Yes. We assess the current workflow, codebase, data model and deployment setup, then recommend whether to stabilise, extend or replace specific parts.' },
+      { question: 'What happens after the first release?', answer: 'We can support product iteration, reliability work, new integrations and the architecture changes that follow customer feedback and adoption.' },
+      { question: 'Which AI models should an AI SaaS product use?', answer: 'Model choice depends on the task, quality requirements, latency, privacy, cost and provider constraints. We evaluate these trade-offs against the product workflow rather than choosing a model first.' },
+      { question: 'Can the product support different user roles?', answer: 'Yes. Roles, permissions and account administration are designed around the actions each user type needs to take, including customer and internal support roles.' },
+      { question: 'How is the SaaS product deployed?', answer: 'We plan the hosting, environments, secrets, monitoring and release process to suit the product’s expected traffic, integrations and operational ownership.' },
+      { question: 'What do you need from us to begin?', answer: 'A clear business problem, access to the relevant stakeholders and any existing prototype, workflow or technical material are enough to start a productive discovery conversation.' },
+    ],
+  },
+  'Multi-Tenant SaaS Development': {
+    architecture:
+      'Multi-tenant decisions are made early: how organisations are represented, where tenant boundaries are enforced, which roles can cross those boundaries, and how onboarding, auditing, billing and support work without weakening data isolation.',
+    process: [
+      { title: 'Tenant discovery', description: 'Clarify customer organisations, administrators, user roles, data ownership and any partner access requirements.' },
+      { title: 'Isolation design', description: 'Choose the tenant model, authorisation rules and data-access patterns that fit the product’s risk and scale.' },
+      { title: 'Account workflows', description: 'Build onboarding, administration, permissions and core product workflows around the agreed boundaries.' },
+      { title: 'Operational validation', description: 'Test cross-tenant protection, audit needs, failure paths and deployment readiness before rollout.' },
+    ],
+    faqs: [
+      { question: 'How do you separate one customer’s data from another’s?', answer: 'We define tenant identity and enforce it through the data model, queries, APIs and authorisation layer rather than relying on the interface alone.' },
+      { question: 'Can each customer organisation have its own admins and roles?', answer: 'Yes. We can design organisation-level administration and role-based access that reflects who may view, manage or approve each workflow.' },
+      { question: 'Should tenants share a database or have separate databases?', answer: 'That depends on the product’s isolation, compliance, cost and operational needs. We evaluate those trade-offs before committing to the tenancy strategy.' },
+      { question: 'Can billing and plan entitlements be part of the product?', answer: 'Yes. Plans, seat counts, trials and feature entitlements can be connected to account administration and the product’s permission model.' },
+      { question: 'Can you migrate a single-tenant application to multi-tenant?', answer: 'Yes, after assessing data ownership, existing permissions, integrations and the migration risk. The safest approach may be phased rather than a single cutover.' },
+      { question: 'How do you test tenant isolation?', answer: 'We test expected and attempted cross-tenant access at the API and workflow levels, alongside role and administrative edge cases.' },
+      { question: 'Can tenants customise their own settings?', answer: 'Yes. Tenant-level settings, branding and configuration can be supported when they fit the product model without compromising maintainability or isolation.' },
+      { question: 'How do you handle enterprise single sign-on?', answer: 'We assess identity-provider requirements, role mapping and onboarding flows so SSO fits the tenant and permission model rather than becoming a separate access path.' },
+      { question: 'What happens when a customer leaves the platform?', answer: 'Data export, retention and deletion requirements are defined alongside the tenant model so offboarding is handled predictably and in line with your obligations.' },
+      { question: 'Can the platform support both self-serve and managed onboarding?', answer: 'Yes. We can design account creation, invitations, provisioning and support handoffs for the mix of self-service and assisted onboarding your buyers need.' },
+    ],
+  },
+  'RAG and AI Assistants': {
+    architecture:
+      'A useful RAG assistant depends on more than a chat interface. We design ingestion, document structure, retrieval quality, permissions, citations, evaluation and escalation around the knowledge sources people are actually allowed to use.',
+    process: [
+      { title: 'Knowledge audit', description: 'Identify the approved sources, owners, update patterns, user groups and questions the assistant must handle.' },
+      { title: 'Retrieval design', description: 'Plan ingestion, chunking, metadata, access filters, citations and evaluation criteria for the knowledge base.' },
+      { title: 'Assistant build', description: 'Implement the assistant experience, retrieval pipeline and source-aware responses around real user tasks.' },
+      { title: 'Quality review', description: 'Evaluate answer quality, unsupported-answer behaviour, feedback loops and the process for keeping sources current.' },
+    ],
+    faqs: [
+      { question: 'What content can a RAG assistant use?', answer: 'It can use approved documents, knowledge bases, websites and connected business sources, subject to the access and ingestion approach agreed during discovery.' },
+      { question: 'Will answers show their sources?', answer: 'Yes. Source links or citations can be included where the underlying content and user experience support them.' },
+      { question: 'How do you prevent answers from using restricted information?', answer: 'Access controls and metadata filters are designed into retrieval so users receive material they are authorised to see.' },
+      { question: 'How do you measure whether the assistant is useful?', answer: 'We define representative questions and quality criteria, then evaluate retrieval, grounding, answer usefulness and unsupported-answer behaviour before and after launch.' },
+      { question: 'Can our team update the knowledge base?', answer: 'Yes. We can define an ingestion and review workflow that fits the systems and content owners your team already uses.' },
+      { question: 'When should the assistant hand off to a person?', answer: 'We design escalation for low-confidence, sensitive or action-required cases, with the context a human needs to continue the conversation.' },
+      { question: 'What if the source documents are poorly structured?', answer: 'We assess the material first, then improve extraction, metadata and chunking where needed. Some sources may need a preparation step to produce dependable retrieval.' },
+      { question: 'Can a RAG assistant work across multiple languages?', answer: 'Yes, provided the source material, user needs and evaluation set are planned for the required languages and terminology.' },
+      { question: 'How quickly do new documents become available to the assistant?', answer: 'That depends on the selected ingestion workflow. We can support scheduled, event-driven or reviewed updates based on how current the knowledge needs to be.' },
+      { question: 'Can the assistant be embedded in our existing product?', answer: 'Yes. We can design an embedded experience or integrate the retrieval capability with your existing application, authentication and support workflows.' },
+    ],
+  },
+  'AI Agents and Automation': {
+    architecture:
+      'Agent workflows are designed as controlled systems, not unchecked autonomy. We define which tools an agent can call, the data it may access, approval gates, retry and failure paths, audit trails and monitoring before automating a business action.',
+    process: [
+      { title: 'Workflow mapping', description: 'Identify the repeated work, input quality, decision points, tools and human owners involved today.' },
+      { title: 'Control design', description: 'Set permissions, tool boundaries, approvals, exceptions and observability for each automated action.' },
+      { title: 'Integration build', description: 'Connect the necessary systems and implement the agent or orchestration flow around a focused operational use case.' },
+      { title: 'Safe rollout', description: 'Validate outcomes with real scenarios, begin with appropriate review, and monitor failures and improvement opportunities.' },
+    ],
+    faqs: [
+      { question: 'What kinds of work are suitable for AI automation?', answer: 'Repeatable workflows with clear inputs, useful system access and definable review points are usually strong candidates, especially where manual handoffs create delay.' },
+      { question: 'Can an agent take actions in our business tools?', answer: 'Yes, when the required APIs and permissions exist. We define exactly which actions are allowed and where a human approval is required.' },
+      { question: 'How do you prevent an agent from taking the wrong action?', answer: 'We use constrained tool access, validation, approval steps, exception handling and logs rather than treating a model response as an unchecked instruction.' },
+      { question: 'Can the automation include a human review step?', answer: 'Yes. Review and approval can be placed before sensitive, irreversible or low-confidence actions.' },
+      { question: 'Will we be able to see what the agent did?', answer: 'We can provide workflow status, action logs and the context needed to investigate a failed or unexpected run.' },
+      { question: 'Can you automate a process that spans several systems?', answer: 'Yes. We map the systems, handoffs and data requirements first, then build the integrations and orchestration around the practical workflow.' },
+      { question: 'Do we need clean data before automating a workflow?', answer: 'Reliable inputs matter. Discovery identifies data-quality issues, missing system access and exceptions that should be addressed before automation is trusted with production work.' },
+      { question: 'Can an agent use our internal knowledge as well as tools?', answer: 'Yes. An agent can combine approved knowledge retrieval with constrained tool use when both are needed to complete a workflow safely.' },
+      { question: 'How do you handle failed integrations or API outages?', answer: 'We design retries, error handling, alerts and human fallback paths so a failed dependency does not silently create an incomplete or incorrect outcome.' },
+      { question: 'Can we start with one small automation?', answer: 'Yes. A focused workflow is often the best way to validate value, controls and operating requirements before expanding automation to adjacent processes.' },
+    ],
+  },
+  'Custom Web and Mobile Development': {
+    architecture:
+      'We choose the application shape around the problem: web, mobile, backend APIs, integrations, offline needs, data ownership and the maintenance capacity of the team that will run it. The goal is a useful system with a supportable technical footprint.',
+    process: [
+      { title: 'Problem framing', description: 'Understand users, existing systems, operational constraints and the outcome the new application must improve.' },
+      { title: 'Solution design', description: 'Define application surfaces, APIs, data flows, integrations and the release approach before build begins.' },
+      { title: 'Product delivery', description: 'Build and review the highest-value user journeys in increments, with testing alongside implementation.' },
+      { title: 'Release and handover', description: 'Prepare deployment, documentation and the support path for the people who will use and maintain the application.' },
+    ],
+    faqs: [
+      { question: 'Should we build a web app, mobile app or both?', answer: 'That decision follows the user context, device needs, workflow complexity and budget. We help define the smallest product surface that serves the intended users well.' },
+      { question: 'Can you modernise an existing internal tool?', answer: 'Yes. We can assess the current workflow, technical debt, data dependencies and migration risks before proposing a staged modernisation plan.' },
+      { question: 'Can you connect the application to our existing systems?', answer: 'Yes. APIs, identity providers, databases and third-party services are evaluated as part of the solution design.' },
+      { question: 'How do you handle changing requirements?', answer: 'We work in reviewable increments so new information can be weighed against scope, delivery impact and the product outcome before it is added.' },
+      { question: 'Will we own the code and deployment?', answer: 'Ownership, repository access, infrastructure access and handover expectations are agreed as part of the engagement model.' },
+      { question: 'Can you support the application after launch?', answer: 'Yes. Support can include maintenance, performance work, security updates, integrations and subsequent feature releases.' },
+      { question: 'Can you work from our designs or help shape the user experience?', answer: 'Yes. We can work with established designs and product specifications or collaborate on user flows and interface decisions where those are still being defined.' },
+      { question: 'How do you protect an application that handles sensitive data?', answer: 'We identify the sensitive data, access requirements, integrations and regulatory constraints early so appropriate controls are built into the application and delivery plan.' },
+      { question: 'Can the application work with unreliable connectivity?', answer: 'Where users need it, we can assess offline behaviour, sync conflicts, device constraints and the additional complexity needed for a dependable mobile or field workflow.' },
+      { question: 'How do you estimate a custom software project?', answer: 'After understanding the scope and technical dependencies, we break the work into meaningful milestones with assumptions and risks visible rather than relying on a feature list alone.' },
+    ],
+  },
+  'White-Label Engineering': {
+    architecture:
+      'White-label delivery is organised around the agency’s standards and client commitments. We establish responsibilities, technical decision rights, communication cadence, environments, code ownership and review practices so engineering extends the agency rather than creating a parallel delivery track.',
+    process: [
+      { title: 'Delivery alignment', description: 'Agree the client context, scope, tools, technical standards, communication rhythm and points of contact.' },
+      { title: 'Technical onboarding', description: 'Review the repository, environments, backlog, quality expectations and any delivery risks before taking on work.' },
+      { title: 'Embedded delivery', description: 'Contribute defined engineering work through the agency’s preferred planning, review and reporting process.' },
+      { title: 'Handover or continuation', description: 'Document decisions, complete agreed handover and continue as an embedded capacity partner where required.' },
+    ],
+    faqs: [
+      { question: 'Will you work under our agency brand?', answer: 'Yes. We can operate as a white-label delivery partner while you retain the client relationship and lead the commercial conversation.' },
+      { question: 'How do you fit into an existing agency workflow?', answer: 'We align with your planning, communication, project-management and code-review practices at the start of the engagement.' },
+      { question: 'Can you join a project already in progress?', answer: 'Yes. We begin with technical and delivery onboarding to understand the current state, priorities, risks and ownership boundaries.' },
+      { question: 'Who owns the code and client work?', answer: 'Ownership, repository access and handover arrangements are agreed clearly so the agency and client retain the appropriate control.' },
+      { question: 'Can you communicate with our client directly?', answer: 'That is your choice. We can work entirely through your team or join selected technical discussions when it helps delivery.' },
+      { question: 'What engagement models are available?', answer: 'Support can be arranged for a defined project, a focused capability gap or continuing engineering capacity, with responsibilities agreed up front.' },
+      { question: 'Can you follow our existing technical standards?', answer: 'Yes. We review your stack, coding conventions, testing practices, documentation and release process during onboarding, then work within the agreed standards.' },
+      { question: 'How do you keep agency delivery visible?', answer: 'We agree reporting cadence, work tracking, review points and escalation routes so your delivery leads have clear visibility without unnecessary meetings.' },
+      { question: 'Can you provide a dedicated engineer or a wider team?', answer: 'The engagement can be shaped around the capability needed, from focused specialist support to a coordinated team covering the required disciplines.' },
+      { question: 'How do you handle confidentiality?', answer: 'We work with agreed confidentiality arrangements, least-necessary access to client systems and clear boundaries around project material and communication.' },
+    ],
+  },
+};
+
 const servicePage = (name: string, summary: string, audience: string[], problems: string[], deliverables: string[], capabilities: string[], related: Array<{ name: string; href: string }>) => ({
   eyebrow: 'AI SaaS & Custom Software Engineering',
   cta: { label: 'Book a Free Discovery Call', href: '#contact' },
@@ -118,15 +317,15 @@ const servicePage = (name: string, summary: string, audience: string[], problems
   problemsTitle: 'Business problems we help address', problems,
   deliverablesTitle: 'What we can deliver', deliverables,
   capabilitiesTitle: 'Technical capabilities', capabilities,
-  architectureTitle: 'Architecture and security considerations', architecture: summary,
-  processTitle: 'How an engagement works', process: [
+  architectureTitle: 'Architecture and security considerations', architecture: servicePageDetails[name]?.architecture ?? summary,
+  processTitle: 'How an engagement works', process: servicePageDetails[name]?.process ?? [
     { title: 'Discovery', description: 'Clarify users, outcomes, constraints and the first useful scope.' },
     { title: 'Architecture', description: 'Agree the technical approach, dependencies and delivery plan.' },
     { title: 'Implementation', description: 'Build and review focused increments with clear communication.' },
     { title: 'Testing and deployment', description: 'Verify important workflows and prepare a controlled release.' },
   ],
   workTitle: 'Relevant work', caseStudies: relevantWorkByService[name] ?? [],
-  faqTitle: `${name} FAQs`, faqs: [
+  faqTitle: `${name} FAQs`, faqs: servicePageDetails[name]?.faqs ?? [
     { question: `What does ${name} include?`, answer: summary },
     { question: 'Can you support an MVP?', answer: 'Yes. Discovery can define a focused release around the workflow and technical decisions that matter first.' },
     { question: 'How do you approach security?', answer: 'Access, data boundaries, failure states and operational requirements are considered during architecture.' },
@@ -596,7 +795,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
       eyebrow: 'AI SaaS & Custom Software Engineering',
       heading: 'Turn Your Ideas into\n*Production-Ready* AI & SaaS Products',
       description:
-        'Aranax Technologies helps startups, growing businesses, and digital agencies **build and launch AI-powered SaaS platforms, custom software, and web and mobile applications** without the complexity of managing multiple development teams. From MVP development and multi-tenant architecture to AI integration, workflow automation, and cloud deployment, we provide end-to-end engineering expertise to **shorten development cycles, reduce technical risks, and build scalable products for long-term growth.**',
+        'Aranax helps founders and teams **build and launch AI-powered SaaS products, custom software, and web and mobile applications**. From MVP and architecture to AI integration and launch, we provide focused engineering support.',
       primaryCta: {
         label: 'Book a Free Discovery Call',
         href: '#contact',

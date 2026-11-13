@@ -1111,11 +1111,25 @@ img {
 }
 .faq-list {
     max-width: 900px;
+    margin-inline: auto;
     border-top: 1px solid rgba(7, 26, 74, 0.14);
+    text-align: left;
+}
+.faq-section .wrap {
+    text-align: center;
+}
+.faq-section .section-title {
+    margin-inline: auto;
 }
 .faq-list details {
     border-bottom: 1px solid rgba(7, 26, 74, 0.14);
+    display: grid;
+    grid-template-rows: auto 0fr;
     padding: 1.25rem 0;
+    transition: grid-template-rows 280ms ease;
+}
+.faq-list details[open] {
+    grid-template-rows: auto 1fr;
 }
 .faq-list summary {
     cursor: pointer;
@@ -1142,12 +1156,23 @@ img {
 .faq-list details[open] summary::after {
     content: "−";
 }
+.faq-answer {
+    min-height: 0;
+    overflow: hidden;
+}
 .faq-list p {
     max-width: 740px;
     margin-top: 1rem;
     color: var(--muted);
     font-size: 0.95rem;
     line-height: 1.75;
+    opacity: 0;
+    transform: translateY(-0.25rem);
+    transition: opacity 180ms ease, transform 280ms ease;
+}
+.faq-list details[open] p {
+    opacity: 1;
+    transform: translateY(0);
 }
 .final-cta {
     padding: 5.5rem 0;
@@ -1380,7 +1405,13 @@ img {
 }
 .service-faq details {
     border-top: 1px solid rgba(7, 26, 74, 0.12);
+    display: grid;
+    grid-template-rows: auto 0fr;
     padding: 1rem 0;
+    transition: grid-template-rows 280ms ease;
+}
+.service-faq details[open] {
+    grid-template-rows: auto 1fr;
 }
 .service-faq summary {
     cursor: pointer;
@@ -1407,6 +1438,21 @@ img {
     line-height: 1.7;
     margin-top: 0.8rem;
     max-width: 900px;
+    opacity: 0;
+    transform: translateY(-0.25rem);
+    transition: opacity 180ms ease, transform 280ms ease;
+}
+.service-faq details[open] p {
+    opacity: 1;
+    transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+    .faq-list details,
+    .faq-list p,
+    .service-faq details,
+    .service-faq p {
+        transition: none;
+    }
 }
 .related-services a {
     color: var(--text);
