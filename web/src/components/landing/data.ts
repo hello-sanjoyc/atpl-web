@@ -27,6 +27,5 @@ export type LandingPageContent = {
     buyerSegments?: { eyebrow: string; heading: string; items: Array<{ title: string; challenge: string; service: string; deliverable: string; cta: string; href: string }> };
     processSection?: { eyebrow: string; heading: string; steps: Array<{ number: string; title: string; description: string }> };
     faqSection?: { eyebrow: string; heading: string; items: Array<{ question: string; answer: string }> };
-    evidenceSection?: { eyebrow: string; heading: string; paragraphs: string[] };
     finalCta?: { eyebrow: string; heading: string; description: string; cta: CmsLink };
 };

@@ -4,12 +4,12 @@ Aranax Technologies is a product engineering team for founders, businesses and a
 
 ## Service catalogue
 
-1. AI SaaS Development — multi-tenant SaaS foundations, roles and permissions, subscriptions, usage controls, AI capabilities, APIs, observability and deployment.
-2. RAG and AI Assistants — approved knowledge sources, retrieval design, access controls, citations, evaluation and handoff workflows.
-3. AI Agents, Automation and Voice — tool-calling agents, voice workflows, business integrations, approvals, execution logs and monitoring.
-4. Custom Web and Mobile — web applications, mobile experiences, backend APIs, databases and integrations.
-5. Founder MVP Sprints — a focused first release, from discovery and architecture to core features, deployment and initial user feedback.
-6. White-Label Engineering — engineering delivery that aligns with an agency's client relationship, process and technical standards.
+1. [AI SaaS Development](https://aranax.tech/services/ai-saas-development) — multi-tenant SaaS foundations, roles and permissions, subscriptions, usage controls, AI capabilities, APIs, observability and deployment.
+2. [RAG and AI Assistants](https://aranax.tech/services/rag-ai-development) — approved knowledge sources, retrieval design, access controls, citations, evaluation and handoff workflows.
+3. [AI Agents, Automation and Voice](https://aranax.tech/services/ai-agent-development) — tool-calling agents, voice workflows, business integrations, approvals, execution logs and monitoring.
+4. [Custom Web and Mobile](https://aranax.tech/services/custom-software-development) — web applications, mobile experiences, backend APIs, databases and integrations.
+5. [Founder MVP Sprints](https://aranax.tech/services/founder-mvp-sprints) — a focused first release, from discovery and architecture to core features, deployment and initial user feedback.
+6. [White-Label Engineering](https://aranax.tech/services/white-label-development) — engineering delivery that aligns with an agency's client relationship, process and technical standards.
 
 ## Delivery process
 

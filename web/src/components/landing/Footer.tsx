@@ -11,17 +11,11 @@ export function Footer({ settings }: { settings: LandingPageContent["site"] }) {
                     <p className="f-copy">
                         {settings.footerText}
                     </p>
-                    {/* <ul className="f-links" role="list">
+                    <ul className="f-links" role="list">
                         <li>
-                            <a href="#">Privacy</a>
+                            <a href="/llms.txt">AI-readable site guide</a>
                         </li>
-                        <li>
-                            <a href="#">Terms</a>
-                        </li>
-                        <li>
-                            <a href="#">Careers</a>
-                        </li>
-                    </ul> */}
+                    </ul>
                 </div>
             </div>
         </footer>

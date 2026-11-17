@@ -5,7 +5,6 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { About } from "./landing/About";
 import { BuyerSegments } from "./landing/BuyerSegments";
 import { Contact } from "./landing/Contact";
-import { Evidence } from "./landing/Evidence";
 import { CursorChrome } from "./landing/CursorChrome";
 import { Footer } from "./landing/Footer";
 import { Faq } from "./landing/Faq";
@@ -211,7 +210,6 @@ export function AranaxLanding({ content }: { content: LandingPageContent }) {
             {content.buyerSegments ? <BuyerSegments content={content.buyerSegments} /> : null}
             <Services content={content.servicesSection} />
             <WhyAranax content={content.whyAranaxSection} />
-            {content.evidenceSection ? <Evidence content={content.evidenceSection} /> : null}
             <Work content={content.caseStudiesSection} />
             {content.processSection ? <HowWeWork content={content.processSection} /> : null}
             <About content={content.aboutSection} />

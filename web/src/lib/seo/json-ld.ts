@@ -1,4 +1,4 @@
-import type { SeoContent } from "@/components/landing/data";
+import type { LandingPageContent, SeoContent } from "@/components/landing/data";
 
 export function cmsJsonLd(seo: SeoContent) {
     return [
@@ -56,6 +56,56 @@ export function homepageHowToJsonLd() {
                 name: "Ongoing support",
                 text: "Maintain, improve and extend the product as needs change.",
             },
+        ],
+    };
+}
+
+/** Homepage-wide entities that are not owned by a single CMS SEO component. */
+export function homepageEntityJsonLd(content: LandingPageContent) {
+    const siteUrl = content.site.siteUrl.replace(/\/$/, "");
+    const organizationId = `${siteUrl}/#organization`;
+    const founderId = `${siteUrl}/#sanjoy-chowdhury`;
+
+    return {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": organizationId,
+                name: content.site.siteName,
+                url: `${siteUrl}/`,
+                logo: new URL(content.site.logoUrl, `${siteUrl}/`).toString(),
+                email: "hello@aranax.tech",
+                foundingDate: "2015",
+                founder: { "@id": founderId },
+            },
+            {
+                "@type": "WebSite",
+                "@id": `${siteUrl}/#website`,
+                name: content.site.siteName,
+                url: `${siteUrl}/`,
+                publisher: { "@id": organizationId },
+                inLanguage: "en",
+            },
+            {
+                "@type": "Person",
+                "@id": founderId,
+                name: "Sanjoy Chowdhury",
+                jobTitle: "Founder & AI SaaS Architect",
+                url: "https://www.linkedin.com/in/sanjoyc/",
+                image: `${siteUrl}/assets/images/sanjoyc.jpg`,
+                worksFor: { "@id": organizationId },
+            },
+            ...content.servicesSection.services.map((service) => ({
+                "@type": "Service",
+                "@id": `${siteUrl}/services/${service.slug}#service`,
+                name: service.name,
+                serviceType: service.name,
+                description: service.description,
+                url: `${siteUrl}/services/${service.slug}`,
+                provider: { "@id": organizationId },
+                areaServed: "Worldwide",
+            })),
         ],
     };
 }

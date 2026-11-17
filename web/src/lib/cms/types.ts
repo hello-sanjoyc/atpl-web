@@ -146,7 +146,6 @@ export type CmsHomePage = {
     buyerSegments?: LandingPageJson | null;
     processSection?: LandingPageJson | null;
     faqSection?: LandingPageJson | null;
-    evidenceSection?: LandingPageJson | null;
     finalCta?: LandingPageJson | null;
 };
 

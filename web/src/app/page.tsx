@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { AranaxLanding } from "@/components/AranaxLanding";
 import type { LandingPageContent } from "@/components/landing/data";
 import { getLandingPageContent } from "@/lib/cms/cache.server";
-import { cmsJsonLd, homepageHowToJsonLd } from "@/lib/seo/json-ld";
+import { cmsJsonLd, homepageEntityJsonLd, homepageHowToJsonLd } from "@/lib/seo/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
     const content = await getPageContent();
-    const structuredData = [...cmsJsonLd(content.seo), homepageHowToJsonLd()];
+    const structuredData = [
+        ...cmsJsonLd(content.seo),
+        homepageEntityJsonLd(content),
+        homepageHowToJsonLd(),
+    ];
 
     return (
         <>

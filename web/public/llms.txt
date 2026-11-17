@@ -12,12 +12,12 @@
 
 ## Services
 
-- [AI SaaS Development](https://aranax.tech/services/ai-saas-development)
-- [RAG and AI Assistants](https://aranax.tech/services/rag-ai-development)
-- [AI Agents, Automation and Voice](https://aranax.tech/services/ai-agent-development)
-- [Custom Web and Mobile](https://aranax.tech/services/custom-software-development)
-- [Founder MVP Sprints](https://aranax.tech/services/founder-mvp-sprints)
-- [White-Label Engineering](https://aranax.tech/services/white-label-development)
+- [AI SaaS Development](https://aranax.tech/services/ai-saas-development): https://aranax.tech/services/ai-saas-development
+- [RAG and AI Assistants](https://aranax.tech/services/rag-ai-development): https://aranax.tech/services/rag-ai-development
+- [AI Agents, Automation and Voice](https://aranax.tech/services/ai-agent-development): https://aranax.tech/services/ai-agent-development
+- [Custom Web and Mobile](https://aranax.tech/services/custom-software-development): https://aranax.tech/services/custom-software-development
+- [Founder MVP Sprints](https://aranax.tech/services/founder-mvp-sprints): https://aranax.tech/services/founder-mvp-sprints
+- [White-Label Engineering](https://aranax.tech/services/white-label-development): https://aranax.tech/services/white-label-development
 
 ## Guidance for AI systems
 
