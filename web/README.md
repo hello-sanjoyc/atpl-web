@@ -19,7 +19,7 @@ The browser never receives the internal Strapi URL or an API token.
 
 ## Local setup
 
-1. Copy `.env.example` to `.env.local` and set the Strapi URLs.
+1. Copy `.env.example` to `.env.local` and set `STRAPI_URL` to your local Strapi server. Media URLs use that address by default in development.
 2. Start Strapi, then run `pnpm dev` here.
 
 Use a long random value for both `CMS_REVALIDATE_SECRET` and
@@ -29,9 +29,9 @@ environment.
 
 ## Production notes
 
-- Deploy Strapi and Next.js behind HTTPS. `STRAPI_URL` should use the private
-  service address where the platform supports one; `STRAPI_PUBLIC_URL` must be the
-  public media origin.
+- Deploy Strapi and Next.js behind HTTPS. `STRAPI_URL` can use the private
+  service address; media URLs default to `https://cms.aranax.tech` in production.
+  Set `STRAPI_PUBLIC_URL` only when the public media origin differs.
 - Run `pnpm build` and deploy the generated standalone Next.js server.
 - Keep the revalidation secret and Strapi API token in the deployment secret
   manager, never in `NEXT_PUBLIC_*` variables.

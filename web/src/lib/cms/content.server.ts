@@ -12,9 +12,23 @@ function required<T>(value: T | null | undefined, name: string): T {
 
 export function mediaUrl(media?: CmsMedia | null) {
     if (!media?.url) return undefined;
-    if (/^https?:\/\//i.test(media.url)) return media.url;
-    const base = (process.env.STRAPI_PUBLIC_URL ?? process.env.STRAPI_URL ?? "http://127.0.0.1:1337").replace(/\/$/, "");
-    return `${base}${media.url.startsWith("/") ? "" : "/"}${media.url}`;
+    const publicOrigin = process.env.STRAPI_PUBLIC_URL ||
+        (process.env.NODE_ENV === "production"
+            ? "https://cms.aranax.tech"
+            : process.env.STRAPI_URL || "http://127.0.0.1:1337");
+    const url = new URL(media.url, `${publicOrigin.replace(/\/$/, "")}/`);
+
+    if (/^https?:\/\//i.test(media.url)) {
+        const internalOrigin = new URL(process.env.STRAPI_URL || "http://127.0.0.1:1337").origin;
+        const isCmsOrigin = url.origin === internalOrigin ||
+            url.origin === "http://127.0.0.1:1337" ||
+            url.origin === "http://localhost:1337" ||
+            url.origin === "https://cms.aranax.tech";
+        if (!isCmsOrigin) return media.url;
+    }
+
+    const base = new URL(publicOrigin);
+    return `${base.origin}${url.pathname}${url.search}${url.hash}`;
 }
 
 function mapLink(link: CmsLink) { return { label: link.label, href: link.href, openInNewTab: link.openInNewTab, style: link.style }; }

@@ -1,7 +1,8 @@
 const strapiMediaUrl = new URL(
-  process.env.STRAPI_PUBLIC_URL ??
-    process.env.STRAPI_URL ??
-    "http://127.0.0.1:1337",
+  process.env.STRAPI_PUBLIC_URL ||
+    (process.env.NODE_ENV === "production"
+      ? "https://cms.aranax.tech"
+      : process.env.STRAPI_URL || "http://127.0.0.1:1337"),
 );
 
 /** @type {import('next').NextConfig} */
