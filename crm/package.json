@@ -1,0 +1,22 @@
+{
+  "name": "@aranax/crm",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=22.0.0" },
+  "pnpm": {
+    "overrides": {
+      "undici": "6.21.3"
+    }
+  },
+  "scripts": {
+    "dev": "pnpm --filter @aranax/backend dev & pnpm --filter @aranax/frontend dev",
+    "dev:api": "pnpm --filter @aranax/backend dev",
+    "dev:web": "pnpm --filter @aranax/frontend dev",
+    "build": "pnpm --filter @aranax/contracts build && pnpm --filter @aranax/backend build && pnpm --filter @aranax/frontend build",
+    "typecheck": "pnpm --filter @aranax/contracts typecheck && pnpm --filter @aranax/backend typecheck && pnpm --filter @aranax/frontend typecheck",
+    "lint": "pnpm --filter @aranax/frontend lint",
+    "test": "pnpm --filter @aranax/backend test && pnpm --filter @aranax/frontend test",
+    "test:integration": "pnpm --filter @aranax/backend test:integration"
+  }
+}

@@ -7,41 +7,52 @@ type SeedEntry = Record<string, unknown> & { slug: string };
 const textItems = (items: string[]) => items.map((text) => ({ text }));
 
 const homepageSeo = {
-  metaTitle: 'AI SaaS Development Company | RAG & Agentic AI | Aranax Technologies',
+  metaTitle: 'AI SaaS, RAG & AI Agent Development | Aranax Technologies',
   metaDescription:
-    'Aranax Technologies designs and builds scalable AI SaaS platforms, RAG applications, intelligent agents and workflow automation for startups, agencies and enterprises.',
-  focusKeyword: 'AI SaaS development company',
+    'Build AI SaaS products, RAG assistants, voice agents, web and mobile apps with Aranax. Explore founder MVP sprints and white-label engineering for agencies.',
+  focusKeyword: 'AI product development company',
   keywords: textItems([
     'AI SaaS development',
-    'RAG applications',
-    'agentic AI',
-    'AI workflow automation',
-    'LLM integration',
+    'RAG and AI assistants',
+    'AI agents and voice automation',
+    'custom web and mobile development',
+    'founder MVP development',
+    'white-label engineering',
   ]),
   canonicalUrl: 'https://aranax.tech/',
   preventIndexing: false,
   preventFollowing: false,
   openGraphTitle:
-    'AI SaaS Development Company | RAG & Agentic AI | Aranax Technologies',
+    'AI SaaS, RAG & AI Agent Development | Aranax Technologies',
   openGraphDescription:
-    'Aranax Technologies designs and builds scalable AI SaaS platforms, RAG applications, intelligent agents and workflow automation for startups, agencies and enterprises.',
+    'Build AI SaaS products, RAG assistants, voice agents, web and mobile apps with Aranax. Explore founder MVP sprints and white-label engineering for agencies.',
   openGraphType: 'website',
   twitterCard: 'summary_large_image',
-  twitterTitle: 'AI SaaS Development Company | RAG & Agentic AI | Aranax Technologies',
+  twitterTitle: 'AI SaaS, RAG & AI Agent Development | Aranax Technologies',
   twitterDescription:
-    'Aranax Technologies designs and builds scalable AI SaaS platforms, RAG applications, intelligent agents and workflow automation for startups, agencies and enterprises.',
+    'Build AI SaaS products, RAG assistants, voice agents, web and mobile apps with Aranax. Explore founder MVP sprints and white-label engineering for agencies.',
   answerSummary:
-    'Aranax Technologies helps startups, growing businesses and digital agencies build AI-powered SaaS platforms, custom software, web applications and mobile applications through architecture-led, full-stack engineering.',
+    'Aranax Technologies builds AI SaaS platforms, RAG assistants, tool-calling and voice agents, and custom web and mobile apps. It also offers fixed-scope founder MVP sprints and white-label engineering for digital agencies.',
   questions: [
     {
       question: 'What does Aranax Technologies build?',
       answer:
-        'Aranax builds AI-powered SaaS platforms, custom software, RAG assistants, workflow automation, web applications and mobile applications.',
+        'Aranax builds AI SaaS platforms, RAG assistants, tool-calling and voice agents, custom web and mobile apps, founder MVPs and white-label engineering projects.',
     },
     {
       question: 'Can Aranax support an AI SaaS MVP?',
       answer:
         'Yes. Engagements can begin with discovery and a focused MVP scope before progressing to a production-ready application.',
+    },
+    {
+      question: 'What is included in Founder MVP Sprints?',
+      answer:
+        'A fixed-scope sprint covers discovery, architecture, core product features, an initial AI capability where needed, deployment and a working version for first users.',
+    },
+    {
+      question: 'Does Aranax build voice AI agents?',
+      answer:
+        'Yes. We build voice agents for calls and bookings alongside tool-calling agents, with integration, approval steps and execution logs matched to the workflow.',
     },
     {
       question: 'What happens during product discovery?',
@@ -103,52 +114,21 @@ const homepageSeo = {
     areaServed: 'Worldwide',
     knowsAbout: [
       'AI SaaS Development',
-      'Retrieval-Augmented Generation',
-      'Agentic AI',
-      'Workflow Automation',
+      'RAG and AI Assistants',
+      'AI Agents, Automation and Voice',
+      'Custom Web and Mobile',
+      'Founder MVP Sprints',
+      'White-Label Engineering',
     ],
   },
 };
-
-const services: SeedEntry[] = [
-  {
-    slug: 'ai-saas-development',
-    number: '01',
-    name: 'AI SaaS Development',
-    description:
-      'We design and build production-ready AI SaaS platforms with secure architecture, user roles, subscriptions, usage controls, dashboards, APIs and scalable cloud infrastructure.',
-    tags: textItems(['SaaS Architecture', 'LLM Integration', 'Multi-tenant']),
-    icon: 'spark',
-    sortOrder: 1,
-  },
-  {
-    slug: 'rag-ai-assistants',
-    number: '02',
-    name: 'RAG & AI Assistants',
-    description:
-      'We build grounded AI assistants that answer from approved documents, websites and databases, provide source-based responses and escalate uncertain cases to human teams.',
-    tags: textItems(['RAG', 'AI Chatbots', 'Knowledge Search']),
-    icon: 'chat',
-    sortOrder: 2,
-  },
-  {
-    slug: 'agentic-ai-automation',
-    number: '03',
-    name: 'Agentic AI Automation',
-    description:
-      'We develop intelligent AI agents that connect with business tools, execute multi-step workflows, validate outputs and reduce repetitive manual work across operations.',
-    tags: textItems(['AI Agents', 'Automation', 'API Integration']),
-    icon: 'grid',
-    sortOrder: 3,
-  },
-];
 
 const relevantWorkByService: Record<string, Array<{ name: string; url: string; description: string }>> = {
   'AI SaaS Development': [
     { name: 'EMA - Smarter Inbox Management', url: 'https://ema.aranax.tech', description: 'AI email productivity and workflow support.' },
     { name: 'DocuNova - Understand Contracts Faster', url: 'https://docunova.app', description: 'Document intelligence and structured knowledge workflows.' },
   ],
-  'Multi-Tenant SaaS Development': [
+  'Founder MVP Sprints': [
     { name: 'Gloziia - Salon Marketplace and Management Platform', url: 'https://gloziia.com', description: 'Marketplace and operations workflows for beauty businesses.' },
     { name: 'GlamSync - SaaS for Independent Makeup Artists', url: 'https://glamsync.app', description: 'A focused business workspace for independent professionals.' },
   ],
@@ -156,11 +136,11 @@ const relevantWorkByService: Record<string, Array<{ name: string; url: string; d
     { name: 'DocuNova - Understand Contracts Faster', url: 'https://docunova.app', description: 'Structured analysis and document-grounded answers.' },
     { name: 'UniEcho - AI Student Assistant', url: 'https://uniecho.io', description: 'A multilingual student-information assistant.' },
   ],
-  'AI Agents and Automation': [
+  'AI Agents, Automation and Voice': [
     { name: 'EMA - Smarter Inbox Management', url: 'https://ema.aranax.tech', description: 'Email prioritisation and follow-up workflows.' },
     { name: 'UniEcho - AI Student Assistant', url: 'https://uniecho.io', description: 'Conversational assistance across student service questions.' },
   ],
-  'Custom Web and Mobile Development': [
+  'Custom Web and Mobile': [
     { name: 'Gloziia - Salon Marketplace and Management Platform', url: 'https://gloziia.com', description: 'Customer discovery, booking and operational workflows.' },
     { name: 'DoubtAce - Exam-Ready Doubt Resolution', url: 'https://doubtace.com', description: 'Learning support built around photographed and printed content.' },
   ],
@@ -198,26 +178,21 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'What do you need from us to begin?', answer: 'A clear business problem, access to the relevant stakeholders and any existing prototype, workflow or technical material are enough to start a productive discovery conversation.' },
     ],
   },
-  'Multi-Tenant SaaS Development': {
+  'Founder MVP Sprints': {
     architecture:
-      'Multi-tenant decisions are made early: how organisations are represented, where tenant boundaries are enforced, which roles can cross those boundaries, and how onboarding, auditing, billing and support work without weakening data isolation.',
+      'The sprint starts with an agreed first-user workflow and a fixed scope. We choose a lean architecture, define the AI feature and its boundaries, prioritise the core experience, and prepare a deployment and handover path that supports learning after launch.',
     process: [
-      { title: 'Tenant discovery', description: 'Clarify customer organisations, administrators, user roles, data ownership and any partner access requirements.' },
-      { title: 'Isolation design', description: 'Choose the tenant model, authorisation rules and data-access patterns that fit the product’s risk and scale.' },
-      { title: 'Account workflows', description: 'Build onboarding, administration, permissions and core product workflows around the agreed boundaries.' },
-      { title: 'Operational validation', description: 'Test cross-tenant protection, audit needs, failure paths and deployment readiness before rollout.' },
+      { title: 'Scope the first release', description: 'Agree on the target users, core workflow, constraints and what is outside the initial build.' },
+      { title: 'Design the foundation', description: 'Choose the application architecture, data model, AI integration and deployment approach.' },
+      { title: 'Build and review', description: 'Deliver the essential features in reviewable increments, using feedback to clarify the first-user experience.' },
+      { title: 'Launch and hand over', description: 'Verify the main journeys, deploy the working version and prepare the next iteration.' },
     ],
     faqs: [
-      { question: 'How do you separate one customer’s data from another’s?', answer: 'We define tenant identity and enforce it through the data model, queries, APIs and authorisation layer rather than relying on the interface alone.' },
-      { question: 'Can each customer organisation have its own admins and roles?', answer: 'Yes. We can design organisation-level administration and role-based access that reflects who may view, manage or approve each workflow.' },
-      { question: 'Should tenants share a database or have separate databases?', answer: 'That depends on the product’s isolation, compliance, cost and operational needs. We evaluate those trade-offs before committing to the tenancy strategy.' },
-      { question: 'Can billing and plan entitlements be part of the product?', answer: 'Yes. Plans, seat counts, trials and feature entitlements can be connected to account administration and the product’s permission model.' },
-      { question: 'Can you migrate a single-tenant application to multi-tenant?', answer: 'Yes, after assessing data ownership, existing permissions, integrations and the migration risk. The safest approach may be phased rather than a single cutover.' },
-      { question: 'How do you test tenant isolation?', answer: 'We test expected and attempted cross-tenant access at the API and workflow levels, alongside role and administrative edge cases.' },
-      { question: 'Can tenants customise their own settings?', answer: 'Yes. Tenant-level settings, branding and configuration can be supported when they fit the product model without compromising maintainability or isolation.' },
-      { question: 'How do you handle enterprise single sign-on?', answer: 'We assess identity-provider requirements, role mapping and onboarding flows so SSO fits the tenant and permission model rather than becoming a separate access path.' },
-      { question: 'What happens when a customer leaves the platform?', answer: 'Data export, retention and deletion requirements are defined alongside the tenant model so offboarding is handled predictably and in line with your obligations.' },
-      { question: 'Can the platform support both self-serve and managed onboarding?', answer: 'Yes. We can design account creation, invitations, provisioning and support handoffs for the mix of self-service and assisted onboarding your buyers need.' },
+      { question: 'How long is a Founder MVP Sprint?', answer: 'The timeline is agreed after discovery and depends on the scope, integrations and readiness of the inputs. We do not assume a fixed number of weeks before those are clear.' },
+      { question: 'What does fixed scope mean?', answer: 'The initial release has an agreed set of user journeys, deliverables and assumptions. New ideas can be prioritised for a later iteration.' },
+      { question: 'Can the MVP include an AI feature?', answer: 'Yes. We define one useful AI workflow with clear input, output, reliability and cost expectations for the first release.' },
+      { question: 'Will it be usable by real customers?', answer: 'The goal is a working version for first users, with deployment and essential operational considerations included in the agreed scope.' },
+      { question: 'What happens after launch?', answer: 'We review feedback and usage, then plan the next product increment around what users actually need.' },
     ],
   },
   'RAG and AI Assistants': {
@@ -242,9 +217,9 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'Can the assistant be embedded in our existing product?', answer: 'Yes. We can design an embedded experience or integrate the retrieval capability with your existing application, authentication and support workflows.' },
     ],
   },
-  'AI Agents and Automation': {
+  'AI Agents, Automation and Voice': {
     architecture:
-      'Agent workflows are designed as controlled systems, not unchecked autonomy. We define which tools an agent can call, the data it may access, approval gates, retry and failure paths, audit trails and monitoring before automating a business action.',
+      'Tool-calling and voice agents are designed as controlled systems. We define which tools and data they can access, when a caller or operator needs a human handoff, approval gates for consequential actions, retry and failure paths, execution logs and monitoring.',
     process: [
       { title: 'Workflow mapping', description: 'Identify the repeated work, input quality, decision points, tools and human owners involved today.' },
       { title: 'Control design', description: 'Set permissions, tool boundaries, approvals, exceptions and observability for each automated action.' },
@@ -262,9 +237,10 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'Can an agent use our internal knowledge as well as tools?', answer: 'Yes. An agent can combine approved knowledge retrieval with constrained tool use when both are needed to complete a workflow safely.' },
       { question: 'How do you handle failed integrations or API outages?', answer: 'We design retries, error handling, alerts and human fallback paths so a failed dependency does not silently create an incomplete or incorrect outcome.' },
       { question: 'Can we start with one small automation?', answer: 'Yes. A focused workflow is often the best way to validate value, controls and operating requirements before expanding automation to adjacent processes.' },
+      { question: 'Can a voice agent handle calls and bookings?', answer: 'Yes, where the phone and booking systems support integration. We define the call flow, confirmation steps, human transfer and logging before rollout.' },
     ],
   },
-  'Custom Web and Mobile Development': {
+  'Custom Web and Mobile': {
     architecture:
       'We choose the application shape around the problem: web, mobile, backend APIs, integrations, offline needs, data ownership and the maintenance capacity of the team that will run it. The goal is a useful system with a supportable technical footprint.',
     process: [
@@ -336,13 +312,112 @@ const servicePage = (name: string, summary: string, audience: string[], problems
   relatedTitle: 'Related services', related,
 });
 
+const serviceSearchTerms: Record<string, string[]> = {
+  'ai-saas-development': ['AI SaaS development', 'multi-tenant SaaS development', 'AI SaaS subscriptions'],
+  'rag-ai-development': ['RAG assistant development', 'AI knowledge assistants', 'RAG evaluation'],
+  'ai-agent-development': ['AI agent development', 'voice AI agents', 'business workflow automation'],
+  'custom-software-development': ['custom web development', 'mobile app development', 'backend API development'],
+  'founder-mvp-sprints': ['AI MVP development', 'founder MVP sprint', 'fixed-scope product development'],
+  'white-label-development': ['white-label engineering', 'agency development partner', 'engineering capacity for agencies'],
+};
+
+const serviceSeo = (slug: string, name: string, description: string) => ({
+  ...homepageSeo,
+  metaTitle: `${name} | Aranax Technologies`,
+  metaDescription: description,
+  focusKeyword: serviceSearchTerms[slug][0],
+  keywords: textItems(serviceSearchTerms[slug]),
+  canonicalUrl: `https://aranax.tech/services/${slug}`,
+  openGraphTitle: `${name} | Aranax Technologies`,
+  openGraphDescription: description,
+  twitterTitle: `${name} | Aranax Technologies`,
+  twitterDescription: description,
+  answerSummary: description,
+  questions: servicePageDetails[name]?.faqs ?? [],
+  structuredData: {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name,
+    serviceType: name,
+    description,
+    url: `https://aranax.tech/services/${slug}`,
+    provider: { '@type': 'Organization', name: 'Aranax Technologies', url: 'https://aranax.tech/' },
+  },
+});
+
 const promptServices: SeedEntry[] = [
-  { slug: 'ai-saas-development', number: '01', name: 'AI SaaS Development', description: 'We design and build AI SaaS products from product workflow through production release, including application architecture, LLM integration, roles, dashboards, APIs, subscriptions and operating foundations.', tags: textItems(['AI products', 'SaaS architecture', 'Product delivery']), icon: 'spark', sortOrder: 1, pageContent: servicePage('AI SaaS Development', 'For founders and product teams building an AI-enabled SaaS product, with attention to MVP scope, subscriptions, APIs, dashboards and production readiness.', ['Founders planning an AI-enabled SaaS MVP', 'Teams replacing a prototype with an operational application', 'Businesses creating a new AI customer workflow'], ['A promising concept has no clear product or technical path', 'A demo does not account for users, permissions, cost or reliability', 'Product, backend and AI work need to move together'], ['Product and technical discovery', 'Application architecture and delivery plan', 'Web application, APIs, dashboards and user workflows', 'AI integration, testing and launch support'], ['LLM-enabled workflows', 'User roles and account experiences', 'Third-party integrations', 'Usage-aware product design'], [{ name: 'Multi-Tenant SaaS Development', href: '/services/multi-tenant-saas-development' }, { name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }]), seo: { ...homepageSeo, metaTitle: 'AI SaaS Development Services | Aranax Technologies', metaDescription: 'Build an AI SaaS product with architecture, application engineering and practical AI integration from Aranax Technologies.', answerSummary: 'Aranax helps product teams plan, build and launch AI SaaS applications with architecture-led engineering.' } },
-  { slug: 'multi-tenant-saas-development', number: '02', name: 'Multi-Tenant SaaS Development', description: 'We build SaaS applications for multiple customer organisations with tenant-aware design, roles and permissions, data access controls, account administration, billing-ready workflows and maintainable backend systems.', tags: textItems(['Tenant design', 'RBAC', 'Backend systems']), icon: 'chat', sortOrder: 2, pageContent: servicePage('Multi-Tenant SaaS Development', 'For SaaS products that need sound tenant isolation, RBAC, PostgreSQL-ready modelling, authorisation, data security, scaling and observability.', ['SaaS founders serving multiple customer organisations', 'Teams replacing a single-customer application', 'Businesses building a partner or customer portal'], ['Customer data and administration are not separated cleanly', 'Roles and authorisation become harder as the product grows', 'Onboarding and billing workflows are disconnected'], ['Tenant-aware application design', 'Role and permission model', 'Account administration and onboarding', 'Backend APIs and deployment support'], ['Tenant isolation strategies', 'RBAC and authorisation', 'PostgreSQL-ready data modelling', 'Observability-aware workflows'], [{ name: 'AI SaaS Development', href: '/services/ai-saas-development' }, { name: 'Custom Software Development', href: '/services/custom-software-development' }]), seo: { ...homepageSeo, metaTitle: 'Multi-Tenant SaaS Development | Aranax Technologies', metaDescription: 'Design and build multi-tenant SaaS applications with tenant-aware architecture, roles, permissions and scalable backend workflows.', answerSummary: 'Aranax designs multi-tenant SaaS products with deliberate data boundaries and operational foundations.' } },
-  { slug: 'rag-ai-development', number: '03', name: 'RAG and AI Assistants', description: 'We create retrieval-augmented assistants that help people work with approved documents, websites and business knowledge, with source visibility, access controls, evaluation and human escalation.', tags: textItems(['RAG', 'Knowledge search', 'Source grounding']), icon: 'grid', sortOrder: 3, pageContent: servicePage('RAG and AI Assistants', 'For teams that need grounded answers from approved business knowledge, with document ingestion, retrieval, vector search, source grounding and evaluation.', ['Teams with changing approved knowledge', 'Businesses improving access to documents and data', 'Products needing a grounded assistant'], ['Answers are difficult to locate across approved sources', 'Knowledge changes faster than static help material', 'Users need visibility into source material'], ['Knowledge and document assessment', 'Ingestion and retrieval workflows', 'Source-aware assistant experience', 'Evaluation and handover'], ['Document ingestion', 'Vector search', 'Access control', 'Quality evaluation'], [{ name: 'AI Agent Development', href: '/services/ai-agent-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]), seo: { ...homepageSeo, metaTitle: 'RAG Development and AI Assistants | Aranax Technologies', metaDescription: 'Build grounded RAG assistants with document ingestion, retrieval, access controls and evaluation.', answerSummary: 'Aranax builds retrieval-augmented AI assistants grounded in approved information sources.' } },
-  { slug: 'ai-agent-development', number: '04', name: 'AI Agents and Automation', description: 'We develop AI-assisted workflows that connect business systems and help teams complete repeatable work through useful integrations, approval steps, failure handling and observable execution.', tags: textItems(['Tool calling', 'Automation', 'Human approval']), icon: 'spark', sortOrder: 4, pageContent: servicePage('AI Agents and Automation', 'For teams automating repeatable work through tool calling, workflow orchestration, approval steps, audit trails, integrations and monitoring.', ['Operations teams with repeatable work', 'Product teams adding safe agent workflows', 'Businesses connecting fragmented tools'], ['Manual handoffs slow a workflow', 'Automations lack clear control points', 'Teams need visibility when an automated action fails'], ['Workflow discovery', 'Tool and system integration', 'Human approval design', 'Monitoring and release support'], ['Tool calling', 'Workflow orchestration', 'Audit-aware execution', 'Integration monitoring'], [{ name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }, { name: 'Custom Software Development', href: '/services/custom-software-development' }]), seo: { ...homepageSeo, metaTitle: 'AI Agent Development and Automation | Aranax Technologies', metaDescription: 'Build practical AI agents with tool calling, workflow orchestration, human approval and monitoring.', answerSummary: 'Aranax develops AI-assisted workflows designed for controlled, observable execution.' } },
-  { slug: 'custom-software-development', number: '05', name: 'Custom Web and Mobile Development', description: 'We deliver custom web applications, mobile experiences and backend APIs for organisations with specific product or operational needs, from discovery and UX collaboration to engineering, deployment and ongoing improvement.', tags: textItems(['Web apps', 'Mobile', 'APIs']), icon: 'chat', sortOrder: 5, pageContent: servicePage('Custom Web and Mobile Development', 'For organisations building web applications, mobile experiences, backend APIs, databases, integrations or modernisation programmes.', ['Businesses with a specific product or operational need', 'Teams modernising an existing application', 'Organisations integrating disconnected systems'], ['Critical workflows are split across tools', 'An existing application is difficult to maintain', 'A product needs a clear technical delivery path'], ['Discovery and solution design', 'Web and mobile application delivery', 'Backend APIs and integrations', 'Deployment and maintenance support'], ['Frontend engineering', 'Backend APIs', 'Databases', 'System integration'], [{ name: 'AI SaaS Development', href: '/services/ai-saas-development' }, { name: 'White-Label Engineering', href: '/services/white-label-development' }]), seo: { ...homepageSeo, metaTitle: 'Custom Web and Mobile Development | Aranax Technologies', metaDescription: 'Build custom web apps, mobile experiences, backend APIs and integrations with Aranax Technologies.', answerSummary: 'Aranax delivers custom web, mobile and backend software around real product and operational needs.' } },
-  { slug: 'white-label-development', number: '06', name: 'White-Label Engineering', description: 'We support US and European digital agencies with dependable engineering capacity behind their client relationships, shaped around delivery processes, technical standards, communication preferences and agreed ownership arrangements.', tags: textItems(['Agency support', 'Delivery teams', 'Flexible engagement']), icon: 'grid', sortOrder: 6, pageContent: servicePage('White-Label Engineering', 'For US and European agencies that need dependable software engineering capacity while retaining their client relationship and delivery standards.', ['Digital agencies extending delivery capacity', 'Consultancies with a product build to deliver', 'Teams needing specialist web, mobile or AI engineering'], ['Delivery capacity is limited', 'Engineering work needs clear ownership and communication', 'An agency needs technical depth without changing its client model'], ['Embedded or project-based engineering support', 'Delivery planning and written collaboration', 'Web, mobile, backend and AI engineering', 'Handover and ongoing support'], ['Flexible collaboration models', 'Technical delivery', 'Clear written communication', 'Agreed responsibility boundaries'], [{ name: 'Custom Software Development', href: '/services/custom-software-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]), seo: { ...homepageSeo, metaTitle: 'White-Label Software Development for Agencies | Aranax', metaDescription: 'Extend agency delivery capacity with white-label engineering for web, mobile, SaaS and AI product projects.', answerSummary: 'Aranax provides configurable white-label software engineering support for agency delivery teams.' } },
+  {
+    slug: 'ai-saas-development', number: '01', name: 'AI SaaS Development',
+    description: 'End-to-end AI SaaS products, including multi-tenant architecture, role-based access, subscriptions, and production operations.',
+    tags: textItems(['Multi-tenant', 'RBAC', 'Subscriptions']), icon: 'spark', sortOrder: 1,
+    pageContent: servicePage('AI SaaS Development', 'Build an AI SaaS product from architecture through production operations.',
+      ['Founders building an AI SaaS product', 'Teams preparing a multi-tenant product for launch'],
+      ['A prototype needs a reliable production foundation', 'Roles, subscriptions and tenant boundaries need to work together'],
+      ['Multi-tenant product architecture', 'Role-based access and account workflows', 'Subscription-ready application', 'Deployment and production operations'],
+      ['Tenant isolation', 'RBAC', 'Subscriptions', 'Operational monitoring'],
+      [{ name: 'Founder MVP Sprints', href: '/services/founder-mvp-sprints' }, { name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }]),
+    seo: serviceSeo('ai-saas-development', 'AI SaaS Development', 'End-to-end AI SaaS development with multi-tenant architecture, RBAC, subscriptions and production operations.'),
+  },
+  {
+    slug: 'rag-ai-development', number: '02', name: 'RAG and AI Assistants',
+    description: 'Assistants that answer from your approved documents and business knowledge, with source citations, access control, evaluation, and human handoff.',
+    tags: textItems(['RAG', 'Evals', 'Human escalation']), icon: 'chat', sortOrder: 2,
+    pageContent: servicePage('RAG and AI Assistants', 'Grounded answers from approved business knowledge, with citations and controlled access.',
+      ['Teams with approved documents and knowledge', 'Products that need a dependable assistant'],
+      ['Knowledge is spread across sources', 'Answers need evidence, access rules and review'],
+      ['Source ingestion and retrieval', 'Citation-aware answers', 'Access controls and evaluations', 'Human handoff'],
+      ['RAG', 'Source citations', 'Evaluation', 'Escalation workflows'],
+      [{ name: 'AI Agents, Automation and Voice', href: '/services/ai-agent-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]),
+    seo: serviceSeo('rag-ai-development', 'RAG and AI Assistants', 'RAG assistants grounded in approved documents with citations, access control, evaluation and human handoff.'),
+  },
+  {
+    slug: 'ai-agent-development', number: '03', name: 'AI Agents, Automation and Voice',
+    description: 'Tool-calling agents that connect your business systems, plus voice agents for calls and bookings, with approval steps and full execution logs.',
+    tags: textItems(['Tool calling', 'Voice AI', 'Observability']), icon: 'grid', sortOrder: 3,
+    pageContent: servicePage('AI Agents, Automation and Voice', 'Tool-calling and voice agents with approval checkpoints and observable execution.',
+      ['Teams automating connected business workflows', 'Businesses exploring voice support for calls and bookings'],
+      ['Manual handoffs slow down work', 'Voice interactions and automated actions need clear controls'],
+      ['Agent and tool integration', 'Voice agent workflows for calls and bookings', 'Human approval steps', 'Execution logs and monitoring'],
+      ['Tool calling', 'Voice AI', 'Human approval', 'Observability'],
+      [{ name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }, { name: 'Custom Web and Mobile', href: '/services/custom-software-development' }]),
+    seo: serviceSeo('ai-agent-development', 'AI Agents, Automation and Voice', 'Tool-calling and voice AI agents with business integrations, approvals, execution logs and monitoring.'),
+  },
+  {
+    slug: 'custom-software-development', number: '04', name: 'Custom Web and Mobile',
+    description: 'Web apps, mobile experiences, and backend APIs, from discovery through ongoing improvement.',
+    tags: textItems(['Web', 'Mobile', 'APIs']), icon: 'chat', sortOrder: 4,
+    pageContent: servicePage('Custom Web and Mobile', 'Custom digital products from discovery through ongoing improvement.',
+      ['Teams building web or mobile products', 'Businesses modernising internal systems'],
+      ['Existing workflows do not fit off-the-shelf software', 'Apps and APIs need to evolve together'],
+      ['Product discovery and UX', 'Web and mobile applications', 'Backend APIs and integrations', 'Ongoing improvement'],
+      ['Web engineering', 'Mobile experiences', 'APIs', 'Integrations'],
+      [{ name: 'Founder MVP Sprints', href: '/services/founder-mvp-sprints' }, { name: 'White-Label Engineering', href: '/services/white-label-development' }]),
+    seo: serviceSeo('custom-software-development', 'Custom Web and Mobile', 'Custom web apps, mobile experiences and backend APIs from discovery through ongoing improvement.'),
+  },
+  {
+    slug: 'founder-mvp-sprints', number: '05', name: 'Founder MVP Sprints',
+    description: 'A fixed-scope build that takes an AI product from idea to a working version with first users, covering architecture, core features, and deployment.',
+    tags: textItems(['Fixed scope', 'Fast launch', 'Startup-ready']), icon: 'spark', sortOrder: 5,
+    pageContent: servicePage('Founder MVP Sprints', 'A focused first release for founders ready to validate an AI product with real users.',
+      ['Founders with a defined AI product idea', 'Startups preparing to test a first version'],
+      ['The idea has not yet become a usable product', 'A broad roadmap makes the first release hard to scope'],
+      ['Discovery and fixed-scope plan', 'Core architecture and features', 'Working product for first users', 'Deployment and handover'],
+      ['MVP scoping', 'Product architecture', 'AI integration', 'Deployment'],
+      [{ name: 'AI SaaS Development', href: '/services/ai-saas-development' }, { name: 'Custom Web and Mobile', href: '/services/custom-software-development' }]),
+    seo: serviceSeo('founder-mvp-sprints', 'Founder MVP Sprints', 'Fixed-scope AI product MVP development, from idea and architecture to core features, deployment and first users.'),
+  },
+  {
+    slug: 'white-label-development', number: '06', name: 'White-Label Engineering',
+    description: 'Engineering capacity for digital agencies, aligned to their delivery process, standards, and client relationships.',
+    tags: textItems(['Agency partners', 'Capacity', 'Delivery']), icon: 'grid', sortOrder: 6,
+    pageContent: servicePage('White-Label Engineering', 'Dependable engineering capacity that fits an agency’s delivery model and client relationships.',
+      ['Digital agencies extending engineering capacity', 'Delivery teams needing specialist support'],
+      ['Project demand exceeds available capacity', 'External engineers need to fit existing standards and communication'],
+      ['Embedded engineering support', 'Delivery planning and implementation', 'Code review and documentation', 'Handover aligned to agency process'],
+      ['Agency collaboration', 'Web and mobile delivery', 'AI and backend engineering', 'Quality practices'],
+      [{ name: 'Custom Web and Mobile', href: '/services/custom-software-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]),
+    seo: serviceSeo('white-label-development', 'White-Label Engineering', 'Engineering capacity for digital agencies aligned with their delivery process, standards and client relationships.'),
+  },
 ];
 
 const caseStudies: SeedEntry[] = [
@@ -465,7 +540,29 @@ const caseStudiesWithPages: SeedEntry[] = caseStudies.map((entry) => ({
     outcome: { label: 'The outcome', title: 'Designed for a more useful workflow.', copy: 'The outcome is presented as a qualitative product benefit based on available project material. No unverified traffic, revenue or adoption metrics are claimed.' },
     cta: { label: 'Start a conversation', title: 'Have a similar product challenge?', description: 'Discuss the users, workflows and delivery considerations behind your product with our engineering team.', button: { label: 'Book a Free Discovery Call', href: '#contact' } },
   },
-  seo: { ...homepageSeo, metaTitle: `${String(entry.name).slice(0, 42)} | Aranax Case Study`, metaDescription: String(entry.description), canonicalUrl: `https://aranax.tech/case-studies/${entry.slug}`, openGraphType: 'article', answerSummary: String(entry.description) },
+  seo: {
+    ...homepageSeo,
+    metaTitle: `${String(entry.name).slice(0, 42)} | Aranax Case Study`,
+    metaDescription: String(entry.description),
+    focusKeyword: String(entry.name),
+    keywords: textItems([String(entry.name), String(entry.category), ...((entry.tags as Array<{ text: string }> | undefined)?.map(({ text }) => text) ?? [])]),
+    canonicalUrl: `https://aranax.tech/case-studies/${entry.slug}`,
+    openGraphTitle: `${String(entry.name).slice(0, 42)} | Aranax Case Study`,
+    openGraphDescription: String(entry.description),
+    openGraphType: 'article',
+    twitterTitle: `${String(entry.name).slice(0, 42)} | Aranax Case Study`,
+    twitterDescription: String(entry.description),
+    answerSummary: String(entry.description),
+    questions: [],
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: String(entry.name),
+      description: String(entry.description),
+      url: `https://aranax.tech/case-studies/${entry.slug}`,
+      author: { '@type': 'Organization', name: 'Aranax Technologies' },
+    },
+  },
 }));
 
 const teamMembers: SeedEntry[] = [
@@ -677,10 +774,10 @@ const serviceHeroImages = {
     alternativeText: 'Layered AI SaaS application architecture illustration',
     caption: 'AI SaaS platform architecture',
   },
-  'multi-tenant-saas-development': {
-    filename: 'multi-tenant-saas-architecture.png',
-    alternativeText: 'Secure multi-tenant SaaS architecture illustration',
-    caption: 'Multi-tenant SaaS architecture',
+  'founder-mvp-sprints': {
+    filename: 'founder-mvp-sprints-light.png',
+    alternativeText: 'Founder MVP journey from idea and architecture to a working product',
+    caption: 'Founder MVP product sprint',
   },
   'rag-ai-development': {
     filename: 'rag-ai-assistant-architecture.png',
@@ -688,9 +785,9 @@ const serviceHeroImages = {
     caption: 'Retrieval-augmented AI assistant',
   },
   'ai-agent-development': {
-    filename: 'agentic-ai-workflow-automation.png',
-    alternativeText: 'Agentic AI workflow automation illustration',
-    caption: 'Agentic AI workflow automation',
+    filename: 'ai-agents-automation-voice.png',
+    alternativeText: 'Voice AI and tool-calling agent workflow with approval and execution logs',
+    caption: 'AI agents, automation and voice',
   },
   'custom-software-development': {
     filename: 'custom-web-mobile-development.png',
@@ -750,7 +847,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
     'api::service.service',
     promptServices.map((service) => ({
       ...service,
-      heroImage: { connect: [heroImages[service.slug].id] },
+      heroImage: heroImages[service.slug].id,
     }))
   );
   const seededCaseStudies = await seedCollection(
@@ -823,9 +920,9 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         name: 'Homepage Services',
         slug: 'homepage-services',
         eyebrow: 'What We Build',
-        heading: 'AI products built for\nreal-world use',
+        heading: 'Product engineering for\nevery stage of growth',
         description:
-          'From RAG applications and intelligent agents to complete AI SaaS platforms, we design secure, scalable solutions around your data, workflows and business goals.',
+          'From AI SaaS and grounded assistants to voice agents, custom apps, founder MVPs and agency engineering, we build products around your workflows and business goals.',
         services: seededServices.map(({ documentId }) => documentId),
       },
     ]
@@ -900,7 +997,21 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         teamTitle: 'Core team',
         profileLabel: 'Professional profile',
       },
-      seo: { ...homepageSeo, metaTitle: 'About Aranax Technologies | AI & SaaS Product Engineering', metaDescription: 'Learn about Aranax Technologies, an AI, SaaS, web and mobile product engineering team based in Kolkata, India.', canonicalUrl: 'https://aranax.tech/about' },
+      seo: {
+        ...homepageSeo,
+        metaTitle: 'About Aranax Technologies | AI & SaaS Product Engineering',
+        metaDescription: 'Meet Aranax Technologies, a Kolkata-based team building AI SaaS products, RAG and voice agents, custom apps and digital products for founders and agencies.',
+        focusKeyword: 'Aranax Technologies',
+        keywords: textItems(['Aranax Technologies', 'AI product engineering team', 'SaaS development company Kolkata']),
+        canonicalUrl: 'https://aranax.tech/about',
+        openGraphTitle: 'About Aranax Technologies | AI & SaaS Product Engineering',
+        openGraphDescription: 'Meet the team behind Aranax Technologies and its AI, SaaS, web and mobile product engineering work.',
+        twitterTitle: 'About Aranax Technologies | AI & SaaS Product Engineering',
+        twitterDescription: 'Meet the team behind Aranax Technologies and its AI, SaaS, web and mobile product engineering work.',
+        answerSummary: 'Aranax Technologies is a product engineering team based in Kolkata, India. It works with founders, businesses and agencies on AI SaaS, RAG and voice agents, web and mobile apps, MVPs and white-label engineering.',
+        questions: [],
+        structuredData: { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About Aranax Technologies', url: 'https://aranax.tech/about' },
+      },
     },
   ]);
 
@@ -939,16 +1050,16 @@ export async function seedLandingContent(strapi: Core.Strapi) {
     buyerSegments: {
       eyebrow: 'Who We Help', heading: 'Engineering support shaped around *how you deliver.*',
       items: [
-        { title: 'Startups and SaaS founders', challenge: 'Turn a product concept or early prototype into an application customers can use and the team can operate.', service: 'AI SaaS development, multi-tenant architecture and product engineering.', deliverable: 'A clear technical approach and a scoped path from discovery to release.', cta: 'Discuss a product build', href: '#contact' },
+        { title: 'Startups and SaaS founders', challenge: 'Turn a product concept or early prototype into an application customers can use and the team can operate.', service: 'Founder MVP sprints, AI SaaS development and multi-tenant product engineering.', deliverable: 'A clear technical approach and a scoped path from discovery to release.', cta: 'Discuss a product build', href: '#contact' },
         { title: 'Software and digital agencies', challenge: 'Add engineering capacity without losing control of the client relationship or delivery quality.', service: 'White-label engineering, web and mobile delivery, AI integration.', deliverable: 'A collaboration model aligned to the agency’s project and communication workflow.', cta: 'Discuss agency support', href: '#contact' },
-        { title: 'Businesses and institutions', challenge: 'Modernise a workflow, make knowledge easier to use or connect fragmented tools.', service: 'RAG assistants, AI automation, custom software and system integration.', deliverable: 'A practical solution design that accounts for users, data, security and maintenance.', cta: 'Discuss an operational challenge', href: '#contact' },
+        { title: 'Businesses and institutions', challenge: 'Modernise a workflow, make knowledge easier to use or connect fragmented tools.', service: 'RAG assistants, tool-calling and voice agents, automation, custom software and system integration.', deliverable: 'A practical solution design that accounts for users, data, security and maintenance.', cta: 'Discuss an operational challenge', href: '#contact' },
       ],
     },
     processSection: { eyebrow: 'How We Work', heading: 'A practical path from idea to *operating product.*', steps: [
       { number: '01', title: 'Discovery', description: 'We learn what users need, what success looks like and the constraints that shape delivery.' }, { number: '02', title: 'Architecture', description: 'We turn requirements into a clear technical approach, delivery scope and system decisions.' }, { number: '03', title: 'Implementation', description: 'We build in focused increments, with regular communication around progress and decisions.' }, { number: '04', title: 'Testing', description: 'We verify key workflows, integrations and release readiness before launch.' }, { number: '05', title: 'Deployment', description: 'We support a controlled release and handover suited to the product and its operating environment.' }, { number: '06', title: 'Ongoing Support', description: 'We can continue improving, maintaining and extending the application as needs change.' },
     ] },
     faqSection: { eyebrow: 'FAQ', heading: 'Questions founders and delivery teams *ask early.*', items: homepageSeo.questions },
-    finalCta: { eyebrow: 'Start a conversation', heading: 'Have an AI or SaaS Product in Mind?', description: "Tell us what you're building. We'll discuss your requirements, architecture, delivery approach and next steps.", cta: { label: 'Book a Technical Discovery Call', href: '#contact' } },
+    finalCta: { eyebrow: 'Start a conversation', heading: 'Have an AI or Digital Product in Mind?', description: "Tell us about your SaaS product, assistant, agent, app or MVP. We'll discuss your requirements, architecture, delivery approach and next steps.", cta: { label: 'Book a Technical Discovery Call', href: '#contact' } },
   });
 
   await ensureHomePageComposition(strapi, homePageSections);
