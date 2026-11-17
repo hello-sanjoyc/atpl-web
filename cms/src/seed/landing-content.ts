@@ -892,7 +892,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
       eyebrow: 'AI SaaS & Custom Software Engineering',
       heading: 'Turn Your Ideas into\n*Production-Ready* AI & SaaS Products',
       description:
-        'Aranax helps founders and teams **build and launch AI-powered SaaS products, custom software, and web and mobile applications**. From MVP and architecture to AI integration and launch, we provide focused engineering support.',
+        'Aranax Technologies builds **production-ready AI SaaS, retrieval-augmented assistants, voice and automation agents, web applications and mobile products** for founders, businesses and agencies. We take work from discovery and architecture through implementation, testing, deployment and ongoing support. This homepage covers six service areas and a six-step delivery process, so you can quickly identify the engineering support that fits your product.',
       primaryCta: {
         label: 'Book a Free Discovery Call',
         href: '#contact',
@@ -920,7 +920,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         name: 'Homepage Services',
         slug: 'homepage-services',
         eyebrow: 'What We Build',
-        heading: 'Product engineering for\nevery stage of growth',
+        heading: 'What can Aranax build for\nevery stage of growth?',
         description:
           'From AI SaaS and grounded assistants to voice agents, custom apps, founder MVPs and agency engineering, we build products around your workflows and business goals.',
         services: seededServices.map(({ documentId }) => documentId),
@@ -936,7 +936,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         name: 'Homepage Why Aranax',
         slug: 'homepage-why-aranax',
         eyebrow: 'Why Aranax',
-        heading: 'Architecture first.\nAI second.\nBusiness outcome always.',
+        heading: 'Why does architecture come first\nbefore AI and business outcomes?',
         description:
           'Many AI prototypes look impressive during a demonstration but fail when exposed to real customers, unreliable data, high usage and security requirements.\nAranax approaches AI development as product engineering.',
         listHeading: 'We consider',
@@ -965,7 +965,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         name: 'Homepage Case Studies',
         slug: 'homepage-case-studies',
         eyebrow: 'Selected Case Studies',
-        heading: 'Products engineered around real business problems.',
+        heading: 'How do we engineer products around\nreal business problems?',
         description:
           'From AI assistants to industry-specific SaaS platforms, we help founders and businesses turn complex ideas into secure, scalable and production-ready digital products.',
         caseStudies: seededCaseStudies.map(({ documentId }) => documentId),
@@ -978,7 +978,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
       name: 'Homepage About',
       slug: 'homepage-about',
       eyebrow: 'Our Story',
-      heading: 'We build beyond the AI prototype.',
+        heading: 'What does Aranax build\nbeyond the AI prototype?',
       description:
         'Founded in 2015, Aranax Technologies helps startups, agencies and enterprises design, build and scale AI SaaS, RAG, web and mobile products.\n\nLed by more than 25 years of software architecture experience, our team combines strategic thinking with practical engineering to create secure, scalable systems built for real-world use.',
       teamHeading: 'Core Team',
@@ -1055,10 +1055,19 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         { title: 'Businesses and institutions', challenge: 'Modernise a workflow, make knowledge easier to use or connect fragmented tools.', service: 'RAG assistants, tool-calling and voice agents, automation, custom software and system integration.', deliverable: 'A practical solution design that accounts for users, data, security and maintenance.', cta: 'Discuss an operational challenge', href: '#contact' },
       ],
     },
-    processSection: { eyebrow: 'How We Work', heading: 'A practical path from idea to *operating product.*', steps: [
+    processSection: { eyebrow: 'How We Work', heading: 'How do we take an idea to an *operating product?*', steps: [
       { number: '01', title: 'Discovery', description: 'We learn what users need, what success looks like and the constraints that shape delivery.' }, { number: '02', title: 'Architecture', description: 'We turn requirements into a clear technical approach, delivery scope and system decisions.' }, { number: '03', title: 'Implementation', description: 'We build in focused increments, with regular communication around progress and decisions.' }, { number: '04', title: 'Testing', description: 'We verify key workflows, integrations and release readiness before launch.' }, { number: '05', title: 'Deployment', description: 'We support a controlled release and handover suited to the product and its operating environment.' }, { number: '06', title: 'Ongoing Support', description: 'We can continue improving, maintaining and extending the application as needs change.' },
     ] },
     faqSection: { eyebrow: 'FAQ', heading: 'Questions founders and delivery teams *ask early.*', items: homepageSeo.questions },
+    evidenceSection: {
+      eyebrow: 'Delivery facts',
+      heading: 'What facts guide an Aranax engagement?',
+      paragraphs: [
+        'Aranax has operated since 2015 and presents six named product-engineering service areas on this site: AI SaaS development, RAG and AI assistants, AI agents and automation, custom web and mobile, Founder MVP Sprints, and white-label engineering. Each service page explains the relevant product scope, technical considerations, delivery process and frequently asked questions. This makes the site a practical reference for teams evaluating a specific engineering need rather than a generic catalogue of AI terms.',
+        'The homepage describes a six-step delivery process: discovery, architecture, implementation, testing, deployment and ongoing support. Those steps are intentionally visible because a useful product requires more than an initial prototype. Discovery defines users, workflows and constraints; architecture records the decisions that shape the system; implementation and testing validate the agreed experience; deployment and ongoing support establish how the product is released, handed over and improved. The same sequence is published in the page content and its machine-readable HowTo data.',
+        'The team combines more than 25 years of software architecture experience with more than 10 years building products. The homepage also records 32+ projects delivered and a 14-member team. These are company-published figures, not independently audited performance claims. For an engagement, the relevant evidence is the scope, architecture, integration requirements, user permissions, data boundaries and acceptance criteria agreed for the particular product. Aranax uses those inputs to define a delivery plan that can be reviewed before implementation begins.',
+      ],
+    },
     finalCta: { eyebrow: 'Start a conversation', heading: 'Have an AI or Digital Product in Mind?', description: "Tell us about your SaaS product, assistant, agent, app or MVP. We'll discuss your requirements, architecture, delivery approach and next steps.", cta: { label: 'Book a Technical Discovery Call', href: '#contact' } },
   });
 

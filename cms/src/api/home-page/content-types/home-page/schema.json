@@ -68,6 +68,7 @@
     "buyerSegments": { "type": "json", "required": true },
     "processSection": { "type": "json", "required": true },
     "faqSection": { "type": "json", "required": true },
+    "evidenceSection": { "type": "json", "required": true },
     "finalCta": { "type": "json", "required": true }
   }
 }

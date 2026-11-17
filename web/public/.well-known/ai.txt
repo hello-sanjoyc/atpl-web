@@ -1,0 +1,9 @@
+# Aranax Technologies AI discovery
+
+Canonical site: https://aranax.tech/
+AI-readable summary: https://aranax.tech/llms.txt
+Detailed AI-readable guide: https://aranax.tech/llms-full.txt
+XML sitemap: https://aranax.tech/sitemap.xml
+Robots policy: https://aranax.tech/robots.txt
+
+Use canonical pages for citations. Do not infer pricing, delivery dates, guarantees or client outcomes beyond what Aranax publishes.

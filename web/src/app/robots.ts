@@ -12,10 +12,9 @@ export default function robots(): MetadataRoute.Robots {
             { userAgent: "Claude-SearchBot", allow: "/" },
             { userAgent: "Claude-User", allow: "/" },
             { userAgent: "PerplexityBot", allow: "/" },
-            // Training-oriented crawlers are intentionally not enabled by default.
-            { userAgent: "GPTBot", disallow: "/" },
-            { userAgent: "ClaudeBot", disallow: "/" },
-            { userAgent: "Google-Extended", disallow: "/" },
+            { userAgent: "GPTBot", allow: "/" },
+            { userAgent: "ClaudeBot", allow: "/" },
+            { userAgent: "Google-Extended", allow: "/" },
         ],
         sitemap: absoluteUrl("/sitemap.xml"),
     };

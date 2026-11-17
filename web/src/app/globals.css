@@ -1093,6 +1093,28 @@ img {
 
 /* ── Phase 2 homepage content ── */
 .buyer-section,
+.evidence-section {
+    padding: 128px 0;
+    background: var(--bg-alt);
+}
+
+.evidence-section__inner {
+    max-width: 920px;
+}
+
+.evidence-section__copy {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+    line-height: 1.8;
+}
+
+.evidence-section__copy p {
+    margin: 0;
+}
+
 .faq-section {
     padding: 8rem 0;
     background: var(--bg);

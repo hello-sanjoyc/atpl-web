@@ -775,6 +775,7 @@ export interface ApiHomePageHomePage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    evidenceSection: Schema.Attribute.JSON & Schema.Attribute.Required;
     faqSection: Schema.Attribute.JSON & Schema.Attribute.Required;
     finalCta: Schema.Attribute.JSON & Schema.Attribute.Required;
     heroSection: Schema.Attribute.Relation<

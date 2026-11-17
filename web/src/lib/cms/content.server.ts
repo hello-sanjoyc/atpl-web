@@ -79,7 +79,7 @@ export function mapContent(homePage: CmsHomePage, settings: CmsSiteSettings): La
         aboutSection: { eyebrow: about.eyebrow, heading: about.heading, description: about.description, teamHeading: about.teamHeading, statistics: about.statistics?.map(({ value, suffix, label }) => ({ value, suffix: suffix ?? "", label })) ?? [], teamMembers: required(about.teamMembers, "About Section > Team members").sort((a, b) => a.sortOrder - b.sortOrder).map(mapTeamMember) },
         aboutPage: about.pageContent && about.seo ? { pageContent: about.pageContent as NonNullable<LandingPageContent["aboutPage"]>["pageContent"], seo: mapSeo(about.seo) } : undefined,
         contactSection: { eyebrow: contact.eyebrow, heading: contact.heading, description: contact.description, email: contact.email, location: contact.location },
-        buyerSegments: homePage.buyerSegments as LandingPageContent["buyerSegments"], processSection: homePage.processSection as LandingPageContent["processSection"], faqSection: homePage.faqSection as LandingPageContent["faqSection"], finalCta: homePage.finalCta as LandingPageContent["finalCta"],
+        buyerSegments: homePage.buyerSegments as LandingPageContent["buyerSegments"], processSection: homePage.processSection as LandingPageContent["processSection"], faqSection: homePage.faqSection as LandingPageContent["faqSection"], evidenceSection: homePage.evidenceSection as LandingPageContent["evidenceSection"], finalCta: homePage.finalCta as LandingPageContent["finalCta"],
     };
 }
 

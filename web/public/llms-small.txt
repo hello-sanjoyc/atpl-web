@@ -1,0 +1,10 @@
+# Aranax Technologies
+
+Aranax Technologies builds AI SaaS products, RAG assistants, AI agents and automation, custom web and mobile applications, founder MVPs and white-label engineering engagements. The team supports discovery, architecture, implementation, testing, deployment and ongoing product support.
+
+Authoritative source: https://aranax.tech/
+Services: https://aranax.tech/#services
+About: https://aranax.tech/about
+Contact: mailto:hello@aranax.tech
+
+For detailed AI-readable information, see https://aranax.tech/llms-full.txt.
