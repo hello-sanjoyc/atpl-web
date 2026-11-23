@@ -2,7 +2,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../app/AuthContext';
 import { NavDropdown } from './NavDropdown';
-import { PRIMARY_NAV, MORE_NAV, visibleItems } from '../../app/navConfig';
+import { PRIMARY_NAV, MORE_NAV, SETTINGS_NAV, visibleItems } from '../../app/navConfig';
 
 function IconBell() {
   return (
@@ -41,6 +41,15 @@ function IconClose() {
   );
 }
 
+const ROLE_LABELS: Record<string, string> = {
+  super_admin:        'Super Admin',
+  sales_manager:      'Sales Manager',
+  sales_executive:    'Sales Executive',
+  marketing_manager:  'Marketing Manager',
+  finance:            'Finance',
+  read_only_analyst:  'Analyst',
+};
+
 export function Navbar() {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -53,6 +62,7 @@ export function Navbar() {
 
   const primary = visibleItems(PRIMARY_NAV, user?.role);
   const more = visibleItems(MORE_NAV, user?.role);
+  const settings = visibleItems(SETTINGS_NAV, user?.role);
   const allItems = [...primary, ...more];
 
   useEffect(() => {
@@ -99,7 +109,7 @@ export function Navbar() {
               <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" fill="currentColor" />
             </svg>
           </span>
-          <span className="text-[17px] font-bold tracking-tight text-[#0f1117] max-[900px]:hidden max-sm:inline">Aranax</span>
+          <span className="font-serif text-[18px] font-medium tracking-tight text-[#0f1117] max-[900px]:hidden max-sm:inline">Aranax</span>
         </div>
 
         {/* Center pill — desktop */}
@@ -138,12 +148,16 @@ export function Navbar() {
             <IconBell />
             <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" aria-hidden />
           </button>
-          <button
-            className="relative w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:bg-white/60 hover:text-[#0f1117] transition-colors max-sm:hidden"
-            aria-label="Settings"
-          >
-            <IconSettings />
-          </button>
+          {settings.length > 0 && (
+            <button
+              onClick={() => navigate('/settings')}
+              className="relative w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:bg-white/60 hover:text-[#0f1117] transition-colors max-sm:hidden"
+              aria-label="Settings"
+              title="Settings"
+            >
+              <IconSettings />
+            </button>
+          )}
           <div ref={userMenuRef} className="relative shrink-0">
             <button
               onClick={() => setUserMenuOpen((v) => !v)}
@@ -155,10 +169,16 @@ export function Navbar() {
               {initials}
             </button>
             {userMenuOpen && (
-              <div role="menu" className="absolute right-0 top-[calc(100%+10px)] min-w-[200px] bg-white rounded-2xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,.14),0_2px_8px_rgba(0,0,0,.06)] z-50">
+              <div role="menu" className="absolute right-0 top-[calc(100%+10px)] min-w-[220px] bg-white rounded-2xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,.14),0_2px_8px_rgba(0,0,0,.06)] z-50">
+                {/* Profile block */}
                 <div className="px-3 py-2.5 border-b border-[#eef1f7] mb-1">
                   <p className="text-[13px] font-semibold text-[#0f1117] truncate">{user?.name}</p>
                   <p className="text-xs text-[#9ca3af] truncate">{user?.email}</p>
+                  {user?.role && (
+                    <span className="mt-1.5 inline-block px-2 py-0.5 rounded-full bg-[#f0f4ff] font-mono text-[10px] font-medium text-[#00308a] uppercase tracking-wide">
+                      {ROLE_LABELS[user.role] ?? user.role}
+                    </span>
+                  )}
                 </div>
                 <button
                   onClick={handleLogout}
@@ -219,6 +239,25 @@ export function Navbar() {
                 {label}
               </NavLink>
             ))}
+            {settings.length > 0 && (
+              <>
+                <div className="border-t border-white/10 my-2" />
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) =>
+                    [
+                      'flex items-center gap-2 px-4 py-3 rounded-xl text-[15px] font-medium transition-colors',
+                      isActive
+                        ? 'bg-[#f86223] text-white font-bold'
+                        : 'text-white/85 hover:bg-white/[.12] hover:text-white',
+                    ].join(' ')
+                  }
+                >
+                  <IconSettings />
+                  Settings
+                </NavLink>
+              </>
+            )}
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 mt-auto px-4 py-3 rounded-xl text-[15px] font-medium text-[#ff8a9b] hover:bg-white/[.08] transition-colors"

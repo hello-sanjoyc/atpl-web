@@ -1,4 +1,6 @@
 import type { Logger } from 'pino';
+import type { DbExecutor } from '../db/client.js';
+import { securityEvents } from '../db/schema/security.js';
 
 export const SECURITY_EVENTS = [
   'auth.login_success',
@@ -22,14 +24,18 @@ interface Bucket {
 }
 
 /**
- * Security events go to the same Pino stream as application logs, tagged `category: "security"`.
- * Each event name is rate-limited per minute so that an attacker cannot flood the log sink.
+ * Security events go to the same Pino stream as application logs, tagged `category: "security"`,
+ * AND are persisted unconditionally to the `security_events` table for the Settings → Security
+ * access-log viewer. Each event name is rate-limited per minute on the Pino side only, so an
+ * attacker cannot flood the log sink — persistence never drops events, since brute-force
+ * investigation data must not be lossy.
  */
 export class SecurityEventLogger {
   private readonly buckets = new Map<string, Bucket>();
 
   constructor(
     private readonly log: Logger,
+    private readonly db: DbExecutor,
     private readonly perMinuteLimit = 30,
     private readonly now: () => number = Date.now,
   ) {}
@@ -50,9 +56,32 @@ export class SecurityEventLogger {
       bucket.count += 1;
       if (bucket.count > this.perMinuteLimit) {
         bucket.suppressed += 1;
+        this.persist(event, fields, level);
         return;
       }
     }
     this.log[level]({ category: 'security', event, ...fields }, `Security event: ${event}`);
+    this.persist(event, fields, level);
+  }
+
+  private persist(event: SecurityEvent, fields: Record<string, unknown>, level: 'warn' | 'error'): void {
+    const { userId, ip, userAgent, ...metadata } = fields as Record<string, unknown> & {
+      userId?: string;
+      ip?: string;
+      userAgent?: string;
+    };
+    void this.db
+      .insert(securityEvents)
+      .values({
+        event,
+        level,
+        userId: typeof userId === 'string' ? userId : null,
+        ip: typeof ip === 'string' ? ip : null,
+        userAgent: typeof userAgent === 'string' ? userAgent : null,
+        metadata,
+      })
+      .catch((err: unknown) => {
+        this.log.error({ category: 'security', event: 'security.persist_failed', originalEvent: event, err }, 'Failed to persist security event');
+      });
   }
 }

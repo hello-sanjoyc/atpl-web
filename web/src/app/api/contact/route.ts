@@ -1,25 +1,28 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-import { cmsPost } from "@/lib/api/axios.server";
-import { CMS_ENDPOINTS } from "@/lib/api/endpoints";
+import { crmPost } from "@/lib/api/axios.server";
+import { CRM_ENDPOINTS } from "@/lib/api/endpoints";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type ContactPayload = {
-    fname?: string;
-    lname?: string;
-    firstName?: string;
-    lastName?: string;
+    name?: string;
     email?: string;
-    project?: string;
+    phone?: string;
+    company?: string;
+    country?: string;
+    serviceInterest?: string;
+    budgetRange?: string;
+    timeline?: string;
     message?: string;
+    consent?: boolean;
 };
 
-type ContactResponse = {
-    data: null;
-    message: string;
+type LeadResponse = {
+    success: boolean;
+    data: { status: string; reference: string | null };
 };
 
 function errorDetails(payload: unknown) {
@@ -57,16 +60,52 @@ export async function POST(request: Request) {
         );
     }
 
+    const name = payload.name?.trim();
+    const email = payload.email?.trim();
+    const phone = payload.phone?.trim();
+
+    if (!name || !email || !phone || !payload.consent) {
+        return NextResponse.json(
+            { message: "Please fill in all required fields." },
+            { status: 400, headers: { "Cache-Control": "no-store" } },
+        );
+    }
+
+    const leadBody = {
+        name,
+        email,
+        phone,
+        company: payload.company?.trim() || undefined,
+        country: payload.country || undefined,
+        serviceInterest: payload.serviceInterest || undefined,
+        budgetRange: payload.budgetRange || undefined,
+        timeline: payload.timeline || undefined,
+        message: payload.message?.trim() || undefined,
+        formSource: "website_contact",
+        consent: {
+            privacyPolicy: true as const,
+            privacyPolicyVersion:
+                process.env.CRM_PRIVACY_POLICY_VERSION ?? "2025-01-v1",
+            marketing: false,
+        },
+    };
+
     try {
-        const result = await cmsPost<ContactResponse, ContactPayload>(
-            CMS_ENDPOINTS.contact,
-            payload,
+        const result = await crmPost<LeadResponse, typeof leadBody>(
+            CRM_ENDPOINTS.publicLeads,
+            leadBody,
         );
 
-        return NextResponse.json(result, {
-            status: 201,
-            headers: { "Cache-Control": "no-store" },
-        });
+        return NextResponse.json(
+            {
+                data: result.data,
+                message: "Thanks. Your message has been sent successfully.",
+            },
+            {
+                status: 201,
+                headers: { "Cache-Control": "no-store" },
+            },
+        );
     } catch (error) {
         const status = axios.isAxiosError(error)
             ? (error.response?.status ?? 502)
@@ -78,7 +117,7 @@ export async function POST(request: Request) {
             details.message ?? "We could not submit your message. Please try again.";
 
         if (status >= 500) {
-            console.error("Strapi contact submission failed.", {
+            console.error("CRM lead submission failed.", {
                 status,
                 code: axios.isAxiosError(error) ? error.code : undefined,
             });

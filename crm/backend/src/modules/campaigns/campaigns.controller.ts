@@ -1,10 +1,10 @@
 import type { FastifyPluginAsync } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { idParam, paginationQuery } from '../common/schemas.js';
+import { idParam } from '../common/schemas.js';
 import { sendList, sendOk } from '../common/response.js';
 import { createCampaignsService } from './campaigns.service.js';
-import { createAcquisitionCostBody, createCampaignBody, createReferralBody, updateCampaignBody } from './campaigns.schema.js';
+import { createAcquisitionCostBody, createCampaignBody, createReferralBody, listCampaignsQuery, listReferralsQuery, updateCampaignBody } from './campaigns.schema.js';
 
 const security = [{ bearerAuth: [] }];
 
@@ -14,9 +14,9 @@ const campaignsController: FastifyPluginAsync = async (app) => {
 
   typed.get(
     '/campaigns',
-    { schema: { tags: ['Campaigns'], summary: 'List campaigns', querystring: paginationQuery, security }, preHandler: app.authorize('analytics.read') },
+    { schema: { tags: ['Campaigns'], summary: 'List campaigns', querystring: listCampaignsQuery, security }, preHandler: app.authorize('analytics.read') },
     async (request, reply) => {
-      const { items, page } = await service.list(request.query.page, request.query.pageSize);
+      const { items, page } = await service.list(request.query);
       return sendList(request, reply, items, page);
     },
   );
@@ -71,9 +71,9 @@ const campaignsController: FastifyPluginAsync = async (app) => {
 
   typed.get(
     '/referrals',
-    { schema: { tags: ['Referrals'], summary: 'List referral sources', querystring: paginationQuery, security }, preHandler: app.authorize('referrals.manage') },
+    { schema: { tags: ['Referrals'], summary: 'List referral sources', querystring: listReferralsQuery, security }, preHandler: app.authorize('referrals.manage') },
     async (request, reply) => {
-      const { items, page } = await service.listReferrals(request.query.page, request.query.pageSize);
+      const { items, page } = await service.listReferrals(request.query);
       return sendList(request, reply, items, page);
     },
   );

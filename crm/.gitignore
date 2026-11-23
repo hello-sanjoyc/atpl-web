@@ -6,3 +6,4 @@ logs/
 !.env.example
 coverage/
 *.log
+.demo-credentials.json

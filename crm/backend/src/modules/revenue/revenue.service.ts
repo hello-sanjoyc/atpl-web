@@ -28,8 +28,11 @@ export interface ExchangeRateInput {
   source: string;
 }
 
+import { withCache } from '../../cache/cache.service.js';
+import { CACHE_KEYS, CACHE_TTL } from '@aranax/contracts';
+
 export function createRevenueService(deps: Container) {
-  const { db, logger } = deps;
+  const { db, cache, logger } = deps;
   const log = logger.child({ module: 'revenue' });
 
   return {
@@ -74,8 +77,13 @@ export function createRevenueService(deps: Container) {
       return row;
     },
 
-    async listRecords(query: { kind?: string; currency?: string; from?: string; to?: string; customerId?: string; page: number; pageSize: number }) {
-      const { rows, total } = await listRevenueRecords(db, query, { limit: query.pageSize, offset: (query.page - 1) * query.pageSize });
+    async listRecords(query: { kind?: string; currency?: string; from?: string; to?: string; customerId?: string; page: number; pageSize: number; sort: 'recognizedOn' | 'amount'; order: 'asc' | 'desc' }) {
+      const { rows, total } = await listRevenueRecords(db, query, {
+        limit: query.pageSize,
+        offset: (query.page - 1) * query.pageSize,
+        sort: query.sort,
+        order: query.order,
+      });
       return { items: rows, page: pagination(query.page, query.pageSize, total) };
     },
 
@@ -99,12 +107,17 @@ export function createRevenueService(deps: Container) {
         });
         return created;
       });
+      await cache.delPattern(CACHE_KEYS.exchangeRates);
       return row;
     },
 
-    async listRates(page: number, pageSize: number) {
-      const { rows, total } = await listExchangeRates(db, { limit: pageSize, offset: (page - 1) * pageSize });
-      return { items: rows, page: pagination(page, pageSize, total) };
+    async listRates(query: { page: number; pageSize: number; sort: 'rateDate' | 'base'; order: 'asc' | 'desc' }) {
+      const { page, pageSize, sort, order } = query;
+      const cacheKey = `${CACHE_KEYS.exchangeRates}:p${page}:s${pageSize}:so${sort}:o${order}`;
+      return withCache(cache, cacheKey, CACHE_TTL.reference.seconds, async () => {
+        const { rows, total } = await listExchangeRates(db, { limit: pageSize, offset: (page - 1) * pageSize, sort, order });
+        return { items: rows, page: pagination(page, pageSize, total) };
+      });
     },
   };
 }

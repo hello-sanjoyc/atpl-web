@@ -1,9 +1,24 @@
-import { ValidationError } from '../../errors/app.error.js';
+import { NotFoundError, ValidationError } from '../../errors/app.error.js';
 import type { Database } from '../../db/client.js';
-import { listActiveOptions, type OptionRow } from './options.repository.js';
+import type { AuthUser } from '../../types/fastify.js';
+import type { CacheService } from '../../cache/cache.service.js';
+import { withCache } from '../../cache/cache.service.js';
+import {
+  deleteOption,
+  insertOption,
+  listActiveOptions,
+  listAllOptions,
+  updateOption,
+  type CreateOptionInput,
+  type OptionItemRecord,
+  type OptionRow,
+  type UpdateOptionInput,
+} from './options.repository.js';
+import { CACHE_KEYS, CACHE_TTL } from '@aranax/contracts';
 
 interface OptionsServiceDeps {
   db: Database;
+  cache?: CacheService;
 }
 
 export interface OptionItemDto {
@@ -50,6 +65,13 @@ export interface OptionsService {
   ): Promise<void>;
   /** Drop the cache so the next read reflects DB changes immediately (used after seeding/tests). */
   invalidate(): void;
+
+  // ── Admin management (Settings → General) ──────────────────────────────────
+  /** Every option row, active or not, for the admin management view. */
+  listAll(): Promise<OptionItemRecord[]>;
+  create(actor: AuthUser, input: CreateOptionInput): Promise<OptionItemRecord>;
+  update(actor: AuthUser, id: string, patch: UpdateOptionInput): Promise<OptionItemRecord>;
+  delete(actor: AuthUser, id: string): Promise<void>;
 }
 
 /** Category keys accepted by the service; kept as a string alias to avoid a circular import. */
@@ -60,6 +82,18 @@ export function createOptionsService(deps: OptionsServiceDeps): OptionsService {
   let inflight: Promise<Snapshot> | null = null;
 
   async function load(): Promise<Snapshot> {
+    // Outer Redis cache layer when available
+    if (deps.cache) {
+      const rows = await withCache(
+        deps.cache,
+        CACHE_KEYS.options,
+        CACHE_TTL.static.seconds,
+        () => listActiveOptions(deps.db),
+      );
+      snapshot = buildSnapshot(rows);
+      return snapshot;
+    }
+    // In-process cache fallback
     const rows = await listActiveOptions(deps.db);
     snapshot = buildSnapshot(rows);
     return snapshot;
@@ -99,6 +133,36 @@ export function createOptionsService(deps: OptionsServiceDeps): OptionsService {
     },
     invalidate() {
       snapshot = null;
+      void deps.cache?.del(CACHE_KEYS.options);
+    },
+
+    async listAll() {
+      return listAllOptions(deps.db);
+    },
+
+    async create(_actor, input) {
+      const category = input.category.trim();
+      const value = input.value.trim();
+      if (!category) throw new ValidationError('Category is required.', [{ field: 'category', message: 'Category is required.' }]);
+      if (!value) throw new ValidationError('Value is required.', [{ field: 'value', message: 'Value is required.' }]);
+      const row = await insertOption(deps.db, { ...input, category, value });
+      snapshot = null;
+      void deps.cache?.del(CACHE_KEYS.options);
+      return row;
+    },
+
+    async update(_actor, id, patch) {
+      const row = await updateOption(deps.db, id, patch);
+      if (!row) throw new NotFoundError(undefined, 'Option not found.');
+      snapshot = null;
+      void deps.cache?.del(CACHE_KEYS.options);
+      return row;
+    },
+
+    async delete(_actor, id) {
+      await deleteOption(deps.db, id);
+      snapshot = null;
+      void deps.cache?.del(CACHE_KEYS.options);
     },
   };
 }

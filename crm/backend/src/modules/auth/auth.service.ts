@@ -19,6 +19,11 @@ export interface LoginResult {
     user: { id: string; email: string; name: string; role: string };
 }
 
+export interface LoginContext {
+    ip?: string;
+    userAgent?: string;
+}
+
 export function createAuthService(
     deps: Container,
     signAccessToken: (userId: string) => string,
@@ -30,6 +35,7 @@ export function createAuthService(
         async login(
             emailInput: string,
             password: string,
+            context: LoginContext = {},
         ): Promise<LoginResult> {
             const email = emailInput.toLowerCase();
             const user = await findUserByEmail(db, email);
@@ -40,6 +46,7 @@ export function createAuthService(
                 security.record("auth.login_failed", {
                     reason: "unknown_account",
                     emailFingerprint: fingerprint(email),
+                    ...context,
                 });
                 throw new AuthenticationError(
                     ErrorCodes.INVALID_CREDENTIALS,
@@ -51,6 +58,7 @@ export function createAuthService(
                 security.record("auth.login_failed", {
                     reason: "locked",
                     userId: user.id,
+                    ...context,
                 });
                 throw new AuthenticationError(
                     ErrorCodes.ACCOUNT_LOCKED,
@@ -76,7 +84,7 @@ export function createAuthService(
                 if (lockedUntil) {
                     security.record(
                         "auth.account_locked",
-                        { userId: user.id, lockMinutes: LOGIN_LOCK_MINUTES },
+                        { userId: user.id, lockMinutes: LOGIN_LOCK_MINUTES, ...context },
                         "error",
                     );
                 } else {
@@ -84,6 +92,7 @@ export function createAuthService(
                         reason: valid ? "inactive" : "bad_password",
                         userId: user.id,
                         failures,
+                        ...context,
                     });
                 }
                 throw new AuthenticationError(
@@ -93,7 +102,7 @@ export function createAuthService(
             }
 
             await resetLoginState(db, user.id);
-            security.record("auth.login_success", { userId: user.id }, "warn");
+            security.record("auth.login_success", { userId: user.id, ...context }, "warn");
             log.info(
                 { event: "auth.login_success", userId: user.id },
                 "Login succeeded",

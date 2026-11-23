@@ -3,6 +3,8 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { LEAD_STAGES } from '../../config/constants.js';
 import { NotFoundError, AuthenticationError, ValidationError } from '../../errors/app.error.js';
+import { withCache } from '../../cache/cache.service.js';
+import { CACHE_KEYS, CACHE_TTL } from '@aranax/contracts';
 import { ErrorCodes } from '../../errors/error-codes.js';
 import { sha256Hex } from '../../utils/hash.js';
 import { withIdempotency } from '../common/idempotency.js';
@@ -59,12 +61,16 @@ const bookingController: FastifyPluginAsync = async (app) => {
         },
       },
       async (request, reply) => {
-        const enabled = config.BOOKING_PROVIDER !== 'none' && Boolean(config.BOOKING_URL);
-        return sendOk(request, reply, {
-          provider: config.BOOKING_PROVIDER,
-          enabled,
-          bookingUrl: enabled ? config.BOOKING_URL : null,
-        });
+        const result = await withCache(
+          app.deps.cache,
+          CACHE_KEYS.bookingConfig,
+          CACHE_TTL.reference.seconds,
+          async () => {
+            const enabled = config.BOOKING_PROVIDER !== 'none' && Boolean(config.BOOKING_URL);
+            return { provider: config.BOOKING_PROVIDER, enabled, bookingUrl: enabled ? config.BOOKING_URL : null };
+          },
+        );
+        return sendOk(request, reply, result);
       },
     );
 
@@ -127,6 +133,8 @@ const bookingController: FastifyPluginAsync = async (app) => {
                   name: event.data.name ?? email.split('@')[0] ?? 'Booking contact',
                   email,
                   source: 'discovery_request',
+                  captureChannel: 'other',
+                  leadSource: 'other',
                   formSource: `booking:${provider}`,
                   campaignId: null,
                   referralId: null,

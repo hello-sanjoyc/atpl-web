@@ -6,7 +6,7 @@ type CreateCampaignInput = z.infer<typeof createCampaignBody>;
 import { ConflictError, NotFoundError } from '../../errors/app.error.js';
 import { ErrorCodes } from '../../errors/error-codes.js';
 import type { AuthUser } from '../../types/fastify.js';
-import { recordAudit } from '../audit/audit.repository.js';
+import { recordAudit, diffFields } from '../audit/audit.repository.js';
 import { pagination } from '../common/response.js';
 import {
   findCampaignById,
@@ -21,9 +21,14 @@ import {
   updateCampaign,
   findReferralByCode,
 } from './campaigns.repository.js';
+import { listLeadsByReferralId } from '../leads/leads.repository.js';
+import { listCustomersByReferralId } from '../customers/customers.repository.js';
+
+import { withCache } from '../../cache/cache.service.js';
+import { CACHE_KEYS, CACHE_TTL, QUERY_KEYS } from '@aranax/contracts';
 
 export function createCampaignsService(deps: Container) {
-  const { db, logger } = deps;
+  const { db, cache, logger, options } = deps;
   const log = logger.child({ module: 'campaigns' });
 
   async function requireCampaign(id: string) {
@@ -33,12 +38,17 @@ export function createCampaignsService(deps: Container) {
   }
 
   return {
-    async list(page: number, pageSize: number) {
-      const { rows, total } = await listCampaigns(db, pageSize, (page - 1) * pageSize);
-      return { items: rows, page: pagination(page, pageSize, total) };
+    async list(query: { page: number; pageSize: number; status?: string; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' }) {
+      const { page, pageSize, status, sort, order } = query;
+      const cacheKey = `${CACHE_KEYS.campaigns}:p${page}:s${pageSize}:st${status ?? 'any'}:so${sort}:o${order}`;
+      return withCache(cache, cacheKey, CACHE_TTL.list.seconds, async () => {
+        const { rows, total } = await listCampaigns(db, { status, limit: pageSize, offset: (page - 1) * pageSize, sort, order });
+        return { items: rows, page: pagination(page, pageSize, total) };
+      });
     },
 
     async create(actor: AuthUser, input: CreateCampaignInput) {
+      await options.validateFields(input, { channel: 'campaign_channel' });
       if (await findCampaignBySlug(db, input.slug)) {
         throw new ConflictError(ErrorCodes.CONFLICT, 'A campaign with this slug already exists.');
       }
@@ -56,14 +66,16 @@ export function createCampaignsService(deps: Container) {
         return created;
       });
       log.info({ event: 'campaign.created', campaignId: row.id, actorUserId: actor.id }, 'Campaign created');
+      await cache.delPattern(CACHE_KEYS.campaigns);
       return row;
     },
 
     async update(actor: AuthUser, id: string, patch: Record<string, unknown>) {
-      await requireCampaign(id);
+      const current = await requireCampaign(id);
+      await options.validateFields(patch, { channel: 'campaign_channel' });
       const row = await db.transaction(async (tx) => {
         const updated = await updateCampaign(tx, id, patch);
-        await recordAudit(tx, { actorId: actor.id, action: 'campaign.updated', entityType: 'campaign', entityId: id, metadata: { fields: Object.keys(patch) } });
+        await recordAudit(tx, { actorId: actor.id, action: 'campaign.updated', entityType: 'campaign', entityId: id, metadata: diffFields(current, patch) });
         return updated;
       });
       return row;
@@ -117,18 +129,24 @@ export function createCampaignsService(deps: Container) {
         await recordAudit(tx, { actorId: actor.id, action: 'referral.created', entityType: 'referral', entityId: created.id });
         return created;
       });
+      await cache.delPattern(CACHE_KEYS.referrals);
       return row;
     },
 
-    async listReferrals(page: number, pageSize: number) {
-      const { rows, total } = await listReferrals(db, pageSize, (page - 1) * pageSize);
-      return { items: rows, page: pagination(page, pageSize, total) };
+    async listReferrals(query: { page: number; pageSize: number; sort: 'referrerName' | 'createdAt'; order: 'asc' | 'desc' }) {
+      const { page, pageSize, sort, order } = query;
+      const cacheKey = `${CACHE_KEYS.referrals}:p${page}:s${pageSize}:so${sort}:o${order}`;
+      return withCache(cache, cacheKey, CACHE_TTL.list.seconds, async () => {
+        const { rows, total } = await listReferrals(db, { limit: pageSize, offset: (page - 1) * pageSize, sort, order });
+        return { items: rows, page: pagination(page, pageSize, total) };
+      });
     },
 
     async getReferral(id: string) {
       const row = await findReferralById(db, id);
       if (!row) throw new NotFoundError(ErrorCodes.NOT_FOUND, 'The requested referral was not found.');
-      return row;
+      const [leads, customers] = await Promise.all([listLeadsByReferralId(db, id), listCustomersByReferralId(db, id)]);
+      return { referral: row, leads, customers };
     },
   };
 }

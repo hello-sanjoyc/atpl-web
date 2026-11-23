@@ -16,7 +16,7 @@ export function StatCard({ icon, label, value, trend, trendUp, sparkline }: Prop
         <div className="w-9 h-9 rounded-xl bg-[#e4e9f4] flex items-center justify-center text-gray-500 shrink-0">
           {icon}
         </div>
-        <span className="flex-1 text-[11px] font-semibold tracking-wide uppercase text-gray-500">{label}</span>
+        <span className="flex-1 font-mono text-[11px] font-medium tracking-wide uppercase text-gray-500">{label}</span>
         <button className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 transition-opacity" aria-label="More options">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
             <circle cx="8" cy="4" r="1.2" fill="currentColor" />
@@ -26,7 +26,7 @@ export function StatCard({ icon, label, value, trend, trendUp, sparkline }: Prop
         </button>
       </div>
       <div className="flex items-end justify-between gap-3">
-        <span className="text-[30px] font-extrabold tracking-[-1px] text-[#0f1117] leading-none">{value}</span>
+        <span className="font-serif text-[30px] font-medium tracking-tight text-[#0f1117] leading-none">{value}</span>
         {sparkline && <div className="flex-1 max-w-[90px] h-11 flex items-end">{sparkline}</div>}
       </div>
       {trend && (

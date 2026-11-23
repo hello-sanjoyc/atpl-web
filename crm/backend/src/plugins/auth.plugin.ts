@@ -35,12 +35,12 @@ export default fp(
         const payload = await request.jwtVerify<{ sub: string }>();
         subject = payload.sub;
       } catch {
-        security.record('auth.invalid_token', { route: request.routeOptions.url });
+        security.record('auth.invalid_token', { route: request.routeOptions.url, ip: request.ip });
         throw new AuthenticationError(ErrorCodes.UNAUTHENTICATED, 'The access token is invalid or has expired.');
       }
       const user = await findActiveUserById(db, subject);
       if (!user) {
-        security.record('auth.invalid_token', { reason: 'inactive_or_missing_user' });
+        security.record('auth.invalid_token', { reason: 'inactive_or_missing_user', ip: request.ip });
         throw new AuthenticationError(ErrorCodes.UNAUTHENTICATED, 'The access token is invalid or has expired.');
       }
       request.user = { id: user.id, email: user.email, name: user.name, role: user.role };

@@ -1,7 +1,56 @@
 import { sql } from 'drizzle-orm';
-import { check, index, integer, jsonb, pgTable, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { boolean, check, index, integer, jsonb, pgTable, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { inList, tstz } from './common.js';
 import { leads } from './leads.js';
+import { users } from './identity.js';
+
+/**
+ * Generic single-row-per-key app settings, editable by super_admin from Settings → General.
+ * Values are stored as JSON so a single table covers any future scalar config without a migration
+ * per setting; each known key's shape is validated in its owning service, not here.
+ */
+export const appSettings = pgTable(
+  'app_settings',
+  {
+    key: text('key').primaryKey(),
+    value: jsonb('value').$type<unknown>().notNull(),
+    updatedBy: uuid('updated_by').references(() => users.id, { onDelete: 'set null' }),
+    updatedAt: tstz('updated_at').notNull().defaultNow(),
+  },
+);
+
+/** Human-readable label and description for each role, editable by super_admin. */
+export const roleMeta = pgTable(
+  'role_meta',
+  {
+    role: text('role').primaryKey(),
+    label: text('label').notNull(),
+    description: text('description').notNull().default(''),
+    updatedBy: uuid('updated_by').references(() => users.id, { onDelete: 'set null' }),
+    updatedAt: tstz('updated_at').notNull().defaultNow(),
+  },
+);
+
+/**
+ * DB-managed role permissions. Super Admin can toggle any permission for any role except super_admin
+ * (which always retains all permissions). Rows are seeded from the static defaults in migration 0009.
+ */
+export const rolePermissions = pgTable(
+  'role_permissions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    role: text('role').notNull(),
+    permission: text('permission').notNull(),
+    /** false = this role does NOT have this permission (soft toggle). */
+    granted: boolean('granted').notNull().default(true),
+    updatedBy: uuid('updated_by').references(() => users.id, { onDelete: 'set null' }),
+    updatedAt: tstz('updated_at').notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('role_permissions_role_perm_uq').on(t.role, t.permission),
+    index('role_permissions_role_idx').on(t.role),
+  ],
+);
 
 /** Transactional outbox: side effects are recorded in the same transaction as the business change. */
 export const outboxEvents = pgTable(

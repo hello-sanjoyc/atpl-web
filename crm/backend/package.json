@@ -16,6 +16,8 @@
         "db:migrate": "tsx --env-file-if-exists=.env src/db/migrate.ts",
         "db:seed": "tsx --env-file-if-exists=.env src/db/seed.ts",
         "db:seed:countries": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f src/db/countries.sql",
+        "db:seed:demo": "tsx --env-file-if-exists=.env src/db/seed-demo.ts",
+        "db:seed:demo:cleanup": "tsx --env-file-if-exists=.env src/db/seed-demo.ts --cleanup",
         "openapi:export": "tsx --env-file-if-exists=.env src/scripts/export-openapi.ts",
         "typecheck": "tsc -p tsconfig.json --noEmit",
         "test": "vitest run --project unit",
@@ -24,6 +26,7 @@
         "worker": "node --env-file-if-exists=.env dist/worker.js"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^1.10.0",
         "@aranax/contracts": "workspace:*",
         "@fastify/cors": "^11.4.2",
         "@fastify/helmet": "^13.2.0",

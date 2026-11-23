@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router';
@@ -6,6 +6,7 @@ import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Field, TextInput, SelectInput } from '../../components/form/fields';
 import { CountrySelect } from '../../components/form/CountrySelect';
+import { AsyncCombobox } from '../../components/form/AsyncCombobox';
 import { useResourceMutation } from '../_shared/hooks';
 import { useOptions } from '../_shared/useOptions';
 import { FormLayout } from '../../components/form/FormAside';
@@ -13,6 +14,7 @@ import { FORM_INFO } from '../_shared/formInfo';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 import type { Opportunity } from '../_shared/types';
+import { mapLead, mapCustomer } from '../_shared/comboboxMappers';
 import { DEFAULT_CURRENCY } from '@aranax/contracts';
 
 const schema = z.object({
@@ -31,7 +33,7 @@ type FormData = z.infer<typeof schema>;
 export default function OpportunityForm() {
   const navigate = useNavigate();
   const { optionsFor } = useOptions();
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors, isValid } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: { currency: DEFAULT_CURRENCY, opportunityType: 'new_business' },
@@ -86,11 +88,37 @@ export default function OpportunityForm() {
           <Field label="Country" htmlFor="country" error={errors.country?.message}>
             <CountrySelect id="country" {...register('country')} aria-invalid={!!errors.country} />
           </Field>
-          <Field label="Lead ID" htmlFor="leadId" hint="Link to an existing lead (optional)">
-            <TextInput id="leadId" {...register('leadId')} placeholder="uuid" />
+          <Field label="Lead" htmlFor="leadId" hint="Link to an existing lead (optional)">
+            <Controller
+              name="leadId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="leadId"
+                  url={endpoints.leads.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapLead}
+                  placeholder="Search leads by name or email…"
+                />
+              )}
+            />
           </Field>
-          <Field label="Customer ID" htmlFor="customerId" hint="Link to an existing customer (optional)">
-            <TextInput id="customerId" {...register('customerId')} placeholder="uuid" />
+          <Field label="Customer" htmlFor="customerId" hint="Link to an existing customer (optional)">
+            <Controller
+              name="customerId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="customerId"
+                  url={endpoints.customers.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapCustomer}
+                  placeholder="Search customers by name or email…"
+                />
+              )}
+            />
           </Field>
         </div>
 

@@ -1,17 +1,19 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router';
 import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Field, TextInput, SelectInput } from '../../components/form/fields';
-import { useResourceMutation } from '../_shared/hooks';
+import { AsyncCombobox } from '../../components/form/AsyncCombobox';
+import { useResourceDetail, useResourceMutation } from '../_shared/hooks';
 import { useOptions } from '../_shared/useOptions';
 import { FormLayout } from '../../components/form/FormAside';
 import { FORM_INFO } from '../_shared/formInfo';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
-import type { RevenueRecord } from '../_shared/types';
+import type { CustomerDetailResponse, RevenueRecord } from '../_shared/types';
+import { mapCustomer, mapOpportunity, contractToOption } from '../_shared/comboboxMappers';
 import { DEFAULT_CURRENCY } from '@aranax/contracts';
 
 const kindOptions = [
@@ -36,11 +38,18 @@ type FormData = z.infer<typeof schema>;
 export default function RevenueForm() {
   const navigate = useNavigate();
   const { optionsFor } = useOptions();
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormData>({
+  const { register, handleSubmit, control, watch, setValue, formState: { errors, isValid } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
     defaultValues: { kind: 'invoiced', currency: DEFAULT_CURRENCY },
   });
+
+  const customerId = watch('customerId');
+  const customerDetail = useResourceDetail<CustomerDetailResponse>(
+    ['customers', customerId],
+    customerId ? endpoints.customers.byId(customerId) : null,
+  );
+  const contractOptions = (customerDetail.data?.contracts ?? []).map(contractToOption);
 
   const mutation = useResourceMutation(
     (body: Record<string, unknown>) => http.post<RevenueRecord>(endpoints.revenue.createRecord, body),
@@ -82,14 +91,61 @@ export default function RevenueForm() {
           <Field label="Recognized on" htmlFor="recognizedOn" required error={errors.recognizedOn?.message}>
             <TextInput id="recognizedOn" type="date" {...register('recognizedOn')} aria-invalid={!!errors.recognizedOn} />
           </Field>
-          <Field label="Customer ID" htmlFor="customerId" hint="Optional" error={errors.customerId?.message}>
-            <TextInput id="customerId" {...register('customerId')} placeholder="customer UUID" />
+          <Field label="Customer" htmlFor="customerId" hint="Optional" error={errors.customerId?.message}>
+            <Controller
+              name="customerId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="customerId"
+                  url={endpoints.customers.list}
+                  value={field.value ?? ''}
+                  onChange={(id) => {
+                    field.onChange(id);
+                    setValue('contractId', '');
+                  }}
+                  mapResult={mapCustomer}
+                  placeholder="Search customers by name or email…"
+                />
+              )}
+            />
           </Field>
-          <Field label="Opportunity ID" htmlFor="opportunityId" hint="Optional" error={errors.opportunityId?.message}>
-            <TextInput id="opportunityId" {...register('opportunityId')} placeholder="opportunity UUID" />
+          <Field label="Opportunity" htmlFor="opportunityId" hint="Optional" error={errors.opportunityId?.message}>
+            <Controller
+              name="opportunityId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="opportunityId"
+                  url={endpoints.opportunities.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapOpportunity}
+                  placeholder="Search opportunities by title…"
+                />
+              )}
+            />
           </Field>
-          <Field label="Contract ID" htmlFor="contractId" hint="Optional" error={errors.contractId?.message}>
-            <TextInput id="contractId" {...register('contractId')} placeholder="contract UUID" />
+          <Field
+            label="Contract"
+            htmlFor="contractId"
+            hint={customerId ? 'Optional' : 'Pick a customer first'}
+            error={errors.contractId?.message}
+          >
+            <Controller
+              name="contractId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="contractId"
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  staticOptions={contractOptions}
+                  disabled={!customerId}
+                  placeholder={customerId ? 'Search this customer’s contracts…' : 'Pick a customer first'}
+                />
+              )}
+            />
           </Field>
         </div>
 

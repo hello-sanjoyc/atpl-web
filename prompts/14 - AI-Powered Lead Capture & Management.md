@@ -70,3 +70,5 @@ The new AI-powered CRM product that can serve software agencies, consultants, se
     Analyze which marketing channels and campaigns generate qualified leads, opportunities and actual revenue.
 
     Traditional CRM reporting often focuses on how many leads each channel produces. AI-assisted attribution goes further by examining lead quality, conversion performance, customer journeys and revenue outcomes.
+
+Keep the existing features and add the AI features on top of that. Make the database and API level changes accordingly.

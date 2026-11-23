@@ -50,6 +50,12 @@ const envSchema = z
     SMTP_FROM: z.string().optional(),
     SALES_NOTIFICATION_EMAIL: z.email().optional(),
 
+    ANTHROPIC_API_KEY: z.string().optional(),
+    ANTHROPIC_MODEL: z.string().default('claude-sonnet-4-6'),
+    ANTHROPIC_MAX_TOKENS: z.coerce.number().int().min(100).max(8192).default(2048),
+    /** Secret used to AES-256-GCM encrypt LLM API keys stored in the DB. Must be ≥32 chars. */
+    LLM_ENCRYPTION_SECRET: z.string().min(32).default('change-me-to-a-32-char-secret-!!'),
+
     CRM_PROVIDER: z.enum(['none', 'hubspot']).default('none'),
     HUBSPOT_ACCESS_TOKEN: z.string().optional(),
 

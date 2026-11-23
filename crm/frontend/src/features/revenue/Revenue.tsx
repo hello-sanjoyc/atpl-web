@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { DataTable, type Column } from '../../components/DataTable';
 import { FilterBar, FilterSelect } from '../../components/FilterBar';
 import { Badge } from '../../components/Badge';
+import { Pager } from '../../components/Pager';
+import { SortControl } from '../../components/SortControl';
 import { useResourceList } from '../_shared/hooks';
+import { usePagedSort } from '../_shared/usePagedSort';
 import { formatDate, formatMoney } from '../../lib/format';
 import { endpoints } from '../../api/endpoints';
 import type { RevenueRecord, ExchangeRate } from '../_shared/types';
@@ -12,6 +16,14 @@ import type { RevenueRecord, ExchangeRate } from '../_shared/types';
 const kindOptions = [
   { value: 'invoiced', label: 'Invoiced' },
   { value: 'collected', label: 'Collected' },
+];
+const recordsSortOptions = [
+  { value: 'recognizedOn', label: 'Recognized date' },
+  { value: 'amount', label: 'Amount' },
+];
+const ratesSortOptions = [
+  { value: 'rateDate', label: 'Date' },
+  { value: 'base', label: 'Base currency' },
 ];
 
 type Tab = 'records' | 'rates';
@@ -52,7 +64,8 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
 
 function RecordsTab() {
   const [kind, setKind] = useState('');
-  const params: Record<string, unknown> = { pageSize: 25 };
+  const { page, pageSize, sort, order, setPage, setPageSize, setSort, setOrder, reset } = usePagedSort('recognizedOn', 'desc');
+  const params: Record<string, unknown> = { page, pageSize, sort, order };
   if (kind) params.kind = kind;
 
   const { data, isLoading, error } = useResourceList<RevenueRecord>(['revenue-records'], endpoints.revenue.records, params);
@@ -61,13 +74,23 @@ function RecordsTab() {
     { key: 'kind', header: 'Kind', render: (r) => <Badge value={r.kind} /> },
     { key: 'amount', header: 'Amount', render: (r) => <span className="font-semibold">{formatMoney(r.amount, r.currency)}</span> },
     { key: 'recognizedOn', header: 'Recognized', render: (r) => <span className="text-[#6b7280]">{formatDate(r.recognizedOn)}</span> },
-    { key: 'customerId', header: 'Customer', render: (r) => <span className="text-[#6b7280] truncate block max-w-[160px]">{r.customerId ?? '—'}</span> },
+    {
+      key: 'customerId',
+      header: 'Customer',
+      render: (r) =>
+        r.customerId && r.customerName ? (
+          <Link to={`/customers/${r.customerId}`} className="text-[#f86223] hover:underline truncate block max-w-[160px]">{r.customerName}</Link>
+        ) : (
+          <span className="text-[#cbd2e0]">—</span>
+        ),
+    },
   ];
 
   return (
     <>
       <FilterBar>
-        <FilterSelect value={kind} onChange={setKind} options={kindOptions} placeholder="All kinds" />
+        <FilterSelect value={kind} onChange={reset(setKind)} options={kindOptions} placeholder="All kinds" />
+        <SortControl sort={sort} order={order} onSortChange={setSort} onOrderChange={setOrder} options={recordsSortOptions} />
       </FilterBar>
       <div className="mt-4">
         <DataTable
@@ -78,13 +101,15 @@ function RecordsTab() {
           error={error}
           emptyMessage="No revenue records yet."
         />
+        {data && <Pager pagination={data.pagination} onPageChange={setPage} onPageSizeChange={setPageSize} />}
       </div>
     </>
   );
 }
 
 function RatesTab() {
-  const { data, isLoading, error } = useResourceList<ExchangeRate>(['exchange-rates'], endpoints.revenue.exchangeRates, { pageSize: 25 });
+  const { page, pageSize, sort, order, setPage, setPageSize, setSort, setOrder } = usePagedSort('rateDate', 'desc');
+  const { data, isLoading, error } = useResourceList<ExchangeRate>(['exchange-rates'], endpoints.revenue.exchangeRates, { page, pageSize, sort, order });
 
   const columns: Column<ExchangeRate>[] = [
     { key: 'base', header: 'Base', render: (r) => <span className="font-semibold">{r.base}</span> },
@@ -95,13 +120,21 @@ function RatesTab() {
   ];
 
   return (
-    <DataTable
-      columns={columns}
-      rows={data?.items}
-      rowKey={(r) => r.id}
-      isLoading={isLoading}
-      error={error}
-      emptyMessage="No exchange rates yet."
-    />
+    <>
+      <FilterBar>
+        <SortControl sort={sort} order={order} onSortChange={setSort} onOrderChange={setOrder} options={ratesSortOptions} />
+      </FilterBar>
+      <div className="mt-4">
+        <DataTable
+          columns={columns}
+          rows={data?.items}
+          rowKey={(r) => r.id}
+          isLoading={isLoading}
+          error={error}
+          emptyMessage="No exchange rates yet."
+        />
+        {data && <Pager pagination={data.pagination} onPageChange={setPage} onPageSizeChange={setPageSize} />}
+      </div>
+    </>
   );
 }

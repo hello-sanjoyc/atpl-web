@@ -5,19 +5,60 @@ import { findLatestRate } from '../revenue/revenue.repository.js';
 import { listLeadRows, type LeadListFilter } from '../leads/leads.repository.js';
 import { maskContact, ownerScope } from '../leads/lead-access.js';
 import { listRevenueRecords } from '../revenue/revenue.repository.js';
-import { EXPORT_ROW_LIMIT, ROLE_PERMISSIONS, type Permission } from '../../config/constants.js';
+import { EXPORT_ROW_LIMIT, type Permission } from '../../config/constants.js';
 import { newId } from '../../logger/correlation.js';
 import { toCsv } from '../../utils/csv.js';
 import { MoneyDecimal, moneyInsufficient, moneyOk, toMoney, type MoneyResult } from '../../utils/money.js';
 import { resolvePeriod, type PeriodQuery } from '../../utils/period.js';
-import { countLeadsByQualification, countLeadsCreated, countOpportunitiesByStatus, sumRevenueForPeriod, toDateString, type PeriodBounds } from './analytics.repository.js';
+import {
+  countCustomersCreatedByMonth,
+  countLeadsByQualification,
+  countLeadsCreated,
+  countLeadsCreatedByMonth,
+  countOpportunitiesByStatus,
+  countOpportunitiesCreatedByMonth,
+  sumRevenueByMonth,
+  sumRevenueForPeriod,
+  toDateString,
+  type MonthlyCount,
+  type MonthlyRevenueByCurrency,
+  type PeriodBounds,
+} from './analytics.repository.js';
+import { getPermissionsForRole } from '../rbac/rbac.service.js';
 
-function hasPermission(user: AuthUser, permission: Permission): boolean {
-  return ROLE_PERMISSIONS[user.role].includes(permission);
+/** Lists "YYYY-MM" for every calendar month in [period.from, period.to), capped at 24 so a multi-year period stays readable. `period.to` is exclusive. */
+function monthsInPeriod(period: PeriodBounds): string[] {
+  const months: string[] = [];
+  const cursor = new Date(Date.UTC(period.from.getUTCFullYear(), period.from.getUTCMonth(), 1));
+  const end = new Date(Date.UTC(period.to.getUTCFullYear(), period.to.getUTCMonth(), 1));
+  while (cursor < end && months.length < 24) {
+    months.push(`${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, '0')}`);
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+  return months;
+}
+
+/** Fills in zero-count months the query omitted, so the trend chart gets a continuous axis. */
+function backfillMonths(rows: MonthlyCount[], months: string[]): MonthlyCount[] {
+  const byMonth = new Map(rows.map((r) => [r.month, r.count]));
+  return months.map((month) => ({ month, count: byMonth.get(month) ?? 0 }));
+}
+
+/** The trailing `n` calendar months (UTC), ending with the current month — e.g. n=12 on Nov 2026 covers Dec 2025 through Nov 2026. */
+function lastNMonthsPeriod(now: Date, n: number): PeriodBounds {
+  const startOfThisMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (n - 1), 1));
+  const to = new Date(Date.UTC(startOfThisMonth.getUTCFullYear(), startOfThisMonth.getUTCMonth() + 1, 1));
+  return { from, to };
 }
 
 export function createAnalyticsService(deps: Container) {
-  const { db, logger, now } = deps;
+  const { db, cache, logger, now } = deps;
+
+  async function hasPermission(user: AuthUser, permission: Permission): Promise<boolean> {
+    const granted = await getPermissionsForRole(db, cache, user.role);
+    return granted.has(permission);
+  }
   const log = logger.child({ module: 'analytics' });
 
   /** Converts per-currency totals into the base currency using stored rates only. Missing rates yield insufficient_data. */
@@ -45,13 +86,15 @@ export function createAnalyticsService(deps: Container) {
       const resolved = resolvePeriod(query, now());
       const period: PeriodBounds = resolved;
       const asOf = toDateString(new Date(resolved.to.getTime() - 86_400_000));
-      const canSeeFinancials = hasPermission(user, 'analytics.financial');
+      const canSeeFinancials = await hasPermission(user, 'analytics.financial');
 
-      const [leadsCreated, byQualification, byStatus] = await Promise.all([
+      const [leadsCreated, byQualification, byStatus, leadsByMonthRaw] = await Promise.all([
         countLeadsCreated(db, period),
         countLeadsByQualification(db, period),
         countOpportunitiesByStatus(db, period),
+        countLeadsCreatedByMonth(db, period),
       ]);
+      const leadsByMonth = backfillMonths(leadsByMonthRaw, monthsInPeriod(period));
       const won = byStatus.find((s) => s.status === 'won')?.count ?? 0;
       const lost = byStatus.find((s) => s.status === 'lost')?.count ?? 0;
       const open = byStatus.find((s) => s.status === 'open')?.count ?? 0;
@@ -65,6 +108,7 @@ export function createAnalyticsService(deps: Container) {
           opportunities: { open, won, lost },
           leadToWonRate: leadsCreated > 0 ? (won / leadsCreated).toFixed(4) : null,
           winRate: decided > 0 ? (won / decided).toFixed(4) : null,
+          leadsByMonth,
         },
       };
 
@@ -82,10 +126,49 @@ export function createAnalyticsService(deps: Container) {
       return result;
     },
 
+    /** Monthly trend series (leads, opportunities, customers, revenue) for the last `months` calendar months, for Dashboard trend charts. */
+    async trends(user: AuthUser, input: { months: number; baseCurrency: string }) {
+      const period = lastNMonthsPeriod(now(), input.months);
+      const months = monthsInPeriod(period);
+      const canSeeFinancials = await hasPermission(user, 'analytics.financial');
+
+      const [leadsRaw, opportunitiesRaw, customersRaw, revenueRaw] = await Promise.all([
+        countLeadsCreatedByMonth(db, period),
+        countOpportunitiesCreatedByMonth(db, period),
+        countCustomersCreatedByMonth(db, period),
+        canSeeFinancials ? sumRevenueByMonth(db, 'invoiced', period) : Promise.resolve<MonthlyRevenueByCurrency[]>([]),
+      ]);
+
+      const result: Record<string, unknown> = {
+        months,
+        leads: backfillMonths(leadsRaw, months),
+        opportunities: backfillMonths(opportunitiesRaw, months),
+        customers: backfillMonths(customersRaw, months),
+      };
+
+      if (canSeeFinancials) {
+        const asOf = toDateString(new Date(period.to.getTime() - 86_400_000));
+        const byMonth = new Map<string, Array<{ currency: string; total: string }>>();
+        for (const row of revenueRaw) {
+          if (!byMonth.has(row.month)) byMonth.set(row.month, []);
+          byMonth.get(row.month)!.push({ currency: row.currency, total: row.total });
+        }
+        const revenue: MonthlyCount[] = [];
+        for (const month of months) {
+          const totals = byMonth.get(month) ?? [];
+          const converted = await convertTotals(totals, input.baseCurrency, asOf);
+          revenue.push({ month, count: converted.status === 'ok' ? Number(converted.amount) : 0 });
+        }
+        result.revenue = { baseCurrency: input.baseCurrency, series: revenue };
+      }
+
+      return result;
+    },
+
     async exportLeadsCsv(user: AuthUser, filter: Omit<LeadListFilter, 'ownerId'> & { ownerId?: string }) {
       const scope = ownerScope(user) ?? filter.ownerId;
       const rows = await listLeadRows(db, { ...filter, ownerId: scope }, { limit: EXPORT_ROW_LIMIT, offset: 0, sort: 'createdAt', order: 'desc' });
-      const includePii = hasPermission(user, 'leads.pii');
+      const includePii = await hasPermission(user, 'leads.pii');
       const records = rows.rows.map((row) => (includePii ? row : maskContact(row, user)));
       const csv = toCsv(
         ['id', 'name', 'email', 'phone', 'company', 'stage', 'score', 'priority', 'qualification', 'owner_id', 'created_at'],
@@ -109,7 +192,7 @@ export function createAnalyticsService(deps: Container) {
           from: toDateString(resolved.from),
           to: toDateString(new Date(resolved.to.getTime() - 86_400_000)),
         },
-        { limit: EXPORT_ROW_LIMIT, offset: 0 },
+        { limit: EXPORT_ROW_LIMIT, offset: 0, sort: 'recognizedOn', order: 'desc' },
       );
       const csv = toCsv(
         ['id', 'customer_id', 'opportunity_id', 'contract_id', 'kind', 'amount', 'currency', 'recognized_on', 'reference'],

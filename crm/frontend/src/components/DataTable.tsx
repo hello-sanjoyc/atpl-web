@@ -43,7 +43,7 @@ export function DataTable<T>({
               {columns.map((c) => (
                 <th
                   key={c.key}
-                  className={`text-left px-5 py-3.5 text-[11px] font-semibold tracking-wide uppercase text-[#9ca3af] whitespace-nowrap ${c.className ?? ''}`}
+                  className={`text-left px-5 py-3.5 font-mono text-[11px] font-medium tracking-wide uppercase text-[#9ca3af] whitespace-nowrap ${c.className ?? ''}`}
                 >
                   {c.header}
                 </th>

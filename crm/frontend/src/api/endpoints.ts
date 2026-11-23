@@ -8,6 +8,7 @@ export const endpoints = {
     auth: {
         login: `/auth/login`,
         me: `/auth/me`,
+        permissions: `/auth/permissions`,
     },
 
     leads: {
@@ -21,6 +22,18 @@ export const endpoints = {
         qualify: (id: string | number) => `/leads/${id}/qualify`,
         activities: (id: string | number) => `/leads/${id}/activities`,
         history: (id: string | number) => `/leads/${id}/history`,
+        scoreExplain: (id: string | number) => `/leads/${id}/score-explain`,
+        conversations: (id: string | number) => `/leads/${id}/conversations`,
+        followUpDraft: (id: string | number) => `/leads/${id}/follow-up-draft`,
+        suggestAssignee: (id: string | number) => `/leads/${id}/suggest-assignee`,
+    },
+
+    repSkills: {
+        byUserId: (id: string | number) => `/users/${id}/rep-skills`,
+    },
+
+    ai: {
+        copilotQuery: `/copilot/query`,
     },
 
     opportunities: {
@@ -30,7 +43,17 @@ export const endpoints = {
         update: (id: string | number) => `/opportunities/${id}`,
         stage: (id: string | number) => `/opportunities/${id}/stage`,
         proposals: (id: string | number) => `/opportunities/${id}/proposals`,
+        generateProposal: (id: string | number) => `/opportunities/${id}/proposals/generate`,
+        health: (id: string | number) => `/opportunities/${id}/health`,
         history: (id: string | number) => `/opportunities/${id}/history`,
+    },
+
+    forecasts: {
+        revenue: `/forecasts/revenue`,
+    },
+
+    copilot: {
+        query: `/copilot/query`,
     },
 
     followUps: {
@@ -78,6 +101,30 @@ export const endpoints = {
 
     analytics: {
         overview: `/analytics/overview`,
+        trends: `/analytics/trends`,
+        attribution: `/analytics/attribution`,
+    },
+
+    events: `/events`,
+
+    settings: {
+        llm: `/settings/llm`,
+        llmById: (id: string) => `/settings/llm/${id}`,
+        llmActivate: (id: string) => `/settings/llm/${id}/activate`,
+        llmTest: (id: string) => `/settings/llm/${id}/test`,
+        roles: `/settings/roles`,
+        rolesPermissions: `/settings/roles/permissions`,
+        roleById: (role: string) => `/settings/roles/${role}`,
+        rolePermissionsById: (role: string) => `/settings/roles/${role}/permissions`,
+        rolesMeta: `/settings/roles/meta`,
+        roleMetaById: (role: string) => `/settings/roles/${role}/meta`,
+        optionsAdmin: `/settings/options`,
+        optionByIdAdmin: (id: string) => `/settings/options/${id}`,
+        securityEvents: `/settings/security-events`,
+        securityConfig: `/settings/security-config`,
+        auditLogs: `/settings/audit-logs`,
+        auditEntityTypes: `/settings/audit-logs/entity-types`,
+        forecastSettings: `/settings/forecast`,
     },
 
     geo: {
@@ -94,10 +141,12 @@ export const endpoints = {
     users: {
         list: `/users`,
         create: `/users`,
+        byId: (id: string | number) => `/users/${id}`,
         update: (id: string | number) => `/users/${id}`,
     },
 
     public: {
+        chatMessage: `/public/chat/message`,
         enquiry: `/public/leads`,
         discovery: `/public/discovery-requests`,
         bookingConfig: `/public/booking-config`,

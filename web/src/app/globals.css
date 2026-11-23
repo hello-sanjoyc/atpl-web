@@ -3665,6 +3665,257 @@ img {
     resize: vertical;
 }
 
+.select {
+    position: relative;
+}
+.select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    background: rgba(244, 246, 251, 0.05);
+    border: 1px solid rgba(244, 246, 251, 0.1);
+    border-radius: 0.7rem;
+    padding: 0.85rem 1.15rem;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--lt);
+    outline: none;
+    cursor: none;
+    text-align: left;
+    transition:
+        border-color 0.25s,
+        background 0.25s;
+}
+.select-trigger:hover {
+    background: rgba(244, 246, 251, 0.07);
+    border-color: rgba(244, 246, 251, 0.18);
+}
+.select.open .select-trigger {
+    border-color: rgba(250, 97, 33, 0.5);
+    background: rgba(244, 246, 251, 0.08);
+}
+.select-trigger[aria-invalid="true"] {
+    border-color: rgba(255, 76, 76, 0.82);
+}
+.select-trigger svg {
+    flex-shrink: 0;
+    color: rgba(143, 163, 204, 0.6);
+    transition: transform 0.25s var(--ease);
+}
+.select.open .select-trigger svg {
+    transform: rotate(180deg);
+    color: var(--accent-l);
+}
+.select-placeholder {
+    color: rgba(143, 163, 204, 0.5);
+}
+.select-value {
+    color: var(--lt);
+}
+.select-menu {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.4rem;
+    background: #12141c;
+    border: 1px solid rgba(244, 246, 251, 0.12);
+    border-radius: 0.85rem;
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.45),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: select-pop 0.16s var(--ease);
+}
+@keyframes select-pop {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.select-search {
+    flex-shrink: 0;
+    margin-bottom: 0.4rem;
+    background: rgba(244, 246, 251, 0.06);
+    border: 1px solid rgba(244, 246, 251, 0.12);
+    border-radius: 0.55rem;
+    padding: 0.6rem 0.8rem;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--lt);
+    outline: none;
+}
+.select-search::placeholder {
+    color: rgba(143, 163, 204, 0.45);
+}
+.select-search:focus {
+    border-color: rgba(250, 97, 33, 0.5);
+}
+.select-options {
+    max-height: 260px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 0.55rem;
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--lt);
+    cursor: none;
+    transition: background 0.15s;
+}
+.select-option:hover {
+    background: rgba(244, 246, 251, 0.07);
+}
+.select-option.selected {
+    background: rgba(250, 97, 33, 0.14);
+    color: var(--accent-l);
+    font-weight: 500;
+}
+.select-option.selected svg {
+    flex-shrink: 0;
+    color: var(--accent-l);
+}
+.select-option-empty {
+    color: rgba(143, 163, 204, 0.6);
+    border-bottom: 1px solid rgba(244, 246, 251, 0.08);
+    border-radius: 0.55rem 0.55rem 0 0;
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.75rem;
+}
+.select-option-empty-state {
+    color: rgba(143, 163, 204, 0.5);
+    font-size: 0.82rem;
+    justify-content: center;
+    cursor: default;
+}
+.select-option-empty-state:hover {
+    background: none;
+}
+
+.phone-field {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    background: rgba(244, 246, 251, 0.05);
+    border: 1px solid rgba(244, 246, 251, 0.1);
+    border-radius: 0.7rem;
+    transition:
+        border-color 0.25s,
+        background 0.25s;
+}
+.phone-field:focus-within,
+.phone-field.open {
+    border-color: rgba(250, 97, 33, 0.5);
+    background: rgba(244, 246, 251, 0.08);
+}
+.phone-field:has(input[aria-invalid="true"]) {
+    border-color: rgba(255, 76, 76, 0.82);
+}
+.phone-flag-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    border-right: 1px solid rgba(244, 246, 251, 0.1);
+    padding: 0.85rem 0.9rem;
+    cursor: none;
+    color: rgba(143, 163, 204, 0.6);
+}
+.phone-flag-trigger:hover {
+    color: rgba(143, 163, 204, 0.9);
+}
+.phone-flag {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+.phone-field input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    padding: 0.85rem 1.15rem;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--lt);
+    outline: none;
+}
+.phone-field input::placeholder {
+    color: rgba(143, 163, 204, 0.35);
+}
+.phone-menu {
+    left: 0;
+    right: auto;
+    width: max-content;
+    min-width: 100%;
+    max-width: min(360px, 90vw);
+}
+.phone-option {
+    justify-content: flex-start;
+    gap: 0.65rem;
+}
+.phone-option-flag {
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+.phone-option-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.phone-option-code {
+    flex-shrink: 0;
+    color: rgba(143, 163, 204, 0.6);
+    font-size: 0.82rem;
+}
+.phone-option.selected .phone-option-code {
+    color: var(--accent-l);
+}
+
+.fg-consent {
+    gap: 0.6rem;
+}
+.consent-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgba(244, 246, 251, 0.75);
+    cursor: pointer;
+}
+.consent-label input[type="checkbox"] {
+    margin-top: 0.15rem;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+}
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -3700,6 +3951,18 @@ img {
 }
 .btn-send.sent {
     background: var(--green);
+    transform: none;
+    box-shadow: none;
+}
+.btn-send:disabled:not(.sent) {
+    background: rgba(244, 246, 251, 0.12);
+    color: rgba(244, 246, 251, 0.4);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.btn-send:disabled:not(.sent):hover {
+    background: rgba(244, 246, 251, 0.12);
     transform: none;
     box-shadow: none;
 }

@@ -45,7 +45,7 @@ const homepageSeo = {
         'Yes. Engagements can begin with discovery and a focused MVP scope before progressing to a production-ready application.',
     },
     {
-      question: 'What is included in Founder MVP Sprints?',
+      question: 'What is included in MVP Development for Startups?',
       answer:
         'A fixed-scope sprint covers discovery, architecture, core product features, an initial AI capability where needed, deployment and a working version for first users.',
     },
@@ -114,11 +114,14 @@ const homepageSeo = {
     areaServed: 'Worldwide',
     knowsAbout: [
       'AI SaaS Development',
-      'RAG and AI Assistants',
-      'AI Agents, Automation and Voice',
-      'Custom Web and Mobile',
-      'Founder MVP Sprints',
-      'White-Label Engineering',
+      'RAG & AI Chatbot Development',
+      'AI Agents, Voice AI & Automation',
+      'MVP Development for Startups',
+      'Custom Software Development',
+      'Website Design & CMS Development',
+      'Mobile App Development',
+      'Offshore Software Development',
+      'White-Label Development for Agencies',
     ],
   },
 };
@@ -128,23 +131,31 @@ const relevantWorkByService: Record<string, Array<{ name: string; url: string; d
     { name: 'EMA - Smarter Inbox Management', url: 'https://ema.aranax.tech', description: 'AI email productivity and workflow support.' },
     { name: 'DocuNova - Understand Contracts Faster', url: 'https://docunova.app', description: 'Document intelligence and structured knowledge workflows.' },
   ],
-  'Founder MVP Sprints': [
+  'MVP Development for Startups': [
     { name: 'Gloziia - Salon Marketplace and Management Platform', url: 'https://gloziia.com', description: 'Marketplace and operations workflows for beauty businesses.' },
     { name: 'GlamSync - SaaS for Independent Makeup Artists', url: 'https://glamsync.app', description: 'A focused business workspace for independent professionals.' },
   ],
-  'RAG and AI Assistants': [
+  'RAG & AI Chatbot Development': [
     { name: 'DocuNova - Understand Contracts Faster', url: 'https://docunova.app', description: 'Structured analysis and document-grounded answers.' },
     { name: 'UniEcho - AI Student Assistant', url: 'https://uniecho.io', description: 'A multilingual student-information assistant.' },
   ],
-  'AI Agents, Automation and Voice': [
+  'AI Agents, Voice AI & Automation': [
     { name: 'EMA - Smarter Inbox Management', url: 'https://ema.aranax.tech', description: 'Email prioritisation and follow-up workflows.' },
     { name: 'UniEcho - AI Student Assistant', url: 'https://uniecho.io', description: 'Conversational assistance across student service questions.' },
   ],
-  'Custom Web and Mobile': [
+  'Custom Software Development': [
     { name: 'Gloziia - Salon Marketplace and Management Platform', url: 'https://gloziia.com', description: 'Customer discovery, booking and operational workflows.' },
     { name: 'DoubtAce - Exam-Ready Doubt Resolution', url: 'https://doubtace.com', description: 'Learning support built around photographed and printed content.' },
   ],
-  'White-Label Engineering': [
+  'Website Design & CMS Development': [
+    { name: 'Seva First Innovation Challenge', url: 'https://sficeast.wb.gov.in', description: 'A public-facing institutional website built for clear information access and publishing.' },
+    { name: 'Centre for Distance and Online Education, Burdwan University', url: 'https://cdoe.buruniv.ac.in', description: 'An education website supporting structured content, updates and student information.' },
+  ],
+  'Mobile App Development': [
+    { name: 'Gloziia - Salon Marketplace and Management Platform', url: 'https://gloziia.com', description: 'Mobile marketplace and operational workflows for beauty businesses.' },
+    { name: 'EMA - Smarter Inbox Management', url: 'https://ema.aranax.tech', description: 'An AI-powered productivity experience across web and mobile workflows.' },
+  ],
+  'White-Label Development for Agencies': [
     { name: 'Selected product work', url: '/#case-studies', description: 'Explore the product categories and engineering contributions shown on the homepage.' },
   ],
 };
@@ -176,9 +187,10 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'Can the product support different user roles?', answer: 'Yes. Roles, permissions and account administration are designed around the actions each user type needs to take, including customer and internal support roles.' },
       { question: 'How is the SaaS product deployed?', answer: 'We plan the hosting, environments, secrets, monitoring and release process to suit the product’s expected traffic, integrations and operational ownership.' },
       { question: 'What do you need from us to begin?', answer: 'A clear business problem, access to the relevant stakeholders and any existing prototype, workflow or technical material are enough to start a productive discovery conversation.' },
+      { question: 'Do you provide DevOps and ongoing maintenance?', answer: 'Yes. Cloud environments, deployment automation, monitoring, security updates, reliability work and ongoing product improvements can be included after launch.' },
     ],
   },
-  'Founder MVP Sprints': {
+  'MVP Development for Startups': {
     architecture:
       'The sprint starts with an agreed first-user workflow and a fixed scope. We choose a lean architecture, define the AI feature and its boundaries, prioritise the core experience, and prepare a deployment and handover path that supports learning after launch.',
     process: [
@@ -188,14 +200,14 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { title: 'Launch and hand over', description: 'Verify the main journeys, deploy the working version and prepare the next iteration.' },
     ],
     faqs: [
-      { question: 'How long is a Founder MVP Sprint?', answer: 'The timeline is agreed after discovery and depends on the scope, integrations and readiness of the inputs. We do not assume a fixed number of weeks before those are clear.' },
+      { question: 'How long does startup MVP development take?', answer: 'The timeline is agreed after discovery and depends on the scope, integrations and readiness of the inputs. We do not assume a fixed number of weeks before those are clear.' },
       { question: 'What does fixed scope mean?', answer: 'The initial release has an agreed set of user journeys, deliverables and assumptions. New ideas can be prioritised for a later iteration.' },
       { question: 'Can the MVP include an AI feature?', answer: 'Yes. We define one useful AI workflow with clear input, output, reliability and cost expectations for the first release.' },
       { question: 'Will it be usable by real customers?', answer: 'The goal is a working version for first users, with deployment and essential operational considerations included in the agreed scope.' },
       { question: 'What happens after launch?', answer: 'We review feedback and usage, then plan the next product increment around what users actually need.' },
     ],
   },
-  'RAG and AI Assistants': {
+  'RAG & AI Chatbot Development': {
     architecture:
       'A useful RAG assistant depends on more than a chat interface. We design ingestion, document structure, retrieval quality, permissions, citations, evaluation and escalation around the knowledge sources people are actually allowed to use.',
     process: [
@@ -217,7 +229,7 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'Can the assistant be embedded in our existing product?', answer: 'Yes. We can design an embedded experience or integrate the retrieval capability with your existing application, authentication and support workflows.' },
     ],
   },
-  'AI Agents, Automation and Voice': {
+  'AI Agents, Voice AI & Automation': {
     architecture:
       'Tool-calling and voice agents are designed as controlled systems. We define which tools and data they can access, when a caller or operator needs a human handoff, approval gates for consequential actions, retry and failure paths, execution logs and monitoring.',
     process: [
@@ -240,7 +252,7 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'Can a voice agent handle calls and bookings?', answer: 'Yes, where the phone and booking systems support integration. We define the call flow, confirmation steps, human transfer and logging before rollout.' },
     ],
   },
-  'Custom Web and Mobile': {
+  'Custom Software Development': {
     architecture:
       'We choose the application shape around the problem: web, mobile, backend APIs, integrations, offline needs, data ownership and the maintenance capacity of the team that will run it. The goal is a useful system with a supportable technical footprint.',
     process: [
@@ -260,9 +272,82 @@ const servicePageDetails: Record<string, ServicePageDetail> = {
       { question: 'How do you protect an application that handles sensitive data?', answer: 'We identify the sensitive data, access requirements, integrations and regulatory constraints early so appropriate controls are built into the application and delivery plan.' },
       { question: 'Can the application work with unreliable connectivity?', answer: 'Where users need it, we can assess offline behaviour, sync conflicts, device constraints and the additional complexity needed for a dependable mobile or field workflow.' },
       { question: 'How do you estimate a custom software project?', answer: 'After understanding the scope and technical dependencies, we break the work into meaningful milestones with assumptions and risks visible rather than relying on a feature list alone.' },
+      { question: 'Do you build APIs and integrations?', answer: 'Yes. We design and build backend APIs and connect identity, payment, data and third-party business systems as part of the product architecture.' },
+      { question: 'Can you handle cloud deployment and DevOps?', answer: 'Yes. We can set up deployment environments, automated release workflows, monitoring and operational practices matched to the product and team.' },
     ],
   },
-  'White-Label Engineering': {
+  'Website Design & CMS Development': {
+    architecture:
+      'A useful website needs more than an attractive interface. We plan the content model, editing permissions, reusable page patterns, performance, analytics, search visibility and integrations so the site supports everyday marketing work after launch.',
+    process: [
+      { title: 'Website discovery', description: 'Clarify audiences, goals, existing content, conversion paths and the publishing team’s needs.' },
+      { title: 'Structure and design', description: 'Create the information architecture, page patterns and responsive interface direction around clear user journeys.' },
+      { title: 'CMS and build', description: 'Implement the site, content model, components and editorial workflow with performance and accessibility in mind.' },
+      { title: 'Launch and enablement', description: 'Migrate approved content, test key journeys, launch safely and prepare editors to publish confidently.' },
+    ],
+    faqs: [
+      { question: 'Can you work with our existing brand and content?', answer: 'Yes. We can work within an established identity and reuse, refine or migrate the content that still serves the new website.' },
+      { question: 'Which CMS do you use?', answer: 'The CMS follows your editing needs, technical environment and future plans. We recommend a suitable option after understanding the content and team workflow.' },
+      { question: 'Will our team be able to update the website?', answer: 'Yes. Content modelling and editorial usability are part of the build, and we can provide handover guidance for the people who will publish.' },
+      { question: 'Do you include SEO?', answer: 'We include technical SEO foundations such as semantic structure, metadata, performance considerations, redirects and measurement setup. Content strategy can be scoped alongside this work.' },
+      { question: 'Can you migrate our current website?', answer: 'Yes. We audit the existing pages, assets and redirects, then plan a practical migration approach around the approved new structure.' },
+      { question: 'Do you include website security and accessibility?', answer: 'Yes. We address practical security controls, secure publishing, accessible structure, keyboard navigation, readable contrast and responsive behaviour as part of the build.' },
+      { question: 'Can you maintain our website after launch?', answer: 'Yes. Ongoing support can cover CMS updates, security patches, performance improvements, content enhancements and new landing pages.' },
+      { question: 'Will the website work well on phones and tablets?', answer: 'Yes. Responsive behaviour is designed and tested across the device sizes most relevant to your audience.' },
+      { question: 'Can you connect forms to our CRM or email system?', answer: 'Yes. We can integrate forms and conversion points with the CRM, email, analytics and workflow tools your team uses.' },
+      { question: 'How do you approach website performance?', answer: 'We design with efficient assets, sensible component choices, technical SEO and real-user experience in mind, then test key pages before launch.' },
+      { question: 'Can you create landing pages and reusable page sections?', answer: 'Yes. We can build reusable CMS blocks and page patterns so your team can launch consistent campaign and content pages faster.' },
+      { question: 'Can you work with a headless CMS?', answer: 'Yes. We can recommend and implement headless or traditional CMS architectures based on editor needs, integrations and the product roadmap.' },
+    ],
+  },
+  'Mobile App Development': {
+    architecture:
+      'Mobile products are designed around the moments users actually have their phone in hand. We consider device capabilities, authentication, APIs, notifications, connectivity, analytics, store requirements and the operating team’s ability to support releases.',
+    process: [
+      { title: 'Mobile opportunity mapping', description: 'Define the key mobile moments, target devices, user needs and the smallest valuable app experience.' },
+      { title: 'Flow and technical design', description: 'Shape user flows, backend requirements, device features, integrations and the release approach.' },
+      { title: 'Iterative app development', description: 'Build the highest-value journeys in reviewable increments, testing on representative devices as the product takes shape.' },
+      { title: 'Release and improve', description: 'Prepare store submissions, production monitoring and a practical feedback loop for the next release.' },
+    ],
+    faqs: [
+      { question: 'Do you build for both iOS and Android?', answer: 'Yes. We recommend the right delivery approach after considering the audience, device needs, integrations, budget and release expectations.' },
+      { question: 'Can the app connect to our existing backend?', answer: 'Yes. We can integrate with existing APIs or design the backend services, authentication and data flows the app needs.' },
+      { question: 'Can you publish the app to the stores?', answer: 'Yes. Store preparation and release support can be included in the agreed delivery scope.' },
+      { question: 'Can the app work offline?', answer: 'Where the workflow needs it, we assess offline data, sync behaviour, conflict handling and the added complexity required for a dependable experience.' },
+      { question: 'Can you improve an existing mobile app?', answer: 'Yes. We can assess the user journey, codebase, backend dependencies and release process before planning targeted improvements or a rebuild.' },
+      { question: 'Do you provide mobile backend APIs, integrations and maintenance?', answer: 'Yes. We can build or extend the APIs, integrations, cloud deployment and operational support the app needs after release.' },
+      { question: 'Can you add payments, maps or third-party services?', answer: 'Yes. We assess the SDKs, APIs, authentication, data handling and user experience needed to integrate the relevant services safely.' },
+      { question: 'How do you protect app users and their data?', answer: 'We plan secure authentication, appropriate permissions, protected API access, careful data handling and operational monitoring around the app’s risk profile.' },
+      { question: 'Can you add push notifications?', answer: 'Yes. We can design opt-in notification flows and integrate the delivery infrastructure around useful product events.' },
+      { question: 'How do you test a mobile app?', answer: 'We test the key user journeys across representative devices, operating-system versions, network conditions and backend scenarios before release.' },
+      { question: 'Will we be able to track app usage?', answer: 'Yes. Product analytics and error monitoring can be included so the operating team can understand adoption, friction and reliability after launch.' },
+      { question: 'Can you support regular app releases?', answer: 'Yes. We can establish a practical release, monitoring and maintenance rhythm for fixes, OS changes and new product increments.' },
+    ],
+  },
+  'Offshore Software Development': {
+    architecture:
+      'Effective offshore delivery is a product and operating model, not simply extra hands. We align around the roadmap, responsibilities, communication cadence, engineering standards, security boundaries, environments, quality gates and documentation from the beginning.',
+    process: [
+      { title: 'Delivery alignment', description: 'Understand the roadmap, outcomes, product context, team structure and the capability you need to add.' },
+      { title: 'Technical onboarding', description: 'Review the repository, architecture, environments, working agreements and delivery risks before taking ownership of work.' },
+      { title: 'Embedded delivery', description: 'Contribute through an agreed planning, review, quality and reporting rhythm that keeps work visible and accountable.' },
+      { title: 'Scale or transfer', description: 'Adapt capacity as priorities change while keeping decisions, documentation and ownership clear for your team.' },
+    ],
+    faqs: [
+      { question: 'How do you keep offshore delivery visible?', answer: 'We agree on planning, work tracking, demos, reporting and escalation routes so progress and risks are visible without excess ceremony.' },
+      { question: 'Can you work in our existing tools and process?', answer: 'Yes. We align with your communication, project-management, code-review and release practices during onboarding.' },
+      { question: 'Will we retain ownership of the code?', answer: 'Yes. Ownership, repository access, environments and handover expectations are agreed clearly as part of the engagement.' },
+      { question: 'Can we start with a small team?', answer: 'Yes. A focused initial scope is often the best way to establish working practices before adding broader delivery capacity.' },
+      { question: 'How do you handle security and confidentiality?', answer: 'We use agreed confidentiality arrangements, least-necessary access, secure delivery practices and clear boundaries around project material.' },
+      { question: 'Can the offshore team work in our time zone?', answer: 'We agree overlap hours, communication expectations and escalation routes around the working rhythm your product team needs.' },
+      { question: 'How do you assure code quality?', answer: 'Quality is built into the workflow through agreed coding standards, peer review, testing, release checks and visible technical decisions.' },
+      { question: 'Can you provide DevOps and cloud engineering capacity?', answer: 'Yes. The team can support infrastructure, deployment automation, monitoring and operational improvements alongside product engineering.' },
+      { question: 'Can the team maintain software after launch?', answer: 'Yes. Engagements can cover reliability work, incident response, security updates, integrations and planned product improvements.' },
+      { question: 'How is knowledge transferred to our internal team?', answer: 'We keep code, decisions, documentation and handover expectations visible throughout the engagement rather than leaving transfer to the end.' },
+      { question: 'Can you scale the team as our roadmap changes?', answer: 'Yes. Capacity can be adjusted around the capability and pace the roadmap requires, with changes planned transparently.' },
+    ],
+  },
+  'White-Label Development for Agencies': {
     architecture:
       'White-label delivery is organised around the agency’s standards and client commitments. We establish responsibilities, technical decision rights, communication cadence, environments, code ownership and review practices so engineering extends the agency rather than creating a parallel delivery track.',
     process: [
@@ -314,11 +399,14 @@ const servicePage = (name: string, summary: string, audience: string[], problems
 
 const serviceSearchTerms: Record<string, string[]> = {
   'ai-saas-development': ['AI SaaS development', 'multi-tenant SaaS development', 'AI SaaS subscriptions'],
-  'rag-ai-development': ['RAG assistant development', 'AI knowledge assistants', 'RAG evaluation'],
-  'ai-agent-development': ['AI agent development', 'voice AI agents', 'business workflow automation'],
-  'custom-software-development': ['custom web development', 'mobile app development', 'backend API development'],
-  'founder-mvp-sprints': ['AI MVP development', 'founder MVP sprint', 'fixed-scope product development'],
-  'white-label-development': ['white-label engineering', 'agency development partner', 'engineering capacity for agencies'],
+  'rag-ai-development': ['RAG chatbot development', 'AI chatbot development', 'RAG evaluation'],
+  'ai-agent-development': ['AI agent development', 'voice AI development', 'business workflow automation'],
+  'founder-mvp-sprints': ['startup MVP development', 'MVP development for startups', 'product development sprint'],
+  'custom-software-development': ['custom software development', 'custom web platforms', 'backend API development'],
+  'website-design-development': ['website design and development', 'CMS development', 'technical SEO'],
+  'mobile-app-development': ['mobile app development', 'iOS and Android apps', 'cross-platform mobile development'],
+  'offshore-software-development': ['offshore software development', 'dedicated development team', 'global software delivery'],
+  'white-label-development': ['white-label development for agencies', 'agency development partner', 'engineering capacity for agencies'],
 };
 
 const serviceSeo = (slug: string, name: string, description: string) => ({
@@ -353,70 +441,106 @@ const promptServices: SeedEntry[] = [
     pageContent: servicePage('AI SaaS Development', 'Build an AI SaaS product from architecture through production operations.',
       ['Founders building an AI SaaS product', 'Teams preparing a multi-tenant product for launch'],
       ['A prototype needs a reliable production foundation', 'Roles, subscriptions and tenant boundaries need to work together'],
-      ['Multi-tenant product architecture', 'Role-based access and account workflows', 'Subscription-ready application', 'Deployment and production operations'],
-      ['Tenant isolation', 'RBAC', 'Subscriptions', 'Operational monitoring'],
-      [{ name: 'Founder MVP Sprints', href: '/services/founder-mvp-sprints' }, { name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }]),
+      ['Multi-tenant product architecture', 'Role-based access and account workflows', 'Subscription-ready application', 'Cloud deployment, DevOps and ongoing maintenance'],
+      ['Tenant isolation', 'RBAC', 'API development', 'Cloud and DevOps'],
+      [{ name: 'MVP Development for Startups', href: '/services/founder-mvp-sprints' }, { name: 'RAG & AI Chatbot Development', href: '/services/rag-ai-development' }]),
     seo: serviceSeo('ai-saas-development', 'AI SaaS Development', 'End-to-end AI SaaS development with multi-tenant architecture, RBAC, subscriptions and production operations.'),
   },
   {
-    slug: 'rag-ai-development', number: '02', name: 'RAG and AI Assistants',
+    slug: 'rag-ai-development', number: '02', name: 'RAG & AI Chatbot Development',
     description: 'Assistants that answer from your approved documents and business knowledge, with source citations, access control, evaluation, and human handoff.',
     tags: textItems(['RAG', 'Evals', 'Human escalation']), icon: 'chat', sortOrder: 2,
-    pageContent: servicePage('RAG and AI Assistants', 'Grounded answers from approved business knowledge, with citations and controlled access.',
+    pageContent: servicePage('RAG & AI Chatbot Development', 'Grounded AI chatbots that turn approved knowledge into helpful, source-aware conversations.',
       ['Teams with approved documents and knowledge', 'Products that need a dependable assistant'],
       ['Knowledge is spread across sources', 'Answers need evidence, access rules and review'],
-      ['Source ingestion and retrieval', 'Citation-aware answers', 'Access controls and evaluations', 'Human handoff'],
-      ['RAG', 'Source citations', 'Evaluation', 'Escalation workflows'],
-      [{ name: 'AI Agents, Automation and Voice', href: '/services/ai-agent-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]),
-    seo: serviceSeo('rag-ai-development', 'RAG and AI Assistants', 'RAG assistants grounded in approved documents with citations, access control, evaluation and human handoff.'),
+      ['Source ingestion and retrieval', 'Citation-aware answers', 'Business-system integrations', 'Human handoff and ongoing optimisation'],
+      ['RAG', 'Source citations', 'API integrations', 'Evaluation and escalation workflows'],
+      [{ name: 'AI Agents, Voice AI & Automation', href: '/services/ai-agent-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]),
+    seo: serviceSeo('rag-ai-development', 'RAG & AI Chatbot Development', 'RAG and AI chatbot development grounded in approved documents, with citations, access control, evaluation and human handoff.'),
   },
   {
-    slug: 'ai-agent-development', number: '03', name: 'AI Agents, Automation and Voice',
+    slug: 'ai-agent-development', number: '03', name: 'AI Agents, Voice AI & Automation',
     description: 'Tool-calling agents that connect your business systems, plus voice agents for calls and bookings, with approval steps and full execution logs.',
     tags: textItems(['Tool calling', 'Voice AI', 'Observability']), icon: 'grid', sortOrder: 3,
-    pageContent: servicePage('AI Agents, Automation and Voice', 'Tool-calling and voice agents with approval checkpoints and observable execution.',
+    pageContent: servicePage('AI Agents, Voice AI & Automation', 'AI agents, voice systems and automations with clear controls and observable execution.',
       ['Teams automating connected business workflows', 'Businesses exploring voice support for calls and bookings'],
       ['Manual handoffs slow down work', 'Voice interactions and automated actions need clear controls'],
-      ['Agent and tool integration', 'Voice agent workflows for calls and bookings', 'Human approval steps', 'Execution logs and monitoring'],
-      ['Tool calling', 'Voice AI', 'Human approval', 'Observability'],
-      [{ name: 'RAG and AI Assistants', href: '/services/rag-ai-development' }, { name: 'Custom Web and Mobile', href: '/services/custom-software-development' }]),
-    seo: serviceSeo('ai-agent-development', 'AI Agents, Automation and Voice', 'Tool-calling and voice AI agents with business integrations, approvals, execution logs and monitoring.'),
+      ['Agent and API integrations', 'Voice agent workflows for calls and bookings', 'Human approval steps', 'Cloud deployment, logs and monitoring'],
+      ['Tool calling', 'Voice AI', 'API development', 'Observability and DevOps'],
+      [{ name: 'RAG & AI Chatbot Development', href: '/services/rag-ai-development' }, { name: 'Custom Software Development', href: '/services/custom-software-development' }]),
+    seo: serviceSeo('ai-agent-development', 'AI Agents, Voice AI & Automation', 'AI agents, voice AI and workflow automation with business integrations, approvals, execution logs and monitoring.'),
   },
   {
-    slug: 'custom-software-development', number: '04', name: 'Custom Web and Mobile',
-    description: 'Web apps, mobile experiences, and backend APIs, from discovery through ongoing improvement.',
-    tags: textItems(['Web', 'Mobile', 'APIs']), icon: 'chat', sortOrder: 4,
-    pageContent: servicePage('Custom Web and Mobile', 'Custom digital products from discovery through ongoing improvement.',
-      ['Teams building web or mobile products', 'Businesses modernising internal systems'],
-      ['Existing workflows do not fit off-the-shelf software', 'Apps and APIs need to evolve together'],
-      ['Product discovery and UX', 'Web and mobile applications', 'Backend APIs and integrations', 'Ongoing improvement'],
-      ['Web engineering', 'Mobile experiences', 'APIs', 'Integrations'],
-      [{ name: 'Founder MVP Sprints', href: '/services/founder-mvp-sprints' }, { name: 'White-Label Engineering', href: '/services/white-label-development' }]),
-    seo: serviceSeo('custom-software-development', 'Custom Web and Mobile', 'Custom web apps, mobile experiences and backend APIs from discovery through ongoing improvement.'),
+    slug: 'founder-mvp-sprints', number: '04', name: 'MVP Development for Startups',
+    description: 'Focused product development for founders and startup teams—turning validated ideas into launch-ready digital products and AI-enabled MVPs.',
+    tags: textItems(['Startup MVPs', 'Product strategy', 'Fast launch']), icon: 'spark', sortOrder: 4,
+    pageContent: servicePage('MVP Development for Startups', 'A focused path from product idea to a credible, launch-ready first release.',
+      ['Founders turning an idea into a first product', 'Startup teams validating a new market, workflow or AI capability'],
+      ['The roadmap is too broad to reach a meaningful launch', 'Product, design and engineering decisions need to move together'],
+      ['Product discovery and release plan', 'Core customer journeys and product design', 'AI-enabled or conventional MVP build', 'Cloud launch, DevOps foundations and next-step roadmap'],
+      ['MVP scoping', 'Product architecture', 'API development', 'Cloud deployment'],
+      [{ name: 'AI SaaS Development', href: '/services/ai-saas-development' }, { name: 'Custom Software Development', href: '/services/custom-software-development' }]),
+    seo: serviceSeo('founder-mvp-sprints', 'MVP Development for Startups', 'MVP development for startups, from product discovery and architecture to a launch-ready first release.'),
   },
   {
-    slug: 'founder-mvp-sprints', number: '05', name: 'Founder MVP Sprints',
-    description: 'A fixed-scope build that takes an AI product from idea to a working version with first users, covering architecture, core features, and deployment.',
-    tags: textItems(['Fixed scope', 'Fast launch', 'Startup-ready']), icon: 'spark', sortOrder: 5,
-    pageContent: servicePage('Founder MVP Sprints', 'A focused first release for founders ready to validate an AI product with real users.',
-      ['Founders with a defined AI product idea', 'Startups preparing to test a first version'],
-      ['The idea has not yet become a usable product', 'A broad roadmap makes the first release hard to scope'],
-      ['Discovery and fixed-scope plan', 'Core architecture and features', 'Working product for first users', 'Deployment and handover'],
-      ['MVP scoping', 'Product architecture', 'AI integration', 'Deployment'],
-      [{ name: 'AI SaaS Development', href: '/services/ai-saas-development' }, { name: 'Custom Web and Mobile', href: '/services/custom-software-development' }]),
-    seo: serviceSeo('founder-mvp-sprints', 'Founder MVP Sprints', 'Fixed-scope AI product MVP development, from idea and architecture to core features, deployment and first users.'),
+    slug: 'custom-software-development', number: '05', name: 'Custom Software Development',
+    description: 'Purpose-built software, platforms and operational tools that connect your workflows, teams and data without forcing your business into off-the-shelf limits.',
+    tags: textItems(['Web platforms', 'APIs', 'Integrations']), icon: 'chat', sortOrder: 5,
+    pageContent: servicePage('Custom Software Development', 'Custom software engineered around the way your organisation actually works.',
+      ['Businesses replacing disconnected processes or spreadsheets', 'Teams building a new platform, portal or internal operational tool'],
+      ['Off-the-shelf software cannot support a critical workflow', 'Systems, data and teams need one dependable source of truth'],
+      ['Workflow discovery and product design', 'Custom web platforms and internal tools', 'Backend API development, data systems and integrations', 'Cloud deployment, DevOps and ongoing maintenance'],
+      ['Full-stack engineering', 'API development', 'Cloud and DevOps', 'Systems integration'],
+      [{ name: 'Website Design & CMS Development', href: '/services/website-design-development' }, { name: 'Mobile App Development', href: '/services/mobile-app-development' }]),
+    seo: serviceSeo('custom-software-development', 'Custom Software Development', 'Custom software development for web platforms, internal tools, APIs, integrations and operational systems.'),
   },
   {
-    slug: 'white-label-development', number: '06', name: 'White-Label Engineering',
-    description: 'Engineering capacity for digital agencies, aligned to their delivery process, standards, and client relationships.',
-    tags: textItems(['Agency partners', 'Capacity', 'Delivery']), icon: 'grid', sortOrder: 6,
-    pageContent: servicePage('White-Label Engineering', 'Dependable engineering capacity that fits an agency’s delivery model and client relationships.',
+    slug: 'website-design-development', number: '06', name: 'Website Design & CMS Development',
+    description: 'High-performing, easy-to-manage websites that pair a clear digital experience with a flexible CMS, technical SEO and a dependable publishing workflow.',
+    tags: textItems(['Web design', 'CMS', 'Technical SEO']), icon: 'grid', sortOrder: 6,
+    pageContent: servicePage('Website Design & CMS Development', 'Design and build a website your team can confidently manage, evolve and grow.',
+      ['Businesses refreshing a dated marketing website', 'Teams that need editors to publish content without developer bottlenecks'],
+      ['The website does not clearly communicate the offer', 'Publishing, SEO and lead-generation workflows are difficult to maintain'],
+      ['Website strategy and information architecture', 'Responsive interface design and front-end development', 'CMS modelling, migration and editor workflows', 'Technical SEO, security, accessibility and ongoing maintenance'],
+      ['Responsive web development', 'Headless and traditional CMS', 'Website security and accessibility', 'Performance optimisation'],
+      [{ name: 'Custom Software Development', href: '/services/custom-software-development' }, { name: 'White-Label Development for Agencies', href: '/services/white-label-development' }]),
+    seo: serviceSeo('website-design-development', 'Website Design & CMS Development', 'Website design and CMS development for fast, easy-to-manage, search-ready digital experiences.'),
+  },
+  {
+    slug: 'mobile-app-development', number: '07', name: 'Mobile App Development',
+    description: 'Mobile apps that turn essential customer and team workflows into fast, intuitive experiences across iOS and Android.',
+    tags: textItems(['iOS & Android', 'Cross-platform', 'APIs']), icon: 'chat', sortOrder: 7,
+    pageContent: servicePage('Mobile App Development', 'Mobile product experiences designed for real-world use, from first flow to reliable release.',
+      ['Businesses bringing a service or workflow to customers on mobile', 'Teams whose field, marketplace or operational work is mobile-first'],
+      ['The current experience is too slow or awkward on a phone', 'Mobile users need dependable access to data, notifications or offline workflows'],
+      ['Mobile product strategy and UX', 'iOS and Android app development', 'Backend API development, integrations, authentication and notifications', 'Cloud release, DevOps and post-launch maintenance'],
+      ['Cross-platform development', 'Native device capabilities', 'Secure APIs and integrations', 'Cloud deployment'],
+      [{ name: 'Custom Software Development', href: '/services/custom-software-development' }, { name: 'MVP Development for Startups', href: '/services/founder-mvp-sprints' }]),
+    seo: serviceSeo('mobile-app-development', 'Mobile App Development', 'Mobile app development for iOS and Android, including product design, APIs, integrations and launch support.'),
+  },
+  {
+    slug: 'offshore-software-development', number: '08', name: 'Offshore Software Development',
+    description: 'A transparent, accountable offshore development partner for product teams that need dependable engineering capacity, strong communication and delivery ownership.',
+    tags: textItems(['Dedicated teams', 'Global delivery', 'Quality systems']), icon: 'spark', sortOrder: 8,
+    pageContent: servicePage('Offshore Software Development', 'Extend your product team with a reliable offshore delivery partner built around clarity and momentum.',
+      ['Companies adding capacity without compromising technical ownership', 'Product leaders who need an accountable long-term engineering partner'],
+      ['Hiring and scaling an in-house team takes too long', 'Distributed delivery lacks visibility, quality controls or business context'],
+      ['Dedicated development capacity', 'Product, design and engineering collaboration', 'API development, integrations, cloud deployment and DevOps', 'Ongoing maintenance, documentation and knowledge transfer'],
+      ['Distributed Agile delivery', 'Cloud engineering', 'DevOps and quality assurance', 'Delivery governance'],
+      [{ name: 'White-Label Development for Agencies', href: '/services/white-label-development' }, { name: 'Custom Software Development', href: '/services/custom-software-development' }]),
+    seo: serviceSeo('offshore-software-development', 'Offshore Software Development', 'Offshore software development teams for dependable product delivery, communication, quality assurance and long-term capacity.'),
+  },
+  {
+    slug: 'white-label-development', number: '09', name: 'White-Label Development for Agencies',
+    description: 'A trusted white-label development partner that helps agencies expand delivery capacity while protecting client relationships, quality standards and margin.',
+    tags: textItems(['Agency partners', 'Capacity', 'Delivery']), icon: 'grid', sortOrder: 9,
+    pageContent: servicePage('White-Label Development for Agencies', 'Dependable, behind-the-scenes development capacity that makes your agency stronger.',
       ['Digital agencies extending engineering capacity', 'Delivery teams needing specialist support'],
       ['Project demand exceeds available capacity', 'External engineers need to fit existing standards and communication'],
-      ['Embedded engineering support', 'Delivery planning and implementation', 'Code review and documentation', 'Handover aligned to agency process'],
-      ['Agency collaboration', 'Web and mobile delivery', 'AI and backend engineering', 'Quality practices'],
-      [{ name: 'Custom Web and Mobile', href: '/services/custom-software-development' }, { name: 'AI SaaS Development', href: '/services/ai-saas-development' }]),
-    seo: serviceSeo('white-label-development', 'White-Label Engineering', 'Engineering capacity for digital agencies aligned with their delivery process, standards and client relationships.'),
+      ['Embedded engineering support', 'API development, integrations and implementation', 'Cloud deployment, DevOps, security and accessibility review', 'Ongoing maintenance and handover aligned to agency process'],
+      ['Agency collaboration', 'Web and mobile delivery', 'AI, backend and API engineering', 'Quality and maintenance practices'],
+      [{ name: 'Offshore Software Development', href: '/services/offshore-software-development' }, { name: 'Website Design & CMS Development', href: '/services/website-design-development' }]),
+    seo: serviceSeo('white-label-development', 'White-Label Development for Agencies', 'White-label development for agencies that need reliable engineering capacity, clear delivery practices and client-safe collaboration.'),
   },
 ];
 
@@ -794,6 +918,21 @@ const serviceHeroImages = {
     alternativeText: 'Custom web and mobile product development illustration',
     caption: 'Custom web and mobile development',
   },
+  'website-design-development': {
+    filename: 'website-design-cms-development-v2.png',
+    alternativeText: 'Website design, responsive devices and CMS publishing workflow illustration',
+    caption: 'Website design and CMS development',
+  },
+  'mobile-app-development': {
+    filename: 'mobile-app-development-v2.png',
+    alternativeText: 'Mobile app connected to cloud services and secure APIs illustration',
+    caption: 'Mobile app development',
+  },
+  'offshore-software-development': {
+    filename: 'offshore-software-development-v2.png',
+    alternativeText: 'Global offshore software development and connected engineering teams illustration',
+    caption: 'Offshore software development',
+  },
   'white-label-development': {
     filename: 'white-label-engineering.png',
     alternativeText: 'White-label software engineering delivery illustration',
@@ -892,7 +1031,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
       eyebrow: 'AI SaaS & Custom Software Engineering',
       heading: 'Turn Your Ideas into\n*Production-Ready* AI & SaaS Products',
       description:
-        'Aranax Technologies builds **production-ready AI SaaS, retrieval-augmented assistants, voice and automation agents, web applications and mobile products** for founders, businesses and agencies. We take work from discovery and architecture through implementation, testing, deployment and ongoing support. This homepage covers six service areas and a six-step delivery process, so you can quickly identify the engineering support that fits your product.',
+        'Aranax Technologies builds **production-ready AI SaaS, retrieval-augmented chatbots, voice and automation agents, custom software, websites and mobile products** for founders, businesses and agencies. We take work from discovery and architecture through implementation, testing, deployment and ongoing support. Explore nine service areas and find the engineering support that fits your product.',
       primaryCta: {
         label: 'Book a Free Discovery Call',
         href: '#contact',
@@ -922,7 +1061,7 @@ export async function seedLandingContent(strapi: Core.Strapi) {
         eyebrow: 'What We Build',
         heading: 'What can Aranax build for\nevery stage of growth?',
         description:
-          'From AI SaaS and grounded assistants to voice agents, custom apps, founder MVPs and agency engineering, we build products around your workflows and business goals.',
+          'From AI SaaS and grounded chatbots to custom software, websites, mobile apps, offshore teams and agency delivery, we build around your workflows and business goals.',
         services: seededServices.map(({ documentId }) => documentId),
       },
     ]

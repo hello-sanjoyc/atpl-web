@@ -36,6 +36,8 @@ export interface CaptureRecord extends UtmFields {
   timeline?: string | null;
   message?: string | null;
   source: 'website' | 'discovery_request' | 'assessment';
+  captureChannel: string;
+  leadSource: string;
   formSource: string;
   campaignId: string | null;
   referralId: string | null;
@@ -59,6 +61,8 @@ export async function captureLeadCore(tx: Transaction, deps: Container, record: 
     serviceInterest: 'service_interest',
     budgetRange: 'budget_range',
     timeline: 'timeline',
+    captureChannel: 'capture_channel',
+    leadSource: 'lead_source',
   });
   const now = deps.now();
   const email = record.email.toLowerCase();
@@ -81,6 +85,8 @@ export async function captureLeadCore(tx: Transaction, deps: Container, record: 
     timeline: record.timeline ?? null,
     message: record.message ?? null,
     source: record.source,
+    captureChannel: record.captureChannel,
+    leadSource: record.leadSource,
     formSource: record.formSource,
     utmSource: record.utmSource ?? null,
     utmMedium: record.utmMedium ?? null,
@@ -136,6 +142,31 @@ export async function captureLeadCore(tx: Transaction, deps: Container, record: 
       payload: { leadId },
       maxAttempts,
     });
+
+    // Enqueue async AI scoring and duplicate detection when AI is configured
+    if (config.ANTHROPIC_API_KEY) {
+      await enqueueOutboxEvent(tx, {
+        type: EVENT_TYPES.AI_SCORE_LEAD,
+        aggregateType: 'lead',
+        aggregateId: leadId,
+        payload: { leadId },
+        maxAttempts: 5,
+      });
+      await enqueueOutboxEvent(tx, {
+        type: EVENT_TYPES.AI_DEDUP_LEAD,
+        aggregateType: 'lead',
+        aggregateId: leadId,
+        payload: { leadId },
+        maxAttempts: 3,
+      });
+      await enqueueOutboxEvent(tx, {
+        type: EVENT_TYPES.AI_ENRICH_LEAD,
+        aggregateType: 'lead',
+        aggregateId: leadId,
+        payload: { leadId },
+        maxAttempts: 3,
+      });
+    }
 
     await recordAudit(tx, {
       action: 'lead.created',
@@ -243,6 +274,8 @@ export function createLeadCaptureService(deps: Container) {
       timeline: input.timeline ?? null,
       message: input.message?.trim() ?? null,
       source: kind === 'lead' ? 'website' : 'discovery_request',
+      captureChannel: 'contact_form',
+      leadSource: 'website',
       formSource: input.formSource,
       utmSource: input.utmSource,
       utmMedium: input.utmMedium,

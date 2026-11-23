@@ -11,11 +11,6 @@ export function Footer({ settings }: { settings: LandingPageContent["site"] }) {
                     <p className="f-copy">
                         {settings.footerText}
                     </p>
-                    <ul className="f-links" role="list">
-                        <li>
-                            <a href="/llms.txt">AI-readable site guide</a>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </footer>

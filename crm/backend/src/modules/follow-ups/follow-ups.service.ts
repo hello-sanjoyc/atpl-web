@@ -57,12 +57,12 @@ export function createFollowUpsService(deps: Container) {
       return row;
     },
 
-    async list(user: AuthUser, query: { status?: string; dueBefore?: string; ownerId?: string; page: number; pageSize: number }) {
+    async list(user: AuthUser, query: { status?: string; dueBefore?: string; ownerId?: string; page: number; pageSize: number; sort: 'dueAt' | 'title'; order: 'asc' | 'desc' }) {
       const scope = ownerScope(user) ?? query.ownerId;
       const { rows, total } = await listFollowUps(
         db,
         { ownerId: scope, status: query.status, dueBefore: query.dueBefore ? new Date(query.dueBefore) : undefined },
-        { limit: query.pageSize, offset: (query.page - 1) * query.pageSize },
+        { limit: query.pageSize, offset: (query.page - 1) * query.pageSize, sort: query.sort, order: query.order },
       );
       return { items: rows, page: pagination(query.page, query.pageSize, total) };
     },

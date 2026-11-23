@@ -2,8 +2,12 @@
 # Dependencies
 # =========================================================
 
-frontend/node_modules/
+web/node_modules/
 cms/node_modules/
+crm/node_modules/
+crm/backend/node_modules/
+crm/frontend/node_modules/
+crm/shared/node_modules/
 node_modules/
 
 # =========================================================
@@ -11,8 +15,9 @@ node_modules/
 # =========================================================
 
 .pnpm-store/
-frontend/.pnpm-store/
+web/.pnpm-store/
 cms/.pnpm-store/
+crm/.pnpm-store/
 
 pnpm-debug.log*
 debug.log*
@@ -38,27 +43,27 @@ debug.log*
 
 
 # =========================================================
-# Next.js - frontend/
+# Next.js - web/
 # =========================================================
 
-frontend/.next/
-frontend/out/
-frontend/dist/
+web/.next/
+web/out/
+web/dist/
 
 # Next.js generated TypeScript declarations
-frontend/next-env.d.ts
+web/next-env.d.ts
 
 # Vercel
-frontend/.vercel/
+web/.vercel/
 
 # Next.js / Node cache
-frontend/.cache/
+web/.cache/
 
 # Testing / coverage
-frontend/coverage/
+web/coverage/
 
 # TypeScript incremental build
-frontend/*.tsbuildinfo
+web/*.tsbuildinfo
 
 
 # =========================================================
@@ -85,13 +90,32 @@ cms/public/uploads/*
 
 
 # =========================================================
+# CRM - crm/ (backend, frontend, shared)
+# =========================================================
+
+# Build output
+crm/backend/dist/
+crm/frontend/dist/
+crm/shared/dist/
+
+# Vite / frontend cache
+crm/frontend/.vite/
+
+# Demo/seed credentials generated locally
+crm/**/.demo-credentials.json
+
+
+# =========================================================
 # Logs
 # =========================================================
 
 *.log
 
-frontend/logs/
+web/logs/
 cms/logs/
+crm/logs/
+crm/backend/logs/
+crm/frontend/logs/
 
 
 # =========================================================

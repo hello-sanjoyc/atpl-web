@@ -5,7 +5,7 @@ import { NotFoundError, ConflictError } from '../../errors/app.error.js';
 import { ErrorCodes } from '../../errors/error-codes.js';
 import { enqueueOutboxEvent } from '../../jobs/queues/outbox.repository.js';
 import type { AuthUser } from '../../types/fastify.js';
-import { recordAudit } from '../audit/audit.repository.js';
+import { recordAudit, diffFields } from '../audit/audit.repository.js';
 import { pagination } from '../common/response.js';
 import type { LeadRow } from '../leads/leads.repository.js';
 import { findOpportunityById } from '../opportunities/opportunities.repository.js';
@@ -26,6 +26,7 @@ import {
   type CustomerRow,
 } from './customers.repository.js';
 import { listOpportunitiesForCustomer } from '../opportunities/opportunities.repository.js';
+import { findReferralById } from '../campaigns/campaigns.repository.js';
 
 /**
  * Converts a won lead into a customer. Reuses an existing customer with the same email so that a
@@ -65,12 +66,14 @@ export function createCustomersService(deps: Container) {
   }
 
   return {
-    async list(query: { q?: string; status?: string; page: number; pageSize: number }) {
+    async list(query: { q?: string; status?: string; page: number; pageSize: number; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' }) {
       const { rows, total } = await listCustomers(db, {
         q: query.q,
         status: query.status,
         limit: query.pageSize,
         offset: (query.page - 1) * query.pageSize,
+        sort: query.sort,
+        order: query.order,
       });
       return { items: rows, page: pagination(query.page, query.pageSize, total) };
     },
@@ -89,12 +92,19 @@ export function createCustomersService(deps: Container) {
 
     async get(id: string) {
       const customer = await requireCustomer(id);
-      const [contactRows, contractRows, opportunityRows] = await Promise.all([
+      const [contactRows, contractRows, opportunityRows, referral] = await Promise.all([
         listContacts(db, id),
         listContractsForCustomer(db, id),
         listOpportunitiesForCustomer(db, id),
+        customer.referralId ? findReferralById(db, customer.referralId) : undefined,
       ]);
-      return { customer, contacts: contactRows, contracts: contractRows, opportunities: opportunityRows };
+      return {
+        customer,
+        contacts: contactRows,
+        contracts: contractRows,
+        opportunities: opportunityRows,
+        referral: referral ? { id: referral.id, code: referral.code, referrerName: referral.referrerName } : null,
+      };
     },
 
     async update(actor: AuthUser, id: string, patch: { name?: string; company?: string | null; phone?: string | null; country?: string | null; status?: 'active' | 'churned' }) {
@@ -102,7 +112,7 @@ export function createCustomersService(deps: Container) {
       const churnedAt = patch.status === 'churned' && current.status !== 'churned' ? now() : patch.status === 'active' ? null : undefined;
       const row = await db.transaction(async (tx) => {
         const updated = await updateCustomer(tx, id, { ...patch, ...(churnedAt !== undefined ? { churnedAt } : {}) });
-        await recordAudit(tx, { actorId: actor.id, action: 'customer.updated', entityType: 'customer', entityId: id, metadata: { fields: Object.keys(patch) } });
+        await recordAudit(tx, { actorId: actor.id, action: 'customer.updated', entityType: 'customer', entityId: id, metadata: diffFields(current, patch) });
         return updated;
       });
       return row;

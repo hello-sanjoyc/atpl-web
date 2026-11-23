@@ -1,10 +1,12 @@
-import { and, asc, count, desc, eq, gte, isNull, lte, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, ilike, isNull, lte, type SQL } from 'drizzle-orm';
 import { withDbTiming, type DbExecutor } from '../../db/client.js';
 import { opportunities, opportunityStageHistory } from '../../db/schema/index.js';
+import { escapeLike } from '../leads/leads.repository.js';
 
 export type OpportunityRow = typeof opportunities.$inferSelect;
 
 export interface OpportunityFilter {
+  q?: string;
   stage?: string;
   status?: string;
   ownerId?: string;
@@ -18,6 +20,7 @@ export interface OpportunityFilter {
 
 function conditions(filter: OpportunityFilter): SQL[] {
   const out: SQL[] = [];
+  if (filter.q) out.push(ilike(opportunities.title, `%${escapeLike(filter.q)}%`));
   if (filter.stage) out.push(eq(opportunities.stage, filter.stage));
   if (filter.status) out.push(eq(opportunities.status, filter.status));
   if (filter.ownerId) out.push(eq(opportunities.ownerId, filter.ownerId));

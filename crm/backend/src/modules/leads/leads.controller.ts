@@ -128,6 +128,15 @@ const leadsController: FastifyPluginAsync = async (app) => {
     },
     async (request, reply) => sendOk(request, reply, await service.history(request.user, request.params.id)),
   );
+
+  typed.get(
+    '/leads/:id/score-explain',
+    {
+      schema: { tags: ['Leads', 'AI'], summary: 'Get deterministic + AI score breakdown for a lead', params: idParam, security },
+      preHandler: app.authorize('leads.read'),
+    },
+    async (request, reply) => sendOk(request, reply, await service.scoreExplain(request.user, request.params.id)),
+  );
 };
 
 export default leadsController;

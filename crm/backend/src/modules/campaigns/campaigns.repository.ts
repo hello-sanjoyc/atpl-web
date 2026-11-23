@@ -1,4 +1,4 @@
-import { and, desc, eq, sql, count } from 'drizzle-orm';
+import { and, asc, desc, eq, sql, count } from 'drizzle-orm';
 import { withDbTiming, type DbExecutor } from '../../db/client.js';
 import { acquisitionCosts, campaigns, referrals } from '../../db/schema/index.js';
 
@@ -18,11 +18,17 @@ export async function findCampaignById(db: DbExecutor, id: string): Promise<Camp
   return row;
 }
 
-export async function listCampaigns(db: DbExecutor, limit: number, offset: number) {
+export async function listCampaigns(
+  db: DbExecutor,
+  options: { status?: string; limit: number; offset: number; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' },
+) {
+  const where = options.status ? eq(campaigns.status, options.status) : undefined;
+  const sortColumn = { name: campaigns.name, createdAt: campaigns.createdAt }[options.sort];
+  const order = options.order === 'asc' ? asc(sortColumn) : desc(sortColumn);
   return withDbTiming('campaigns.list', async () => {
     const [rows, [total]] = await Promise.all([
-      db.select().from(campaigns).orderBy(desc(campaigns.createdAt)).limit(limit).offset(offset),
-      db.select({ value: count() }).from(campaigns),
+      db.select().from(campaigns).where(where).orderBy(order, asc(campaigns.id)).limit(options.limit).offset(options.offset),
+      db.select({ value: count() }).from(campaigns).where(where),
     ]);
     return { rows, total: Number(total?.value ?? 0) };
   });
@@ -63,10 +69,15 @@ export async function insertReferral(db: DbExecutor, values: typeof referrals.$i
   return row;
 }
 
-export async function listReferrals(db: DbExecutor, limit: number, offset: number) {
+export async function listReferrals(
+  db: DbExecutor,
+  options: { limit: number; offset: number; sort: 'referrerName' | 'createdAt'; order: 'asc' | 'desc' },
+) {
+  const sortColumn = { referrerName: referrals.referrerName, createdAt: referrals.createdAt }[options.sort];
+  const order = options.order === 'asc' ? asc(sortColumn) : desc(sortColumn);
   return withDbTiming('referrals.list', async () => {
     const [rows, [total]] = await Promise.all([
-      db.select().from(referrals).orderBy(desc(referrals.createdAt)).limit(limit).offset(offset),
+      db.select().from(referrals).orderBy(order, asc(referrals.id)).limit(options.limit).offset(options.offset),
       db.select({ value: count() }).from(referrals),
     ]);
     return { rows, total: Number(total?.value ?? 0) };

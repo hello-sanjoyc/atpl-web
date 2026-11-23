@@ -34,6 +34,13 @@ const listRevenueQuery = paginationQuery.extend({
   from: isoDateField.optional(),
   to: isoDateField.optional(),
   customerId: z.uuid().optional(),
+  sort: z.enum(['recognizedOn', 'amount']).default('recognizedOn'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
+const listExchangeRatesQuery = paginationQuery.extend({
+  sort: z.enum(['rateDate', 'base']).default('rateDate'),
+  order: z.enum(['asc', 'desc']).default('desc'),
 });
 
 const revenueController: FastifyPluginAsync = async (app) => {
@@ -65,9 +72,9 @@ const revenueController: FastifyPluginAsync = async (app) => {
 
   typed.get(
     '/exchange-rates',
-    { schema: { tags: ['Revenue'], summary: 'List exchange rates with their sources', querystring: paginationQuery, security }, preHandler: app.authorize('revenue.read') },
+    { schema: { tags: ['Revenue'], summary: 'List exchange rates with their sources', querystring: listExchangeRatesQuery, security }, preHandler: app.authorize('revenue.read') },
     async (request, reply) => {
-      const { items, page } = await service.listRates(request.query.page, request.query.pageSize);
+      const { items, page } = await service.listRates(request.query);
       return sendList(request, reply, items, page);
     },
   );

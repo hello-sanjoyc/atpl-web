@@ -4,7 +4,7 @@ import { AuthorizationError, BusinessRuleError, NotFoundError, ValidationError }
 import { ErrorCodes } from '../../errors/error-codes.js';
 import type { AuthUser } from '../../types/fastify.js';
 import { roleHasPermission } from '../../plugins/authorization.plugin.js';
-import { recordAudit } from '../audit/audit.repository.js';
+import { recordAudit, diffFields } from '../audit/audit.repository.js';
 import { pagination } from '../common/response.js';
 import { ensureCustomerForLead } from '../customers/customers.service.js';
 import { findCustomerById } from '../customers/customers.repository.js';
@@ -79,6 +79,7 @@ export function createOpportunitiesService(deps: Container) {
       const { rows, total } = await listOpportunities(
         db,
         {
+          q: query.q,
           stage: query.stage,
           status: query.status,
           ownerId: query.ownerId,
@@ -141,7 +142,12 @@ export function createOpportunitiesService(deps: Container) {
     },
 
     async get(user: AuthUser, id: string) {
-      return toOpportunityDto(await loadVisible(user, id));
+      const row = await loadVisible(user, id);
+      const [lead, customer] = await Promise.all([
+        row.leadId ? findLeadById(db, row.leadId) : undefined,
+        row.customerId ? findCustomerById(db, row.customerId) : undefined,
+      ]);
+      return { ...toOpportunityDto(row), leadName: lead?.name ?? null, customerName: customer?.name ?? null };
     },
 
     async update(user: AuthUser, id: string, input: UpdateInput) {
@@ -153,7 +159,7 @@ export function createOpportunitiesService(deps: Container) {
       const row = await db.transaction(async (tx) => {
         const updated = await updateOpportunity(tx, id, input);
         if (!updated) throw new NotFoundError(ErrorCodes.OPPORTUNITY_NOT_FOUND, 'The requested opportunity was not found.');
-        await recordAudit(tx, { actorId: user.id, action: 'opportunity.updated', entityType: 'opportunity', entityId: id, metadata: { fields: Object.keys(input) } });
+        await recordAudit(tx, { actorId: user.id, action: 'opportunity.updated', entityType: 'opportunity', entityId: id, metadata: diffFields(current, input) });
         return updated;
       });
       return toOpportunityDto(row);

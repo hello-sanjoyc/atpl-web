@@ -7,11 +7,12 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { ToastProvider } from '../components/Toast';
 import { ProtectedRoute } from './ProtectedRoute';
 import type { Permission } from '@aranax/contracts';
+import { CACHE_TTL } from '@aranax/contracts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30_000,
+      staleTime: CACHE_TTL.analytics.ms, // 30s default; individual queries override with longer TTLs
       retry: (count, err: unknown) => {
         const status = (err as { response?: { status?: number } })?.response?.status;
         if (status && status >= 400 && status < 500) return false;
@@ -53,9 +54,21 @@ const Referrals      = lazy(() => import('../features/referrals/Referrals'));
 const ReferralDetail = lazy(() => import('../features/referrals/ReferralDetail'));
 const ReferralForm   = lazy(() => import('../features/referrals/ReferralForm'));
 // Users
-const Users    = lazy(() => import('../features/users/Users'));
-const UserForm = lazy(() => import('../features/users/UserForm'));
+const Users      = lazy(() => import('../features/users/Users'));
+const UserDetail = lazy(() => import('../features/users/UserDetail'));
+const UserForm   = lazy(() => import('../features/users/UserForm'));
+// Analytics
+const AttributionPage = lazy(() => import('../features/analytics/AttributionPage'));
+// Settings
+const SettingsHome   = lazy(() => import('../features/settings/SettingsHome'));
+const LlmSettings    = lazy(() => import('../features/settings/LlmSettings'));
+const UserRoles      = lazy(() => import('../features/settings/UserRoles'));
+const UserRoleForm   = lazy(() => import('../features/settings/UserRoleForm'));
+const RbacSettings   = lazy(() => import('../features/settings/RbacSettings'));
+const GeneralSettings = lazy(() => import('../features/settings/GeneralSettings'));
+const SecuritySettings = lazy(() => import('../features/settings/SecuritySettings'));
 // Public (unauthenticated)
+const CaptureChat = lazy(() => import('../features/public/CaptureChat'));
 const Enquiry    = lazy(() => import('../features/public/Enquiry'));
 const Discovery  = lazy(() => import('../features/public/Discovery'));
 const Assessment = lazy(() => import('../features/public/Assessment'));
@@ -76,7 +89,8 @@ export function App() {
                   {/* Public / auth */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/enquiry" element={<Enquiry />} />
+                  <Route path="/enquiry" element={<CaptureChat />} />
+                  <Route path="/enquiry/form" element={<Enquiry />} />
                   <Route path="/discovery" element={<Discovery />} />
                   <Route path="/assessments/:slug" element={<Assessment />} />
 
@@ -112,6 +126,18 @@ export function App() {
 
                   <Route path="/users" element={<Guard permission="users.manage"><Users /></Guard>} />
                   <Route path="/users/new" element={<Guard permission="users.manage"><UserForm /></Guard>} />
+                  <Route path="/users/:id" element={<Guard permission="users.manage"><UserDetail /></Guard>} />
+                  <Route path="/users/:id/edit" element={<Guard permission="users.manage"><UserForm /></Guard>} />
+
+                  <Route path="/analytics/attribution" element={<Guard permission="analytics.read"><AttributionPage /></Guard>} />
+                  <Route path="/settings" element={<Guard permission="users.manage"><SettingsHome /></Guard>} />
+                  <Route path="/settings/llm" element={<Guard permission="users.manage"><LlmSettings /></Guard>} />
+                  <Route path="/settings/user-roles" element={<Guard permission="users.manage"><UserRoles /></Guard>} />
+                  <Route path="/settings/user-roles/new" element={<Guard permission="users.manage"><UserRoleForm /></Guard>} />
+                  <Route path="/settings/user-roles/:role/edit" element={<Guard permission="users.manage"><UserRoleForm /></Guard>} />
+                  <Route path="/settings/rbac" element={<Guard permission="users.manage"><RbacSettings /></Guard>} />
+                  <Route path="/settings/general" element={<Guard permission="users.manage"><GeneralSettings /></Guard>} />
+                  <Route path="/settings/security" element={<Guard permission="users.manage"><SecuritySettings /></Guard>} />
 
                   {/* Unknown → dashboard */}
                   <Route path="*" element={<Navigate to="/dashboard" replace />} />

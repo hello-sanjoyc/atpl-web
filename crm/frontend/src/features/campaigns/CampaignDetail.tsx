@@ -15,7 +15,7 @@ import { DEFAULT_CURRENCY } from '@aranax/contracts';
 
 export default function CampaignDetail() {
   const { id } = useParams<{ id: string }>();
-  const { optionsFor } = useOptions();
+  const { optionsFor, labelFor } = useOptions();
   const campaign = useResourceDetail<Campaign>(['campaigns', id], id ? endpoints.campaigns.byId(id) : null);
 
   const [channel, setChannel] = useState('');
@@ -67,7 +67,7 @@ export default function CampaignDetail() {
 
       <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
         <div>
-          <h1 className="text-[32px] font-extrabold tracking-[-1px] text-[#0f1117] leading-tight">{c.name}</h1>
+          <h1 className="font-serif text-[32px] font-medium tracking-tight text-[#0f1117] leading-tight">{c.name}</h1>
           <p className="text-sm text-[#6b7280] mt-1">{c.slug}</p>
         </div>
         <Badge value={c.status} />
@@ -75,9 +75,9 @@ export default function CampaignDetail() {
 
       <div className="grid lg:grid-cols-[1fr_380px] gap-5 items-start">
         <section className="bg-white rounded-[28px] p-6 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-          <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[#9ca3af] mb-4">Details</h2>
+          <h2 className="font-mono text-[12px] font-medium uppercase tracking-wide text-[#9ca3af] mb-4">Details</h2>
           <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
-            <Detail label="Channel" value={c.channel} />
+            <Detail label="Channel" value={labelFor('campaign_channel', c.channel)} />
             <Detail label="Status" value={c.status} />
             <Detail label="Slug" value={c.slug} />
             <Detail label="Starts on" value={c.startsOn ? formatDate(c.startsOn) : null} />
@@ -87,7 +87,7 @@ export default function CampaignDetail() {
         </section>
 
         <aside className="bg-white rounded-[28px] p-6 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-          <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[#9ca3af] mb-4">Record acquisition cost</h2>
+          <h2 className="font-mono text-[12px] font-medium uppercase tracking-wide text-[#9ca3af] mb-4">Record acquisition cost</h2>
           <div className="flex flex-col gap-4">
             <Field label="Channel" htmlFor="cost-channel" required>
               <TextInput id="cost-channel" value={channel} onChange={(e) => setChannel(e.target.value)} placeholder="email" />

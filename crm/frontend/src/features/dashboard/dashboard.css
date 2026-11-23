@@ -1,0 +1,88 @@
+.dash-root {
+  --dash-ink: #0f1a3d;
+  --dash-ink-soft: #4a5878;
+  --dash-paper: #ffffff;
+  --dash-paper-dim: #f3f6fc;
+  --dash-amber: #e8601f;
+  --dash-amber-bright: #f86223;
+  --dash-moss: #2e7d4f;
+  --dash-rust: #c4432f;
+  --dash-blue: #2563a8;
+  --dash-violet: #7c4fc4;
+  --dash-teal: #1b8a8a;
+  --dash-line: #dde4f2;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Fraunces/JetBrains Mono now ship as the app-wide --font-serif/--font-mono tokens
+   (see src/styles/global.css); these aliases just keep the existing dash-serif/dash-mono
+   class names working without touching every call site in this feature. */
+.dash-serif {
+  font-family: var(--font-serif);
+  font-feature-settings: 'ss01' 1;
+}
+
+.dash-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-grain {
+  position: relative;
+  isolation: isolate;
+}
+.dash-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dash-stagger > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: dashRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.dash-stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.dash-stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.dash-stagger > *:nth-child(3) { animation-delay: 0.14s; }
+.dash-stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.dash-stagger > *:nth-child(5) { animation-delay: 0.26s; }
+.dash-stagger > *:nth-child(6) { animation-delay: 0.32s; }
+
+@keyframes dashRise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dash-fade {
+  opacity: 0;
+  animation: dashFadeIn 0.7s ease-out forwards;
+}
+
+@keyframes dashFadeIn {
+  to { opacity: 1; }
+}
+
+.dash-underline-grow {
+  position: relative;
+}
+.dash-underline-grow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.dash-underline-grow:hover::after {
+  transform: scaleX(1);
+}

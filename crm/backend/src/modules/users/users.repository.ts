@@ -1,4 +1,4 @@
-import { and, asc, count, eq, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, sql } from 'drizzle-orm';
 import { withDbTiming, type Database, type DbExecutor } from '../../db/client.js';
 import { users } from '../../db/schema/index.js';
 import type { Role } from '../../config/constants.js';
@@ -41,7 +41,7 @@ export async function findUserByEmail(db: DbExecutor, email: string): Promise<Us
 
 export async function insertUser(
   db: DbExecutor,
-  values: { email: string; name: string; role: Role; passwordHash: string },
+  values: { email: string; name: string; phone?: string | null; role: Role; passwordHash: string },
 ): Promise<UserRow> {
   const [row] = await withDbTiming('users.insert', () =>
     db.insert(users).values({ ...values, email: values.email.toLowerCase() }).returning(),
@@ -53,7 +53,7 @@ export async function insertUser(
 export async function updateUser(
   db: DbExecutor,
   id: string,
-  patch: Partial<Pick<UserRow, 'name' | 'role' | 'isActive'>>,
+  patch: Partial<Pick<UserRow, 'name' | 'email' | 'phone' | 'role' | 'isActive'>>,
 ): Promise<UserRow | undefined> {
   const [row] = await withDbTiming('users.update', () =>
     db
@@ -87,12 +87,15 @@ export async function resetLoginState(db: DbExecutor, id: string): Promise<void>
 
 export async function listUsers(
   db: Database,
-  options: { limit: number; offset: number },
+  options: { role?: string; limit: number; offset: number; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' },
 ): Promise<{ rows: UserRow[]; total: number }> {
+  const where = options.role ? eq(users.role, options.role) : undefined;
+  const sortColumn = { name: users.name, createdAt: users.createdAt }[options.sort];
+  const order = options.order === 'asc' ? asc(sortColumn) : desc(sortColumn);
   return withDbTiming('users.list', async () => {
     const [rows, [total]] = await Promise.all([
-      db.select().from(users).orderBy(asc(users.name)).limit(options.limit).offset(options.offset),
-      db.select({ value: count() }).from(users),
+      db.select().from(users).where(where).orderBy(order, asc(users.id)).limit(options.limit).offset(options.offset),
+      db.select({ value: count() }).from(users).where(where),
     ]);
     return { rows, total: Number(total?.value ?? 0) };
   });

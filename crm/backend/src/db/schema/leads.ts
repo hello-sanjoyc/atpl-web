@@ -16,6 +16,17 @@ import { inList, timestamps, tstz } from './common.js';
 import { users } from './identity.js';
 import { campaigns, referrals } from './marketing.js';
 
+export interface EnrichmentData {
+  companySize?: string;
+  industry?: string;
+  website?: string;
+  techStack?: string[];
+  linkedinUrl?: string;
+  verifiedAt?: string;
+  source: 'clearbit' | 'hunter' | 'ai_inference';
+  aiInferred?: boolean;
+}
+
 export const leadStages = pgTable(
   'lead_stages',
   {
@@ -55,6 +66,11 @@ export const leads = pgTable(
     stage: text('stage').notNull().default('new_lead').references(() => leadStages.key),
     priority: text('priority').notNull().default('medium'),
     score: integer('score').notNull().default(0),
+    aiScore: integer('ai_score'),
+    aiScoreReason: text('ai_score_reason'),
+    aiSummary: text('ai_summary'),
+    enrichmentData: jsonb('enrichment_data').$type<EnrichmentData>(),
+    duplicateGroupId: uuid('duplicate_group_id'),
     qualificationStatus: text('qualification_status').notNull().default('unqualified'),
     ownerId: uuid('owner_id').references(() => users.id, { onDelete: 'set null' }),
     discoveryRequested: boolean('discovery_requested').notNull().default(false),
@@ -72,6 +88,7 @@ export const leads = pgTable(
     index('leads_owner_idx').on(t.ownerId),
     index('leads_created_idx').on(t.createdAt),
     index('leads_source_idx').on(t.source),
+    index('leads_duplicate_group_idx').on(t.duplicateGroupId),
     check('leads_priority_chk', inList(t.priority, LEAD_PRIORITIES)),
     check('leads_qualification_chk', inList(t.qualificationStatus, LEAD_QUALIFICATION)),
     // capture_channel and lead_source are app-managed options (table option_items), validated in
@@ -108,6 +125,9 @@ export const leadAssignmentHistory = pgTable(
     fromOwnerId: uuid('from_owner_id').references(() => users.id, { onDelete: 'set null' }),
     toOwnerId: uuid('to_owner_id').references(() => users.id, { onDelete: 'set null' }),
     actorId: uuid('actor_id').references(() => users.id, { onDelete: 'set null' }),
+    /** Set when a manager overrides a smart-assignment suggestion. */
+    isManagerOverride: boolean('is_manager_override').notNull().default(false),
+    overrideNote: text('override_note'),
     createdAt: tstz('created_at').notNull().defaultNow(),
   },
   (t) => [index('lead_assignment_history_lead_idx').on(t.leadId, t.createdAt)],

@@ -1,16 +1,18 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router';
 import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Field, TextInput, TextArea } from '../../components/form/fields';
+import { AsyncCombobox } from '../../components/form/AsyncCombobox';
 import { FormLayout } from '../../components/form/FormAside';
 import { FORM_INFO } from '../_shared/formInfo';
 import { useResourceMutation } from '../_shared/hooks';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 import type { FollowUp } from '../_shared/types';
+import { mapLead, mapCustomer, mapOpportunity } from '../_shared/comboboxMappers';
 
 const schema = z
   .object({
@@ -29,7 +31,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function FollowUpForm() {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors, isValid } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
   });
@@ -67,14 +69,53 @@ export default function FollowUpForm() {
           <Field label="Due at" htmlFor="dueAt" required error={errors.dueAt?.message} className="sm:col-span-2">
             <TextInput id="dueAt" type="datetime-local" {...register('dueAt')} aria-invalid={!!errors.dueAt} />
           </Field>
-          <Field label="Lead ID" htmlFor="leadId" hint="Link to one of lead / opportunity / customer" error={errors.leadId?.message}>
-            <TextInput id="leadId" {...register('leadId')} placeholder="uuid" />
+          <Field label="Lead" htmlFor="leadId" hint="Link to one of lead / opportunity / customer" error={errors.leadId?.message}>
+            <Controller
+              name="leadId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="leadId"
+                  url={endpoints.leads.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapLead}
+                  placeholder="Search leads by name or email…"
+                />
+              )}
+            />
           </Field>
-          <Field label="Opportunity ID" htmlFor="opportunityId">
-            <TextInput id="opportunityId" {...register('opportunityId')} placeholder="uuid" />
+          <Field label="Opportunity" htmlFor="opportunityId">
+            <Controller
+              name="opportunityId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="opportunityId"
+                  url={endpoints.opportunities.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapOpportunity}
+                  placeholder="Search opportunities by title…"
+                />
+              )}
+            />
           </Field>
-          <Field label="Customer ID" htmlFor="customerId">
-            <TextInput id="customerId" {...register('customerId')} placeholder="uuid" />
+          <Field label="Customer" htmlFor="customerId">
+            <Controller
+              name="customerId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="customerId"
+                  url={endpoints.customers.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapCustomer}
+                  placeholder="Search customers by name or email…"
+                />
+              )}
+            />
           </Field>
         </div>
         <Field label="Notes" htmlFor="notes" className="mt-4" error={errors.notes?.message}>

@@ -18,7 +18,12 @@ export interface ScoreResult {
 
 const BUDGET_POINTS: Record<string, number> = { unknown: 0, under_5k: 5, '5k_20k': 20, '20k_50k': 30, over_50k: 40 };
 const TIMELINE_POINTS: Record<string, number> = { exploring: 3, three_to_six_months: 10, one_to_three_months: 20, immediate: 25 };
-const SERVICE_POINTS: Record<string, number> = { ai_saas: 10, rag_ai: 10, white_label_agency: 8 };
+const SERVICE_POINTS: Record<string, number> = {
+  ai_saas_development: 10,
+  rag_ai_chatbot_development: 10,
+  ai_agents_voice_automation: 10,
+  white_label_development_agencies: 8,
+};
 
 /**
  * Deterministic lead score in the range 0..100. Weights sum to 100 at maximum:

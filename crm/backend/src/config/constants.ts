@@ -65,4 +65,22 @@ export const EVENT_TYPES = {
   EMAIL_RENEWAL: 'email.renewal_reminder',
   EMAIL_ASSESSMENT: 'email.assessment_report',
   CRM_SYNC: 'crm.sync_lead',
+  AI_SCORE_LEAD: 'ai.score_lead',
+  AI_ENRICH_LEAD: 'ai.enrich_lead',
+  AI_DEDUP_LEAD: 'ai.dedup_lead',
+  AI_DRAFT_FOLLOWUP: 'ai.draft_followup',
+  AI_EXTRACT_CONVERSATION: 'ai.extract_conversation',
+  AI_OPPORTUNITY_HEALTH: 'ai.opportunity_health',
+  AI_GENERATE_PROPOSAL: 'ai.generate_proposal',
 } as const;
+
+export const AI_TASK_KINDS = [
+  'score_lead',
+  'enrich_lead',
+  'dedup_lead',
+  'draft_followup',
+  'extract_conversation',
+  'opportunity_health',
+  'generate_proposal',
+] as const;
+export type AiTaskKind = (typeof AI_TASK_KINDS)[number];

@@ -1,3 +1,4 @@
+export * from './ai.js';
 export * from './assessments.js';
 export * from './common.js';
 export * from './finance.js';
@@ -7,4 +8,6 @@ export * from './leads.js';
 export * from './marketing.js';
 export * from './options.js';
 export * from './platform.js';
+export * from './security.js';
+
 export * from './sales.js';

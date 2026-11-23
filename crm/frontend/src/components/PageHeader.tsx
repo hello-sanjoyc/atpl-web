@@ -5,20 +5,35 @@ export function PageHeader({
   title,
   subtitle,
   action,
+  back,
   children,
 }: {
   title: string;
   subtitle?: string;
   /** A primary action, usually a "New" link. */
   action?: { label: string; to: string } | ReactNode;
+  /** Back link shown above the title, e.g. { label: 'Settings', to: '/settings' } */
+  back?: { label: string; to: string };
   /** Filter row or extra controls rendered under the title. */
   children?: ReactNode;
 }) {
   return (
     <div className="mb-6 pt-4">
+      {back && (
+        <Link
+          to={back.to}
+          className="inline-flex items-center gap-1 text-[13px] text-[#6b7280] hover:text-[#0f1117] mb-3 transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          {back.label}
+        </Link>
+      )}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-[32px] font-extrabold tracking-[-1px] text-[#0f1117] leading-tight">
+          <span className="inline-block w-9 h-[3px] rounded-full mb-2 bg-gradient-to-r from-[#f86223] to-[#00308a]" aria-hidden />
+          <h1 className="font-serif text-[32px] font-medium tracking-tight text-[#0f1117] leading-tight">
             {title}
           </h1>
           {subtitle && <p className="text-sm text-[#6b7280] mt-1">{subtitle}</p>}

@@ -4,11 +4,12 @@ import { BusinessRuleError, ConflictError, NotFoundError, ValidationError } from
 import { ErrorCodes } from '../../errors/error-codes.js';
 import type { AuthUser } from '../../types/fastify.js';
 import { roleHasPermission } from '../../plugins/authorization.plugin.js';
-import { recordAudit } from '../audit/audit.repository.js';
+import { recordAudit, diffFields } from '../audit/audit.repository.js';
 import { findActiveUserById } from '../users/users.repository.js';
 import { pagination } from '../common/response.js';
 import { assertOwnedOrViewAll, maskContact, ownerScope } from './lead-access.js';
 import { scoreLead } from './lead-scoring.js';
+import { getScoreExplain } from '../ai/ai-scoring.service.js';
 import type { CreateLeadBody, ListLeadsQuery, UpdateLeadBody, QualifyLeadBody, ChangeStageBody, CreateActivityBody } from './leads.types.js';
 import {
   findLeadById,
@@ -54,6 +55,11 @@ export function toLeadDto(row: LeadRow, user: AuthUser) {
     stage: row.stage,
     priority: row.priority,
     score: row.score,
+    aiScore: row.aiScore ?? null,
+    aiScoreReason: row.aiScoreReason ?? null,
+    aiSummary: row.aiSummary ?? null,
+    enrichmentData: row.enrichmentData ?? null,
+    duplicateGroupId: row.duplicateGroupId ?? null,
     qualificationStatus: row.qualificationStatus,
     ownerId: row.ownerId,
     discoveryRequested: row.discoveryRequested,
@@ -180,11 +186,11 @@ export function createLeadsService(deps: Container) {
         captureChannel: 'capture_channel',
         leadSource: 'lead_source',
       });
-      await loadVisible(user, id);
+      const before = await loadVisible(user, id);
       const updated = await db.transaction(async (tx) => {
         const row = await updateLeadRow(tx, id, input);
         if (!row) throw new NotFoundError(ErrorCodes.LEAD_NOT_FOUND, 'The requested lead was not found.');
-        await recordAudit(tx, { actorId: user.id, action: 'lead.updated', entityType: 'lead', entityId: id, metadata: { fields: Object.keys(input) } });
+        await recordAudit(tx, { actorId: user.id, action: 'lead.updated', entityType: 'lead', entityId: id, metadata: diffFields(before, input) });
         return row;
       });
       log.info({ event: 'lead.updated', leadId: id, actorUserId: user.id, fields: Object.keys(input) }, 'Lead updated');
@@ -317,6 +323,11 @@ export function createLeadsService(deps: Container) {
         await recordAudit(tx, { actorId: user.id, action: 'lead.deleted', entityType: 'lead', entityId: id });
       });
       log.info({ event: 'lead.deleted', leadId: id, actorUserId: user.id }, 'Lead soft-deleted');
+    },
+
+    async scoreExplain(user: AuthUser, id: string) {
+      await loadVisible(user, id);
+      return getScoreExplain(deps, id);
     },
   };
 }

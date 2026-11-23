@@ -27,3 +27,24 @@ export async function recordAudit(exec: DbExecutor, entry: AuditEntry): Promise<
     }),
   );
 }
+
+export interface FieldChange {
+  field: string;
+  from: unknown;
+  to: unknown;
+}
+
+/**
+ * Builds a `{ changes: FieldChange[] }` metadata payload for `recordAudit`, recording only the
+ * fields present on `patch` whose value actually differs from `before` — so a PATCH that repeats
+ * an unchanged value does not show up as a no-op change in the Audit Trail viewer.
+ */
+export function diffFields<T extends Record<string, unknown>>(before: T, patch: Partial<T>): { changes: FieldChange[] } {
+  const changes: FieldChange[] = [];
+  for (const field of Object.keys(patch)) {
+    const from = before[field];
+    const to = patch[field];
+    if (from !== to) changes.push({ field, from: from ?? null, to: to ?? null });
+  }
+  return { changes };
+}

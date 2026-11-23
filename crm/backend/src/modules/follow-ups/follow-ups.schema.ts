@@ -20,4 +20,6 @@ export const listFollowUpsQuery = paginationQuery.extend({
   status: z.enum(['open', 'completed', 'cancelled']).optional(),
   dueBefore: z.iso.datetime({ offset: true }).optional(),
   ownerId: z.uuid().optional(),
+  sort: z.enum(['dueAt', 'title']).default('dueAt'),
+  order: z.enum(['asc', 'desc']).default('asc'),
 });

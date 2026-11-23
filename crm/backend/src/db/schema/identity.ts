@@ -11,6 +11,7 @@ export const users = pgTable(
     name: text('name').notNull(),
     role: text('role').notNull(),
     passwordHash: text('password_hash').notNull(),
+    phone: text('phone'),
     isActive: boolean('is_active').notNull().default(true),
     failedLoginCount: integer('failed_login_count').notNull().default(0),
     lockedUntil: tstz('locked_until'),

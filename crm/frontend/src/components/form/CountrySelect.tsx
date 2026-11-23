@@ -34,7 +34,7 @@ export const CountrySelect = forwardRef<HTMLSelectElement, CountrySelectProps>(
 );
 
 // Source names are UPPERCASE; present them title-cased.
-function toTitle(name: string): string {
+export function toTitle(name: string): string {
   return name
     .toLowerCase()
     .replace(/\b([a-z])/g, (_, c: string) => c.toUpperCase())

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { CACHE_TTL, QUERY_KEYS } from '@aranax/contracts';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 
@@ -19,6 +20,7 @@ export type OptionCategory =
   | 'lead_source'
   | 'opportunity_type'
   | 'contract_kind'
+  | 'campaign_channel'
   | 'currency';
 
 const EMPTY: OptionItem[] = [];
@@ -30,10 +32,10 @@ const EMPTY: OptionItem[] = [];
  */
 export function useOptions() {
   const query = useQuery<GroupedOptions>({
-    queryKey: ['options'],
+    queryKey: QUERY_KEYS.options,
     queryFn: () => http.get<GroupedOptions>(endpoints.options),
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: CACHE_TTL.static.ms,
+    gcTime: CACHE_TTL.static.ms,
   });
 
   const optionsFor = (category: OptionCategory): OptionItem[] => query.data?.[category] ?? EMPTY;

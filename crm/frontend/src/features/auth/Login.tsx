@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const res = await apiClient.post<{ success: true; data: LoginResponse; meta: { requestId: string } }>('/auth/login', data);
       const { accessToken, user } = unwrap(res.data);
-      login(accessToken, user);
+      await login(accessToken, user);
       await navigate(params.get('redirect') ?? '/dashboard', { replace: true });
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : 'Login failed', 'error');

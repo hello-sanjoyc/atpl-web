@@ -1,133 +1,157 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router';
+import './dashboard.css';
 import { AppShell } from '../../components/layout/AppShell';
-import { StatCard } from '../../components/StatCard';
-import { Sparkline } from '../../components/Sparkline';
-import { LineChart } from '../../components/LineChart';
 import { DonutChart } from '../../components/DonutChart';
+import { BarChart } from '../../components/BarChart';
+import { TrendChart } from '../../components/TrendChart';
+import { Badge } from '../../components/Badge';
 import { useAuth } from '../../app/AuthContext';
+import { useResourceList, useResourceDetail } from '../_shared/hooks';
+import { endpoints } from '../../api/endpoints';
+import { http } from '../../api/client';
+import { formatDate, formatMoney } from '../../lib/format';
+import { ForecastPanel } from './ForecastPanel';
+import type { Lead, Opportunity, FollowUp, Customer, Campaign, Referral } from '../_shared/types';
+import { OPPORTUNITY_STAGES } from '@aranax/contracts';
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
+// ─── Analytics overview types ──────────────────────────────────────────────────
 
-const ACTIVE_LEADS_SPARK  = [40, 55, 48, 65, 72, 60, 80, 90, 85, 100, 110, 128];
-const PENDING_VOL_SPARK   = [2, 3, 2.5, 4, 5, 4.5, 5.5, 5, 6, 6.5, 6.2, 6.8];
-const AVG_DAYS_SPARK      = [28, 30, 27, 32, 26, 25, 24, 28, 25, 24, 26, 23];
-const GCI_SPARK           = [80, 95, 100, 115, 120, 140, 160, 170, 180, 190, 200, 214.6];
+interface MoneyResultOk { status: 'ok'; amount: string; currency: string }
+interface MoneyResultInsufficient { status: 'insufficient_data'; reason: string; missingCurrencies: string[] }
+type MoneyResult = MoneyResultOk | MoneyResultInsufficient;
 
-const CHART_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
-const CHART_2026   = [12000, 20000, 18000, 38400, 42000, 50000, 65000, 72000];
-const CHART_2025   = [8000,  12000, 14000, 20000, 22000, 28000, 35000, 40000];
+interface AnalyticsOverview {
+  period: { from: string; to: string };
+  funnel: {
+    leadsCreated: number;
+    qualificationBreakdown: { status: string; count: number }[];
+    opportunities: { open: number; won: number; lost: number };
+    leadToWonRate: string | null;
+    winRate: string | null;
+    leadsByMonth: { month: string; count: number }[];
+  };
+  revenue?: {
+    baseCurrency: string;
+    invoiced: MoneyResult;
+    collected: MoneyResult;
+  };
+}
 
-const PIPELINE_COLS = [
-  {
-    stage: 'Qualified', color: '#f86223', count: 31,
-    cards: [
-      { name: 'Carter', tag: 'Warm', tagColor: 'warm', desc: 'First home · $450–520k', source: 'Zillow', age: '2d' },
-    ],
-    viewAll: 'View all 31 qualified',
-  },
-  {
-    stage: 'Touring', color: '#f86223', count: 19,
-    cards: [
-      { name: 'Ethan',      tag: 'Hot', tagColor: 'hot', desc: 'Buyer · loft downtown · pre-approved', source: '2nd tour Thu', age: '4h ago' },
-      { name: 'Sam Fuller', tag: 'Warm', tagColor: 'warm', desc: 'Buyer · needs yard · flexible on area', source: 'Toured 2 homes', age: '2d ago' },
-    ],
-    viewAll: 'View all 17 touring',
-  },
-  {
-    stage: 'Under offer', color: '#f86223', count: 9,
-    cards: [
-      { name: 'Mason', tag: 'Hot', tagColor: 'hot', desc: 'Offer $612k on 24 Linden · countered', source: 'Awaiting reply', age: '2d' },
-      { name: 'Logan', tag: 'Hot', tagColor: 'hot', desc: 'Offer $1.02M on Alder Ct · inspection', source: 'Contingency ends Fri', age: '6h' },
-    ],
-    viewAll: 'View all 07 under offer',
-  },
-  {
-    stage: 'Closing', color: '#f86223', count: 6, dark: true,
-    cards: [
-      { name: 'Linh Nguyen',    desc: '88 Dockside #4B · $542k · closes', progress: 80 },
-      { name: 'Harper-Singh',   desc: '310 Crescent Way · $895k · closes Aug 12', progress: 95 },
-    ],
-    viewAll: 'View all closing · $3.2M',
-    potential: '$3.2M',
-  },
-];
+interface MonthlyCount {
+  month: string;
+  count: number;
+}
 
-const AGENDA = [
-  { time: '9:30',  period: 'AM', icon: 'home',    title: 'Showing · 212 Fern Ave',         sub: 'Kim & Alex Park · confirmed',      tag: 'Hot',          tagColor: 'hot' },
-  { time: '11:00', period: 'AM', icon: 'camera',  title: 'Listing photos · Alder Ct',      sub: 'Photographer on site',             tag: 'Prep needed',  tagColor: 'prep' },
-  { time: '1:30',  period: 'PM', icon: 'alert',   title: 'Inspection · 88 Dockside #4B',   sub: 'Nguyen · contingency ends Fri',    tag: 'Critical',     tagColor: 'critical' },
-  { time: '2:45',  period: 'PM', icon: 'doc',     title: 'Offer review · 19 Bell Hollow Ln', sub: 'Review counteroffer · $918k',    tag: 'Urgent',       tagColor: 'urgent' },
-  { time: '4:00',  period: 'PM', icon: 'phone',   title: 'Buyer call · R. Ortiz',           sub: 'Pre-approval next steps',         tag: 'Call',         tagColor: 'call' },
-  { time: '5:15',  period: 'PM', icon: 'bell',    title: 'Follow-up · Melissa Tran',        sub: 'Counter expires tonight',          tag: 'Overdue',      tagColor: 'overdue' },
-  { time: '9:30',  period: 'PM', icon: 'eye',     title: 'Listing review · 7 Marina Gate #1204', sub: 'Review new buyer interest · 3 requests', tag: 'New', tagColor: 'new' },
-];
+interface AnalyticsTrends {
+  months: string[];
+  leads: MonthlyCount[];
+  opportunities: MonthlyCount[];
+  customers: MonthlyCount[];
+  revenue?: { baseCurrency: string; series: MonthlyCount[] };
+}
 
-type Period = 'Week' | 'Month' | 'Year';
+// ─── Palette (scoped to this page — see dashboard.css) ─────────────────────────
 
-// ─── Tag colour map ───────────────────────────────────────────────────────────
-
-const TAG_CLASSES: Record<string, string> = {
-  hot:      'bg-[#fff3e0] text-[#e65100]',
-  warm:     'bg-[#e8f5e9] text-[#2e7d32]',
-  critical: 'bg-[#fce4ec] text-[#c62828]',
-  urgent:   'bg-[#fff8e1] text-[#e65100]',
-  call:     'bg-[#e3f2fd] text-[#1565c0]',
-  overdue:  'bg-[#fce4ec] text-[#c62828]',
-  new:      'bg-[#f3f4f6] text-[#374151]',
-  prep:     'bg-[#f3e5f5] text-[#6a1b9a]',
-};
+const INK = '#0f1a3d';
+const AMBER = '#e8601f';
+const AMBER_BRIGHT = '#f86223';
+const MOSS = '#2e7d4f';
+const RUST = '#c4432f';
+const BLUE = '#2563a8';
+const VIOLET = '#7c4fc4';
+const TEAL = '#1b8a8a';
+const LINE = '#dde4f2';
 
 // ─── Icon helpers ─────────────────────────────────────────────────────────────
 
-function IconLeads() {
+function IconArrowUpRight() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M7 17 17 7" /><path d="M7 7h10v10" />
     </svg>
   );
 }
-function IconDollar() {
+function IconClock() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-    </svg>
-  );
-}
-function IconCalendar() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}
-function IconChartBar() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
     </svg>
   );
 }
 
-function AgendaIcon({ type }: { type: string }) {
-  const cls = { width: 14, height: 14, flexShrink: 0 as const };
-  switch (type) {
-    case 'home':   return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
-    case 'camera': return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" /><circle cx="12" cy="13" r="4" /></svg>;
-    case 'alert':  return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>;
-    case 'doc':    return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>;
-    case 'phone':  return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.1 19.79 19.79 0 013 1.18 2 2 0 014.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z" /></svg>;
-    case 'bell':   return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" /></svg>;
-    default:       return <svg {...cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>;
-  }
+// ─── Small shared pieces ────────────────────────────────────────────────────────
+
+function Card({ className = '', children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <div className={`bg-[var(--dash-paper)] border border-[var(--dash-line)] rounded-[22px] ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="dash-mono text-[10px] font-medium tracking-[0.14em] uppercase text-[var(--dash-ink-soft)]/60">
+      {children}
+    </span>
+  );
+}
+
+function Empty({ children }: { children: React.ReactNode }) {
+  return <p className="text-sm text-[var(--dash-ink-soft)]/50 py-2">{children}</p>;
+}
+
+/** "2026-03" -> "Mar" */
+function formatMonthLabel(month: string): string {
+  const [year, m] = month.split('-').map(Number);
+  return new Date(Date.UTC(year, m - 1, 1)).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+}
+
+function StatTile({
+  index,
+  to,
+  label,
+  value,
+  detail,
+  accent,
+}: {
+  index: number;
+  to: string;
+  label: string;
+  value: string;
+  detail?: string;
+  accent: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="group relative flex flex-col justify-between gap-6 px-6 py-6 border-r border-[var(--dash-line)] last:border-r-0 max-sm:border-r-0 max-sm:border-b max-sm:last:border-b-0 transition-colors hover:bg-[var(--dash-paper-dim)] overflow-hidden"
+    >
+      <span className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: accent }} />
+      <div className="flex items-start justify-between">
+        <span className="dash-mono text-[10px] tracking-[0.14em] uppercase text-[var(--dash-ink-soft)]/45">
+          {String(index).padStart(2, '0')} · {label}
+        </span>
+        <span style={{ color: accent }}>
+          <IconArrowUpRight />
+        </span>
+      </div>
+      <div>
+        <div className="dash-serif text-[40px] leading-none font-medium tracking-tight" style={{ color: accent }}>
+          {value}
+        </div>
+        {detail && <div className="mt-2 text-[12.5px] text-[var(--dash-ink-soft)]/65">{detail}</div>}
+      </div>
+    </Link>
+  );
 }
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [period, setPeriod] = useState<Period>('Month');
-  const [pipelineFilter, setPipelineFilter] = useState<'All 107' | 'Hot 12' | 'Stale 8'>('All 107');
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -139,318 +163,450 @@ export default function Dashboard() {
   const firstName = user?.name?.split(' ')[0] ?? 'there';
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
+  const overview = useResourceDetail<AnalyticsOverview>(['analytics', 'overview'], endpoints.analytics.overview);
+  const [trendMonths, setTrendMonths] = useState(12);
+  const trends = useQuery<AnalyticsTrends>({
+    queryKey: ['analytics', 'trends', trendMonths],
+    queryFn: () => http.get<AnalyticsTrends>(endpoints.analytics.trends, { params: { months: trendMonths } }),
+  });
+  const leads = useResourceList<Lead>(['leads'], endpoints.leads.list, { pageSize: 5, sort: 'createdAt', order: 'desc' });
+  const customers = useResourceList<Customer>(['customers'], endpoints.customers.list, { pageSize: 1 });
+  const activeCustomers = useResourceList<Customer>(['customers'], endpoints.customers.list, { pageSize: 1, status: 'active' });
+  const followUps = useResourceList<FollowUp>(['follow-ups'], endpoints.followUps.list, { pageSize: 6, status: 'open', sort: 'dueAt', order: 'asc' });
+  const campaigns = useResourceList<Campaign>(['campaigns'], endpoints.campaigns.list, { pageSize: 1, status: 'active' });
+  const campaignsTotal = useResourceList<Campaign>(['campaigns'], endpoints.campaigns.list, { pageSize: 1 });
+  const referrals = useResourceList<Referral>(['referrals'], endpoints.referrals.list, { pageSize: 1 });
+
+  const openStages = OPPORTUNITY_STAGES.filter((s) => !s.terminal);
+  const stageParams = (stageKey: string) => ({ pageSize: 4, stage: stageKey, sort: 'estimatedValue' as const, order: 'desc' as const });
+  const discoveryOpps = useResourceList<Opportunity>(['opportunities', 'dashboard', 'discovery'], endpoints.opportunities.list, stageParams('discovery'));
+  const proposalOpps = useResourceList<Opportunity>(['opportunities', 'dashboard', 'proposal_sent'], endpoints.opportunities.list, stageParams('proposal_sent'));
+  const negotiationOpps = useResourceList<Opportunity>(['opportunities', 'dashboard', 'negotiation'], endpoints.opportunities.list, stageParams('negotiation'));
+  const opportunitiesByStage: Record<string, typeof discoveryOpps> = {
+    discovery: discoveryOpps,
+    proposal_sent: proposalOpps,
+    negotiation: negotiationOpps,
+  };
+  const pipelineByStage = openStages.map((stage) => ({ stage, query: opportunitiesByStage[stage.key] }));
+
+  const funnel = overview.data?.funnel;
+  const revenue = overview.data?.revenue;
+  const winRatePct = funnel?.winRate ? Math.round(Number(funnel.winRate) * 100) : 0;
+
   return (
     <AppShell>
-      {/* Page header */}
-      <div className="flex items-start justify-between mb-6 flex-wrap gap-4 pt-4">
-        <div>
-          <div className="flex items-center gap-2 text-[13px] text-gray-400 mb-1">
-            <span>{today}</span>
-            <span>·</span>
-            <span>3 showings · 5 follow-ups today</span>
-          </div>
-          <h1 className="text-[32px] font-extrabold tracking-[-1px] text-[#0f1117] leading-tight">
-            {greeting}, {firstName}
-          </h1>
-        </div>
-        <div className="flex items-center gap-1 bg-white rounded-full p-1 shadow-sm" role="group" aria-label="Time period">
-          {(['Week', 'Month', 'Year'] as Period[]).map(p => (
-            <button
-              key={p}
-              className={[
-                'rounded-full px-4 py-1.5 text-[13px] font-medium transition-colors',
-                period === p
-                  ? 'bg-[#00308a] text-white'
-                  : 'text-gray-500 hover:text-[#0f1117] hover:bg-[#e4e9f4]',
-              ].join(' ')}
-              onClick={() => setPeriod(p)}
-            >
-              {p}
-            </button>
-          ))}
-          <button className="flex items-center gap-1.5 px-4 py-1.5 bg-[#f86223] text-white rounded-full text-[13px] font-bold ml-1 hover:bg-[#d94f15] transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <line x1="4" y1="6" x2="20" y2="6" /><line x1="8" y1="12" x2="16" y2="12" /><line x1="11" y1="18" x2="13" y2="18" />
-            </svg>
-            Filters
-          </button>
-        </div>
-      </div>
-
-      {/* Stat cards */}
-      <div className="grid grid-cols-4 gap-4 mb-5 max-[1100px]:grid-cols-2 max-sm:grid-cols-1">
-        <StatCard
-          icon={<IconLeads />}
-          label="Active Leads"
-          value="128"
-          trend="This week"
-          trendUp={true}
-          sparkline={<Sparkline data={ACTIVE_LEADS_SPARK} color="#f86223" />}
-        />
-        <StatCard
-          icon={<IconDollar />}
-          label="Pending Volume"
-          value="$6.8M"
-          trend="18% This w…"
-          trendUp={true}
-          sparkline={<Sparkline data={PENDING_VOL_SPARK} color="#f86223" />}
-        />
-        <StatCard
-          icon={<IconCalendar />}
-          label="Avg Days on Market"
-          value="23"
-          trend="4 days vs metro"
-          trendUp={false}
-          sparkline={<Sparkline data={AVG_DAYS_SPARK} color="#ef4444" />}
-        />
-        <StatCard
-          icon={<IconChartBar />}
-          label="GCI · Year to Date"
-          value="$214,600"
-          trend="$38.4k in August so…"
-          trendUp={true}
-          sparkline={<Sparkline data={GCI_SPARK} color="#f86223" />}
-        />
-      </div>
-
-      {/* Main row: chart + right panel */}
-      <div className="grid grid-cols-[1fr_340px] gap-5 mb-5 items-start max-[1100px]:grid-cols-1">
-
-        {/* Commission chart */}
-        <div className="bg-white rounded-[28px] p-6 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-          <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
-            <div>
-              <h2 className="text-[16px] font-bold text-[#0f1117]">Commission performance</h2>
-              <p className="text-[12px] text-gray-400 mt-0.5">Monthly GCI vs last year · dotted = projected</p>
+      <div className="dash-root dash-grain -mx-6 -mt-6 -mb-10 px-6 pt-6 pb-10 max-md:-mx-5 max-md:px-5 max-sm:-mx-4 max-sm:px-4">
+        {/* ── Masthead ──────────────────────────────────────────────────── */}
+        <div className="dash-fade flex items-end justify-between flex-wrap gap-4 pt-6 pb-7 border-b border-[var(--dash-line)]">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <SectionLabel>{today}</SectionLabel>
+              {followUps.data && (
+                <>
+                  <span className="text-[var(--dash-ink-soft)]/30">—</span>
+                  <SectionLabel>{followUps.data.pagination.total} open follow-ups</SectionLabel>
+                </>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex items-center gap-1.5 text-[12px] text-gray-500">
-                  <span className="inline-block w-5 h-0.5 bg-[#f86223] rounded" />
-                  <span>2026</span>
-                </span>
-                <span className="flex items-center gap-1.5 text-[12px] text-gray-400">
-                  <span className="inline-block w-5 h-0 border-t-[1.5px] border-dashed border-[#94a3b8]" />
-                  <span>2025</span>
-                </span>
-              </div>
-              <select className="text-[12px] text-gray-500 bg-[#f4f6fb] border-0 rounded-lg px-2.5 py-1.5 outline-none cursor-pointer" aria-label="Select year">
-                <option>This year</option>
-                <option>Last year</option>
-              </select>
-            </div>
+            <h1 className="dash-serif text-[44px] max-sm:text-[32px] leading-[1.02] font-medium text-[var(--dash-ink)] tracking-tight">
+              {greeting}, <span className="italic" style={{ color: AMBER }}>{firstName}</span>.
+            </h1>
           </div>
+          <p className="text-[13.5px] text-[var(--dash-ink-soft)]/60 max-w-[260px] leading-relaxed">
+            Here's where the pipeline stands this period — qualification, revenue, and what needs your attention.
+          </p>
+        </div>
 
-          <LineChart
-            labels={CHART_LABELS}
-            series={[
-              { label: '2026', color: '#f86223', data: CHART_2026 },
-              { label: '2025', color: '#94a3b8', data: CHART_2025, dashed: true },
-            ]}
-            yFormatter={v => v === 0 ? '0' : `$${(v / 1000).toFixed(0)}k`}
+        {/* ── Stat strip ────────────────────────────────────────────────── */}
+        <div className="dash-stagger grid grid-cols-4 max-[1100px]:grid-cols-2 max-sm:grid-cols-1 border border-t-0 border-[var(--dash-line)] bg-[var(--dash-paper)]">
+          <StatTile
+            index={1}
+            to="/leads"
+            label="Total Leads"
+            value={funnel ? String(funnel.leadsCreated) : '—'}
+            detail={leads.data ? `${leads.data.pagination.total} all-time` : undefined}
+            accent={AMBER_BRIGHT}
           />
+          <StatTile
+            index={2}
+            to="/opportunities?status=open"
+            label="Open Opportunities"
+            value={funnel ? String(funnel.opportunities.open) : '—'}
+            detail={funnel ? `${funnel.opportunities.won} won · ${funnel.opportunities.lost} lost` : undefined}
+            accent={BLUE}
+          />
+          <StatTile
+            index={3}
+            to="/customers?status=active"
+            label="Active Customers"
+            value={activeCustomers.data ? String(activeCustomers.data.pagination.total) : '—'}
+            detail={customers.data ? `${customers.data.pagination.total} total` : undefined}
+            accent={TEAL}
+          />
+          <StatTile
+            index={4}
+            to="/revenue"
+            label="Revenue Invoiced"
+            value={
+              revenue?.invoiced.status === 'ok'
+                ? formatMoney(revenue.invoiced.amount, revenue.invoiced.currency)
+                : revenue?.invoiced.status === 'insufficient_data'
+                  ? 'N/A'
+                  : '—'
+            }
+            detail={
+              revenue?.invoiced.status === 'insufficient_data'
+                ? `Missing FX rate: ${revenue.invoiced.missingCurrencies.join(', ')}`
+                : revenue?.collected.status === 'ok'
+                  ? `${formatMoney(revenue.collected.amount, revenue.collected.currency)} collected`
+                  : undefined
+            }
+            accent={VIOLET}
+          />
+        </div>
 
-          <div className="flex items-center gap-6 mt-5 flex-wrap">
-            {[
-              { label: 'Closed volume YTD', value: '$14.2M' },
-              { label: 'Deals closed', value: '26' },
-              { label: 'Avg sale price', value: '$546k' },
-              { label: 'List-to-sale ratio', value: '98.7%' },
-              { label: 'Referral rate', value: '41%' },
-            ].map(s => (
-              <div key={s.label} className="flex flex-col gap-0.5">
-                <span className="text-[11px] text-gray-400 whitespace-nowrap">{s.label}</span>
-                <span className="text-[15px] font-bold text-[#0f1117]">{s.value}</span>
+        {/* ── Main row: funnel + right rail ─────────────────────────────── */}
+        <div className="grid grid-cols-[1fr_320px] gap-6 mt-8 items-start max-[1100px]:grid-cols-1">
+          <Card className="p-7">
+            <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
+              <div>
+                <SectionLabel>Funnel &amp; Qualification</SectionLabel>
+                <h2 className="dash-serif text-[22px] font-medium text-[var(--dash-ink)] mt-1">How leads convert</h2>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right panel */}
-        <div className="flex flex-col gap-4">
-
-          {/* Goal */}
-          <div className="bg-white rounded-[28px] p-5 flex items-center gap-4 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-            <div className="shrink-0">
-              <DonutChart value={71} label="OF GOAL" size={110} />
-            </div>
-            <div className="flex flex-col gap-2 min-w-0">
-              <h3 className="text-[14px] font-bold text-[#0f1117]">2026 goal · $300k GCI</h3>
-              <p className="text-[12px] text-gray-400 leading-relaxed">$214.6k earned. On pace to hit goal by Nov 12 – 6 weeks early.</p>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[11px] font-semibold bg-[#e4e9f4] text-[#374151] rounded-full px-2.5 py-1">$85.4k to go</span>
-                <span className="text-[11px] font-semibold bg-[#e4e9f4] text-[#374151] rounded-full px-2.5 py-1">5 closings</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Lead sources */}
-          <div className="bg-white rounded-[28px] p-5 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[14px] font-bold text-[#0f1117]">Lead sources · Aug</span>
-              <button className="text-[12px] text-gray-400 hover:text-[#0f1117] transition-colors">Detail →</button>
-            </div>
-            <div className="flex h-2 rounded-full overflow-hidden mb-3">
-              <span className="w-[34%] bg-[#f86223]" />
-              <span className="w-[26%] bg-[#fb8c5a]" />
-              <span className="w-[22%] bg-[#f86223]" />
-              <span className="w-[18%] bg-[#c44510]" />
-            </div>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-              {[
-                { dot: '#f86223', label: 'Referrals',    pct: '34%' },
-                { dot: '#fb8c5a', label: 'Zillow',       pct: '26%' },
-                { dot: '#f86223', label: 'Open houses',  pct: '22%' },
-                { dot: '#c44510', label: 'Website',      pct: '18%' },
-              ].map(s => (
-                <div key={s.label} className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: s.dot }} />
-                  <span className="text-[12px] text-gray-500 flex-1">{s.label}</span>
-                  <span className="text-[12px] font-semibold text-[#0f1117]">{s.pct}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Today's agenda */}
-          <div className="bg-white rounded-[28px] px-5 py-4 shadow-[0_4px_16px_rgba(0,0,0,.08)]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[14px] font-bold text-[#0f1117]">Today</span>
-              <button className="text-[12px] text-gray-400 hover:text-[#0f1117] transition-colors">Aug 4 →</button>
-            </div>
-            <div className="flex flex-col divide-y divide-[#f0f2f7]">
-              {AGENDA.map((item, i) => (
-                <div key={i} className="flex items-center gap-2 py-2">
-                  <div className="flex flex-col items-end w-[38px] shrink-0">
-                    <span className="text-[12px] font-bold text-[#0f1117] leading-none">{item.time}</span>
-                    <span className="text-[10px] text-gray-400">{item.period}</span>
-                  </div>
-                  <div className="w-6 h-6 rounded-lg bg-[#e4e9f4] flex items-center justify-center text-gray-500 shrink-0">
-                    <AgendaIcon type={item.icon} />
-                  </div>
-                  <div className="flex flex-col flex-1 min-w-0 gap-0.5">
-                    <span className="text-[12px] font-semibold text-[#0f1117] truncate">{item.title}</span>
-                    <span className="text-[11px] text-gray-400 truncate">{item.sub}</span>
-                  </div>
-                  <span className={`shrink-0 text-[10px] font-semibold rounded-full px-2 py-0.5 ${TAG_CLASSES[item.tagColor] ?? 'bg-gray-100 text-gray-500'}`}>
-                    {item.tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#f0f2f7] text-[12px] text-gray-400">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
-                <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
-              </svg>
-              <span>5 follow-ups due · 2 overdue</span>
-              <button className="ml-auto text-[12px] text-gray-400 hover:text-[#0f1117] transition-colors">Open →</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Pipeline */}
-      <div>
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-[18px] font-bold text-[#0f1117]">Pipeline</h2>
-            <span className="text-[12px] font-semibold text-gray-400 bg-white rounded-full px-2.5 py-1 shadow-sm">$9.1M potential</span>
-          </div>
-          <div className="flex items-center gap-1 bg-white rounded-full p-1 shadow-sm">
-            {(['All 107', 'Hot 12', 'Stale 8'] as const).map(f => (
-              <button
-                key={f}
-                className={[
-                  'rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-colors',
-                  pipelineFilter === f
-                    ? 'bg-[#00308a] text-white'
-                    : 'text-gray-500 hover:text-[#0f1117] hover:bg-[#e4e9f4]',
-                ].join(' ')}
-                onClick={() => setPipelineFilter(f)}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 gap-4 max-[1100px]:grid-cols-2 max-sm:grid-cols-1">
-          {PIPELINE_COLS.map(col => (
-            <div
-              key={col.stage}
-              className={[
-                'rounded-[28px] p-4 flex flex-col gap-3 shadow-[0_4px_16px_rgba(0,0,0,.08)]',
-                col.dark ? 'bg-[#002266]' : 'bg-white',
-              ].join(' ')}
-            >
-              {/* Col header */}
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: col.dark ? '#fff' : col.color }} />
-                <span className={`flex-1 text-[13px] font-bold ${col.dark ? 'text-white' : 'text-[#0f1117]'}`}>{col.stage}</span>
-                <span className={`text-[13px] font-bold ${col.dark ? 'text-white/50' : 'text-gray-400'}`}>
-                  {String(col.count).padStart(2, '0')}
+              {overview.data && (
+                <span className="dash-mono text-[11px] text-[var(--dash-ink-soft)]/50 mt-1">
+                  {formatDate(overview.data.period.from)} → {formatDate(overview.data.period.to)}
                 </span>
+              )}
+            </div>
+
+            {overview.isLoading && <Empty>Loading…</Empty>}
+            {overview.error && <Empty>Could not load analytics.</Empty>}
+            {funnel && (
+              <>
+                <div className="grid sm:grid-cols-3 gap-px bg-[var(--dash-line)] rounded-2xl overflow-hidden mb-7">
+                  {funnel.qualificationBreakdown.map((q) => {
+                    const qualColor: Record<string, string> = { qualified: MOSS, unqualified: BLUE, disqualified: RUST };
+                    return (
+                      <div key={q.status} className="flex flex-col gap-1.5 p-5 bg-[var(--dash-paper)]">
+                        <SectionLabel>{q.status}</SectionLabel>
+                        <span className="dash-serif text-[30px] font-medium leading-none" style={{ color: qualColor[q.status] ?? INK }}>{q.count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="flex items-center gap-8 flex-wrap pb-7 mb-7 border-b border-[var(--dash-line)]">
+                  <div>
+                    <SectionLabel>Lead → Won</SectionLabel>
+                    <div className="dash-serif text-[20px] font-medium mt-1" style={{ color: AMBER_BRIGHT }}>
+                      {funnel.leadToWonRate ? `${(Number(funnel.leadToWonRate) * 100).toFixed(1)}%` : '—'}
+                    </div>
+                  </div>
+                  <div>
+                    <SectionLabel>Win Rate</SectionLabel>
+                    <div className="dash-serif text-[20px] font-medium mt-1" style={{ color: VIOLET }}>
+                      {funnel.winRate ? `${(Number(funnel.winRate) * 100).toFixed(1)}%` : '—'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-8 mb-2">
+                  <div>
+                    <h3 className="text-[12.5px] font-semibold text-[var(--dash-ink)] mb-4">Opportunities by outcome</h3>
+                    <BarChart
+                      bars={[
+                        { label: 'Open', value: funnel.opportunities.open, color: AMBER },
+                        { label: 'Won', value: funnel.opportunities.won, color: MOSS },
+                        { label: 'Lost', value: funnel.opportunities.lost, color: RUST },
+                      ]}
+                      trackColor={LINE}
+                      labelColor="rgba(74,88,120,.65)"
+                      valueColor={INK}
+                      labelClassName="text-[13px] dash-mono"
+                      valueClassName="text-[18px] dash-serif font-medium"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-[12.5px] font-semibold text-[var(--dash-ink)] mb-4">Open pipeline by stage</h3>
+                    <BarChart
+                      bars={pipelineByStage.map(({ stage, query }, i) => ({
+                        label: stage.name,
+                        value: query.data?.pagination.total ?? 0,
+                        color: [AMBER_BRIGHT, BLUE, VIOLET][i % 3],
+                      }))}
+                      trackColor={LINE}
+                      labelColor="rgba(74,88,120,.65)"
+                      valueColor={INK}
+                      labelClassName="text-[13px] dash-mono"
+                      valueClassName="text-[18px] dash-serif font-medium"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="mt-7 pt-7 border-t border-[var(--dash-line)]">
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <div>
+                  <SectionLabel>Momentum</SectionLabel>
+                  <h3 className="dash-serif text-[18px] font-medium text-[var(--dash-ink)] mt-1">Trailing trend</h3>
+                </div>
+                <div className="flex items-center gap-0.5 border border-[var(--dash-line)] rounded-full p-0.5 bg-[var(--dash-paper-dim)]">
+                  {[3, 6, 12].map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setTrendMonths(m)}
+                      className="dash-mono text-[10.5px] font-medium px-3 py-1.5 rounded-full transition-colors"
+                      style={
+                        trendMonths === m
+                          ? { background: INK, color: 'var(--dash-paper)' }
+                          : { color: 'var(--dash-ink-soft)', opacity: 0.55 }
+                      }
+                    >
+                      {m}M
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {col.cards.map((card, i) => (
-                <div
-                  key={i}
-                  className={[
-                    'rounded-xl p-3 flex flex-col gap-2',
-                    col.dark ? 'bg-white/[.07]' : 'bg-[#e4e9f4]',
-                  ].join(' ')}
-                >
-                  {'progress' in card ? (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-[#002266] text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                          {card.name.charAt(0)}
+              {trends.isLoading && <Empty>Loading…</Empty>}
+              {trends.error && <Empty>Could not load trends.</Empty>}
+              {trends.data && (
+                <div className={`grid gap-8 ${trends.data.revenue ? 'sm:grid-cols-2' : ''}`}>
+                  <TrendChart
+                    labels={trends.data.months.map(formatMonthLabel)}
+                    series={[
+                      { label: 'Leads', color: AMBER_BRIGHT, data: trends.data.leads.map((m) => m.count) },
+                      { label: 'Opportunities', color: BLUE, data: trends.data.opportunities.map((m) => m.count) },
+                      { label: 'Customers', color: TEAL, data: trends.data.customers.map((m) => m.count) },
+                    ]}
+                    gridColor={LINE}
+                    axisTextColor="rgba(74,88,120,.5)"
+                    tooltipBg={INK}
+                    legendClassName="text-[13px] dash-mono"
+                    tooltipClassName="text-[13px] dash-mono"
+                  />
+                  {trends.data.revenue && (
+                    <TrendChart
+                      labels={trends.data.months.map(formatMonthLabel)}
+                      series={[{ label: `Revenue (${trends.data.revenue.baseCurrency})`, color: VIOLET, data: trends.data.revenue.series.map((m) => m.count) }]}
+                      valueFormatter={(v) => formatMoney(String(v), trends.data!.revenue!.baseCurrency)}
+                      gridColor={LINE}
+                      axisTextColor="rgba(74,88,120,.5)"
+                      tooltipBg={INK}
+                      legendClassName="text-[13px] dash-mono"
+                      tooltipClassName="text-[13px] dash-mono"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* ── Right rail ──────────────────────────────────────────────── */}
+          <div className="flex flex-col gap-6">
+            {/* Win rate — dark hero */}
+            <div
+              className="rounded-[22px] p-6 flex items-center gap-5 text-[var(--dash-paper)]"
+              style={{ background: INK }}
+            >
+              <DonutChart
+                value={winRatePct}
+                label="WIN RATE"
+                size={100}
+                trackColor="rgba(255,255,255,.14)"
+                progressColor={AMBER_BRIGHT}
+                valueColor="#ffffff"
+                labelColor="rgba(255,255,255,.45)"
+                fontFamily="'Fraunces', Georgia, serif"
+              />
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <h3 className="dash-serif text-[17px] font-medium leading-tight">Opportunity win rate</h3>
+                <p className="text-[12px] text-[var(--dash-paper)]/55 leading-relaxed">
+                  {funnel ? `${funnel.opportunities.won} won of ${funnel.opportunities.won + funnel.opportunities.lost} decided this period.` : 'Loading…'}
+                </p>
+              </div>
+            </div>
+
+            {/* Marketing */}
+            <Card className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <SectionLabel>Marketing</SectionLabel>
+                <Link to="/campaigns" className="dash-underline-grow text-[11.5px] font-medium text-[var(--dash-ink-soft)]/70 hover:text-[var(--dash-ink)] transition-colors">
+                  Detail
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <SectionLabel>Campaigns</SectionLabel>
+                  <div className="dash-serif text-[26px] font-medium mt-1" style={{ color: BLUE }}>
+                    {campaignsTotal.data ? campaignsTotal.data.pagination.total : '—'}
+                  </div>
+                  {campaigns.data && (
+                    <Link to="/campaigns?status=active" className="text-[11.5px] font-medium mt-0.5 block" style={{ color: AMBER }}>
+                      {campaigns.data.pagination.total} active
+                    </Link>
+                  )}
+                </div>
+                <div>
+                  <SectionLabel>Referrals</SectionLabel>
+                  <div className="dash-serif text-[26px] font-medium mt-1" style={{ color: TEAL }}>
+                    {referrals.data ? referrals.data.pagination.total : '—'}
+                  </div>
+                  <Link to="/referrals" className="text-[11.5px] font-medium mt-0.5 block" style={{ color: VIOLET }}>
+                    View all
+                  </Link>
+                </div>
+              </div>
+            </Card>
+
+            {/* Upcoming follow-ups */}
+            <Card className="p-5">
+              <div className="flex items-center justify-between mb-4">
+                <SectionLabel>Upcoming Follow-ups</SectionLabel>
+                <Link to="/follow-ups?status=open" className="dash-underline-grow text-[11.5px] font-medium text-[var(--dash-ink-soft)]/70 hover:text-[var(--dash-ink)] transition-colors">
+                  Open
+                </Link>
+              </div>
+              {followUps.isLoading && <Empty>Loading…</Empty>}
+              {followUps.error && <Empty>Could not load follow-ups.</Empty>}
+              {followUps.data && followUps.data.items.length === 0 && <Empty>No open follow-ups.</Empty>}
+              {followUps.data && followUps.data.items.length > 0 && (
+                <div className="flex flex-col divide-y divide-[var(--dash-line)]">
+                  {followUps.data.items.map((f) => {
+                    const overdue = new Date(f.dueAt) < new Date();
+                    const linkedLabel = f.leadName ?? f.opportunityTitle ?? f.customerName;
+                    return (
+                      <div key={f.id} className="flex items-center gap-2.5 py-3">
+                        <div
+                          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+                          style={{ background: overdue ? `${RUST}1a` : 'var(--dash-paper-dim)', color: overdue ? RUST : 'var(--dash-ink-soft)' }}
+                        >
+                          <IconClock />
                         </div>
-                        <span className="text-[13px] font-semibold text-white">{card.name}</span>
-                      </div>
-                      <p className="text-[11px] text-white/50 leading-relaxed">{card.desc}</p>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[10px] text-white/40">Escrow progress</span>
-                        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-[#f86223] rounded-full" style={{ width: `${card.progress}%` }} />
+                        <div className="flex flex-col flex-1 min-w-0 gap-0.5">
+                          <span className="text-[12.5px] font-semibold text-[var(--dash-ink)] truncate">{f.title}</span>
+                          <span className="text-[11px] text-[var(--dash-ink-soft)]/55 truncate">{linkedLabel ?? 'Unlinked'} · due {formatDate(f.dueAt)}</span>
                         </div>
-                        <span className="text-[10px] text-white/50 font-semibold">{card.progress}%</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-white text-[#374151] text-[10px] font-bold flex items-center justify-center shrink-0 shadow-sm">
-                          {card.name.charAt(0)}
-                        </div>
-                        <span className="flex-1 text-[13px] font-semibold text-[#0f1117] min-w-0 truncate">{card.name}</span>
-                        {'tag' in card && (
-                          <span className={`shrink-0 text-[10px] font-semibold rounded-full px-2 py-0.5 ${TAG_CLASSES[card.tagColor] ?? 'bg-gray-100 text-gray-500'}`}>
-                            {card.tag}
+                        {overdue && (
+                          <span className="dash-mono shrink-0 text-[9.5px] font-medium tracking-wide uppercase rounded-full px-2 py-0.5" style={{ background: `${RUST}1a`, color: RUST }}>
+                            Overdue
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-gray-500 leading-relaxed">{card.desc}</p>
-                      <div className="flex items-center justify-between text-[10px] text-gray-400">
-                        <span>{'source' in card ? card.source : ''}</span>
-                        <span>{'age' in card ? card.age : ''}</span>
-                      </div>
-                    </>
-                  )}
+                    );
+                  })}
                 </div>
-              ))}
+              )}
+            </Card>
+          </div>
+        </div>
 
-              <button className={[
-                'mt-auto text-[12px] font-medium py-2 rounded-xl transition-colors',
-                col.dark
-                  ? 'text-white/40 hover:bg-white/[.06] hover:text-white/70'
-                  : 'text-gray-400 hover:bg-[#e4e9f4] hover:text-[#0f1117]',
-              ].join(' ')}>
-                {col.viewAll}
-              </button>
+        {/* ── Pipeline ──────────────────────────────────────────────────── */}
+        <div className="mt-10">
+          <div className="flex items-end justify-between mb-5 flex-wrap gap-3 pb-4 border-b border-[var(--dash-line)]">
+            <div>
+              <SectionLabel>Pipeline</SectionLabel>
+              <h2 className="dash-serif text-[26px] font-medium text-[var(--dash-ink)] mt-1">Where the deals are</h2>
             </div>
-          ))}
+            <Link to="/opportunities" className="dash-underline-grow text-[12.5px] font-medium text-[var(--dash-ink-soft)]/70 hover:text-[var(--dash-ink)] transition-colors">
+              View all opportunities
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-3 gap-6 max-[1100px]:grid-cols-1">
+            {pipelineByStage.map(({ stage, query }, i) => (
+              <Card key={stage.key} className="p-5 flex flex-col gap-3">
+                <Link to={`/opportunities?stage=${stage.key}`} className="flex items-center gap-2.5 group/stage pb-3 border-b border-[var(--dash-line)]">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: [AMBER_BRIGHT, BLUE, VIOLET][i % 3] }} />
+                  <span className="flex-1 text-[13.5px] font-semibold text-[var(--dash-ink)] group-hover/stage:underline">{stage.name}</span>
+                  <span className="dash-mono text-[13px] font-medium text-[var(--dash-ink-soft)]/50">
+                    {query.data ? String(query.data.pagination.total).padStart(2, '0') : '—'}
+                  </span>
+                </Link>
+
+                {query.isLoading && <Empty>Loading…</Empty>}
+                {query.error && <Empty>Could not load.</Empty>}
+                {query.data && query.data.items.length === 0 && <Empty>No opportunities in this stage.</Empty>}
+
+                {query.data?.items.map((opp) => (
+                  <Link
+                    key={opp.id}
+                    to={`/opportunities/${opp.id}`}
+                    className="rounded-2xl p-3.5 flex flex-col gap-2 bg-[var(--dash-paper-dim)] hover:bg-[var(--dash-line)]/60 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className="w-7 h-7 rounded-full text-[10.5px] font-bold flex items-center justify-center shrink-0"
+                        style={{ background: INK, color: 'var(--dash-paper)' }}
+                      >
+                        {opp.title.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="flex-1 text-[13px] font-semibold text-[var(--dash-ink)] min-w-0 truncate">{opp.title}</span>
+                    </div>
+                    <p className="dash-mono text-[12px] text-[var(--dash-ink-soft)]/70">{formatMoney(opp.estimatedValue, opp.currency)}</p>
+                    <div className="flex items-center justify-between text-[10.5px] text-[var(--dash-ink-soft)]/45">
+                      <span>{opp.expectedCloseDate ? `Closes ${formatDate(opp.expectedCloseDate)}` : 'No close date'}</span>
+                    </div>
+                  </Link>
+                ))}
+
+                {query.data && query.data.pagination.total > query.data.items.length && (
+                  <Link
+                    to={`/opportunities?stage=${stage.key}`}
+                    className="mt-auto text-[12px] font-medium py-2.5 rounded-xl transition-colors text-[var(--dash-ink-soft)]/60 hover:bg-[var(--dash-paper-dim)] hover:text-[var(--dash-ink)] text-center"
+                  >
+                    View all {query.data.pagination.total} {stage.name.toLowerCase()}
+                  </Link>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Recent leads ──────────────────────────────────────────────── */}
+        <div className="mt-10">
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <SectionLabel>Recent Leads</SectionLabel>
+              <Link to="/leads" className="dash-underline-grow text-[12.5px] font-medium text-[var(--dash-ink-soft)]/70 hover:text-[var(--dash-ink)] transition-colors">
+                View all
+              </Link>
+            </div>
+            {leads.isLoading && <Empty>Loading…</Empty>}
+            {leads.error && <Empty>Could not load leads.</Empty>}
+            {leads.data && leads.data.items.length === 0 && <Empty>No leads yet.</Empty>}
+            {leads.data && leads.data.items.length > 0 && (
+              <div className="flex flex-col divide-y divide-[var(--dash-line)]">
+                {leads.data.items.map((lead) => (
+                  <Link
+                    key={lead.id}
+                    to={`/leads/${lead.id}`}
+                    className="flex items-center gap-3.5 py-3.5 hover:bg-[var(--dash-paper-dim)] -mx-3 px-3 rounded-xl transition-colors"
+                  >
+                    <div
+                      className="w-9 h-9 rounded-full text-[12px] font-bold flex items-center justify-center shrink-0"
+                      style={{ background: INK, color: 'var(--dash-paper)' }}
+                    >
+                      {lead.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-0 gap-0.5">
+                      <span className="text-[13.5px] font-semibold text-[var(--dash-ink)] truncate">{lead.name}</span>
+                      <span className="text-[11.5px] text-[var(--dash-ink-soft)]/55 truncate">{lead.company ?? lead.email}</span>
+                    </div>
+                    <Badge value={lead.stage} />
+                    <span className="dash-mono text-[11px] text-[var(--dash-ink-soft)]/45 text-right shrink-0 whitespace-nowrap">{formatDate(lead.createdAt)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+
+        {/* ── AI Revenue Forecast ───────────────────────────────────────── */}
+        <div className="mt-10">
+          <ForecastPanel />
         </div>
       </div>
     </AppShell>

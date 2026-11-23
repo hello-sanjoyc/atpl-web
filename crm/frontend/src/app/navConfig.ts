@@ -4,8 +4,10 @@ import { can } from '../lib/permissions';
 export interface NavItem {
   label: string;
   to: string;
-  /** Permission required to see this link (and the route). Undefined = any signed-in user. */
+  /** Permission required to see this link. Undefined = any signed-in user. */
   permission?: Permission;
+  /** Role(s) allowed. Takes precedence over permission when set. */
+  roles?: Role[];
 }
 
 /** Links shown directly in the pill. */
@@ -22,10 +24,19 @@ export const PRIMARY_NAV: NavItem[] = [
 export const MORE_NAV: NavItem[] = [
   { label: 'Campaigns', to: '/campaigns', permission: 'campaigns.manage' },
   { label: 'Referrals', to: '/referrals', permission: 'referrals.manage' },
-  { label: 'Users', to: '/users', permission: 'users.manage' },
+  { label: 'Attribution', to: '/analytics/attribution', permission: 'analytics.read' },
+];
+
+/** Settings hub link — only the gear icon / mobile drawer entry for super_admin. */
+export const SETTINGS_NAV: NavItem[] = [
+  { label: 'Settings', to: '/settings', roles: ['super_admin'] },
 ];
 
 export function visibleItems(items: NavItem[], role: Role | undefined): NavItem[] {
-  if (!role) return items.filter((i) => !i.permission);
-  return items.filter((i) => !i.permission || can(role, i.permission));
+  if (!role) return items.filter((i) => !i.permission && !i.roles);
+  return items.filter((i) => {
+    if (i.roles) return i.roles.includes(role);
+    if (i.permission) return can(role, i.permission);
+    return true;
+  });
 }

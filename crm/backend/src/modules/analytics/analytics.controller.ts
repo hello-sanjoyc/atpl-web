@@ -4,6 +4,9 @@ import { z } from 'zod';
 import { currencyField, isoDateField } from '../common/schemas.js';
 import { sendOk } from '../common/response.js';
 import { createAnalyticsService } from './analytics.service.js';
+import { generateAttributionReport } from '../ai/marketing-attribution.service.js';
+import { withCache } from '../../cache/cache.service.js';
+import { CACHE_KEYS, CACHE_TTL } from '@aranax/contracts';
 
 const security = [{ bearerAuth: [] }];
 
@@ -17,6 +20,11 @@ const periodFields = {
 
 const overviewQuery = z.object({
   ...periodFields,
+  baseCurrency: currencyField.default('USD'),
+});
+
+const trendsQuery = z.object({
+  months: z.coerce.number().int().min(1).max(24).default(12),
   baseCurrency: currencyField.default('USD'),
 });
 
@@ -40,7 +48,50 @@ const analyticsController: FastifyPluginAsync = async (app) => {
   typed.get(
     '/analytics/overview',
     { schema: { tags: ['Analytics'], summary: 'Funnel and revenue overview for a reporting period (UTC)', querystring: overviewQuery, security }, preHandler: app.authorize('analytics.read') },
-    async (request, reply) => sendOk(request, reply, await service.overview(request.user, request.query)),
+    async (request, reply) => {
+      const qKey = JSON.stringify(request.query);
+      const cacheKey = CACHE_KEYS.analyticsOverview(request.user.id) + ':' + qKey;
+      const result = await withCache(app.deps.cache, cacheKey, CACHE_TTL.analytics.seconds, () => service.overview(request.user, request.query));
+      return sendOk(request, reply, result);
+    },
+  );
+
+  typed.get(
+    '/analytics/trends',
+    {
+      schema: {
+        tags: ['Analytics'],
+        summary: 'Monthly trend series (leads, opportunities, customers, revenue) for the last N calendar months',
+        querystring: trendsQuery,
+        security,
+      },
+      preHandler: app.authorize('analytics.read'),
+    },
+    async (request, reply) => {
+      const qKey = JSON.stringify(request.query);
+      const cacheKey = CACHE_KEYS.analyticsOverview(request.user.id) + ':trends:' + qKey;
+      const result = await withCache(app.deps.cache, cacheKey, CACHE_TTL.analytics.seconds, () => service.trends(request.user, request.query));
+      return sendOk(request, reply, result);
+    },
+  );
+
+  typed.get(
+    '/analytics/attribution',
+    {
+      schema: {
+        tags: ['Analytics', 'AI'],
+        summary: 'AI marketing attribution — per-channel and per-campaign lead, opportunity, and revenue breakdown',
+        querystring: z.object({ ...periodFields }),
+        security,
+      },
+      preHandler: app.authorize('analytics.read'),
+    },
+    async (request, reply) => {
+      const qKey = JSON.stringify(request.query);
+      const cacheKey = CACHE_KEYS.analyticsAttr(request.user.id) + ':' + qKey;
+      const result = await withCache(app.deps.cache, cacheKey, CACHE_TTL.analytics.seconds, () => generateAttributionReport(app.deps, request.query));
+      return sendOk(request, reply, result);
+    },
   );
 
   typed.get(

@@ -183,21 +183,27 @@ export const LOST_REASONS = [
     "other",
 ] as const;
 export const SERVICE_INTERESTS = [
-    "ai_saas",
-    "rag_ai",
-    "white_label_agency",
-    "web_development",
-    "mobile_development",
-    "custom_software",
+    "ai_saas_development",
+    "rag_ai_chatbot_development",
+    "ai_agents_voice_automation",
+    "mvp_development_startups",
+    "custom_software_development",
+    "website_design_cms_development",
+    "mobile_app_development",
+    "offshore_software_development",
+    "white_label_development_agencies",
 ] as const;
 export type ServiceInterest = (typeof SERVICE_INTERESTS)[number];
 export const SERVICE_INTEREST_LABELS: Record<ServiceInterest, string> = {
-    ai_saas: "AI SaaS",
-    rag_ai: "RAG AI",
-    white_label_agency: "White Label Agency",
-    web_development: "Web Development",
-    mobile_development: "Mobile Development",
-    custom_software: "Custom Software",
+    ai_saas_development: "AI SaaS Development",
+    rag_ai_chatbot_development: "RAG & AI Chatbot Development",
+    ai_agents_voice_automation: "AI Agents, Voice AI & Automation",
+    mvp_development_startups: "MVP Development for Startups",
+    custom_software_development: "Custom Software Development",
+    website_design_cms_development: "Website Design & CMS Development",
+    mobile_app_development: "Mobile App Development",
+    offshore_software_development: "Offshore Software Development",
+    white_label_development_agencies: "White-Label Development for Agencies",
 };
 /** Ready-made {value,label} options for Service interest selects. */
 export const SERVICE_INTEREST_OPTIONS = SERVICE_INTERESTS.map((v) => ({
@@ -362,3 +368,134 @@ export const DEFAULT_OPTION_ITEMS: Record<OptionCategory, readonly OptionItemSee
     contract_kind: CONTRACT_KINDS.map((v) => ({ value: v, label: CONTRACT_KIND_LABELS[v] })),
     currency: CURRENCIES.map((v) => ({ value: v, label: v })),
 };
+
+// ---- AI types ----
+
+export const AI_TASK_KINDS = [
+    "score_lead",
+    "enrich_lead",
+    "dedup_lead",
+    "draft_followup",
+    "extract_conversation",
+    "opportunity_health",
+    "generate_proposal",
+] as const;
+export type AiTaskKind = (typeof AI_TASK_KINDS)[number];
+
+export interface EnrichmentData {
+    companySize?: string;
+    industry?: string;
+    website?: string;
+    techStack?: string[];
+    linkedinUrl?: string;
+    verifiedAt?: string;
+    source: "clearbit" | "hunter" | "ai_inference";
+    aiInferred?: boolean;
+}
+
+export interface ProposalSection {
+    heading: string;
+    content: string;
+}
+
+export interface ForecastBand {
+    best: number;
+    expected: number;
+    worst: number;
+    currency: string;
+}
+
+export interface ScoreExplainResult {
+    leadId: string;
+    deterministicScore: number;
+    aiScore: number | null;
+    aiScoreReason: string | null;
+    aiAvailable: boolean;
+    refreshing: boolean;
+}
+
+// ── Shared cache constants ────────────────────────────────────────────────────
+
+/**
+ * Redis cache keys used by the backend.
+ * Frontend uses these as React Query queryKey arrays via QUERY_KEYS.
+ */
+export const CACHE_KEYS = {
+    countries:          'geo:countries',
+    options:            'app:options',
+    assessments:        'public:assessments',
+    assessmentBySlug:   (slug: string) => `public:assessment:${slug}`,
+    bookingConfig:      'public:booking_config',
+    exchangeRates:      'finance:exchange_rates',
+    llmConfigs:         'settings:llm_configs',
+    users:              'admin:users',
+    campaigns:          'crm:campaigns',
+    referrals:          'crm:referrals',
+    customers:          'crm:customers',
+    opportunities:      'crm:opportunities',
+    analyticsOverview:  (userId: string) => `analytics:overview:${userId}`,
+    analyticsAttr:      (userId: string) => `analytics:attribution:${userId}`,
+} as const;
+
+/**
+ * TTL values: seconds for backend Redis, milliseconds for frontend React Query staleTime.
+ * Both sides import from here — always in sync.
+ */
+export const CACHE_TTL = {
+    /** Static data that never changes without a deploy. */
+    static: { seconds: 86_400, ms: 86_400_000 },
+    /** Rarely-changing reference data (booking config, assessments, exchange rates, LLM config). */
+    reference: { seconds: 600, ms: 600_000 },
+    /** Admin lists that change on explicit user action (users, campaigns, customers…). */
+    list: { seconds: 60, ms: 60_000 },
+    /** Hot aggregations re-computed on a rolling window. */
+    analytics: { seconds: 30, ms: 30_000 },
+} as const;
+
+/**
+ * React Query queryKey arrays — mirrors CACHE_KEYS.
+ * Import these on the frontend instead of bare string arrays.
+ */
+export const QUERY_KEYS = {
+    countries:          ['countries'] as const,
+    options:            ['options'] as const,
+    assessments:        ['assessments'] as const,
+    assessmentBySlug:   (slug: string) => ['assessments', slug] as const,
+    bookingConfig:      ['booking-config'] as const,
+    exchangeRates:      ['exchange-rates'] as const,
+    llmConfigs:         ['llm-configs'] as const,
+    users:              ['users'] as const,
+    campaigns:          ['campaigns'] as const,
+    referrals:          ['referrals'] as const,
+    customers:          ['customers'] as const,
+    opportunities:      ['opportunities'] as const,
+    analyticsOverview:  ['analytics', 'overview'] as const,
+    analyticsAttr:      ['analytics', 'attribution'] as const,
+    roleMeta:           ['role-meta'] as const,
+    rbacConfigs:        ['rbac-configs'] as const,
+    optionsAdmin:       ['options-admin'] as const,
+    securityEvents:     ['security-events'] as const,
+    securityConfig:     ['security-config'] as const,
+    auditLogs:          ['audit-logs'] as const,
+    auditEntityTypes:   ['audit-logs', 'entity-types'] as const,
+} as const;
+
+/**
+ * Security/auth event names persisted to the backend's `security_events` table — mirrors
+ * backend/src/logger/audit-logger.ts's SECURITY_EVENTS. Kept here too since the frontend's
+ * Settings → Security event-type filter needs the list and cannot import the backend module.
+ */
+export const SECURITY_EVENTS = [
+    'auth.login_success',
+    'auth.login_failed',
+    'auth.account_locked',
+    'auth.invalid_token',
+    'auth.access_denied',
+    'auth.rate_limited',
+    'webhook.invalid_signature',
+    'webhook.replay_rejected',
+    'lead.spam_suppressed',
+    'export.sensitive_data',
+    'user.permission_changed',
+] as const;
+export type SecurityEventName = (typeof SECURITY_EVENTS)[number];

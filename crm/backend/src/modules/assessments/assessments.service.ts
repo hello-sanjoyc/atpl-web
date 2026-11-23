@@ -134,6 +134,8 @@ export function createAssessmentsService(deps: Container) {
             timeline: null,
             message: null,
             source: 'assessment',
+            captureChannel: 'contact_form',
+            leadSource: 'website',
             formSource: `assessment:${slug}`,
             utmSource: input.utmSource,
             utmMedium: input.utmMedium,

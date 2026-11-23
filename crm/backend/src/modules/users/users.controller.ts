@@ -34,6 +34,18 @@ const usersController: FastifyPluginAsync = async (app) => {
     },
   );
 
+  typed.get(
+    '/users/:id',
+    {
+      schema: { tags: ['Users'], summary: 'Get a user by ID', params: idParam, ...security },
+      preHandler: app.authorize('users.manage'),
+    },
+    async (request, reply) => {
+      const user = await service.getById(request.params.id);
+      return sendOk(request, reply, user);
+    },
+  );
+
   typed.patch(
     '/users/:id',
     {

@@ -1,4 +1,4 @@
-import { and, asc, count, eq, gte, isNotNull, isNull, lte, or, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, isNotNull, isNull, lte, or, sql, type SQL } from 'drizzle-orm';
 import { withDbTiming, type DbExecutor } from '../../db/client.js';
 import { contacts, contracts, customers } from '../../db/schema/index.js';
 import { escapeLike } from '../leads/leads.repository.js';
@@ -37,7 +37,7 @@ export async function updateCustomer(db: DbExecutor, id: string, patch: Partial<
 
 export async function listCustomers(
   db: DbExecutor,
-  options: { q?: string; status?: string; limit: number; offset: number },
+  options: { q?: string; status?: string; limit: number; offset: number; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' },
 ): Promise<{ rows: CustomerRow[]; total: number }> {
   const conditions: SQL[] = [];
   if (options.status) conditions.push(eq(customers.status, options.status));
@@ -46,13 +46,21 @@ export async function listCustomers(
     conditions.push(or(sql`${customers.name} ilike ${pattern}`, sql`${customers.email} ilike ${pattern}`, sql`${customers.company} ilike ${pattern}`)!);
   }
   const where = conditions.length ? and(...conditions) : undefined;
+  const sortColumn = { name: customers.name, createdAt: customers.createdAt }[options.sort];
+  const order = options.order === 'asc' ? asc(sortColumn) : desc(sortColumn);
   return withDbTiming('customers.list', async () => {
     const [rows, [total]] = await Promise.all([
-      db.select().from(customers).where(where).orderBy(asc(customers.name)).limit(options.limit).offset(options.offset),
+      db.select().from(customers).where(where).orderBy(order, asc(customers.id)).limit(options.limit).offset(options.offset),
       db.select({ value: count() }).from(customers).where(where),
     ]);
     return { rows, total: Number(total?.value ?? 0) };
   });
+}
+
+export async function listCustomersByReferralId(db: DbExecutor, referralId: string): Promise<CustomerRow[]> {
+  return withDbTiming('customers.list_by_referral', () =>
+    db.select().from(customers).where(eq(customers.referralId, referralId)).orderBy(asc(customers.name)),
+  );
 }
 
 export async function insertContact(db: DbExecutor, values: typeof contacts.$inferInsert) {

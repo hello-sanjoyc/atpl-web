@@ -5,11 +5,13 @@ import type { AuthUser } from '../../types/fastify.js';
 import { hashPassword } from '../../utils/password.js';
 import { recordAudit } from '../audit/audit.repository.js';
 import { pagination } from '../common/response.js';
+import { withCache } from '../../cache/cache.service.js';
+import { CACHE_KEYS, CACHE_TTL, QUERY_KEYS } from '@aranax/contracts';
 import type { CreateUserInput, UpdateUserInput } from './users.schema.js';
 import { findUserByEmail, findUserById, insertUser, listUsers, updateUser } from './users.repository.js';
 
 export function createUsersService(deps: Container) {
-  const { db, logger, security } = deps;
+  const { db, cache, logger, security } = deps;
   const log = logger.child({ module: 'users' });
 
   return {
@@ -19,7 +21,7 @@ export function createUsersService(deps: Container) {
       const passwordHash = await hashPassword(input.password);
 
       const user = await db.transaction(async (tx) => {
-        const created = await insertUser(tx, { email: input.email, name: input.name, role: input.role, passwordHash });
+        const created = await insertUser(tx, { email: input.email, name: input.name, phone: input.phone ?? null, role: input.role, passwordHash });
         await recordAudit(tx, {
           actorId: actor.id,
           action: 'user.created',
@@ -30,15 +32,31 @@ export function createUsersService(deps: Container) {
         return created;
       });
       log.info({ event: 'user.created', targetUserId: user.id, role: user.role }, 'User created');
+      await Promise.all([
+        cache.delPattern(CACHE_KEYS.users),
+        cache.publish({ type: 'users.updated', queryKeys: [QUERY_KEYS.users as unknown as string[]] }),
+      ]);
       return toPublic(user);
     },
 
-    async list(query: { page: number; pageSize: number }) {
-      const { rows, total } = await listUsers(db, {
-        limit: query.pageSize,
-        offset: (query.page - 1) * query.pageSize,
+    async getById(id: string) {
+      const user = await findUserById(db, id);
+      if (!user) throw new NotFoundError(ErrorCodes.USER_NOT_FOUND, 'The requested user was not found.');
+      return toPublic(user);
+    },
+
+    async list(query: { page: number; pageSize: number; role?: string; sort: 'name' | 'createdAt'; order: 'asc' | 'desc' }) {
+      const cacheKey = `${CACHE_KEYS.users}:p${query.page}:s${query.pageSize}:r${query.role ?? 'any'}:so${query.sort}:o${query.order}`;
+      return withCache(cache, cacheKey, CACHE_TTL.list.seconds, async () => {
+        const { rows, total } = await listUsers(db, {
+          role: query.role,
+          limit: query.pageSize,
+          offset: (query.page - 1) * query.pageSize,
+          sort: query.sort,
+          order: query.order,
+        });
+        return { items: rows.map(toPublic), page: pagination(query.page, query.pageSize, total) };
       });
-      return { items: rows.map(toPublic), page: pagination(query.page, query.pageSize, total) };
     },
 
     async update(actor: AuthUser, id: string, input: UpdateUserInput) {
@@ -48,8 +66,15 @@ export function createUsersService(deps: Container) {
         throw new BusinessRuleError(ErrorCodes.BUSINESS_RULE_VIOLATION, 'You cannot deactivate your own account.');
       }
 
+      if (input.email && input.email.toLowerCase() !== current.email.toLowerCase()) {
+        const clash = await findUserByEmail(db, input.email);
+        if (clash) throw new ConflictError(ErrorCodes.CONFLICT, 'A user with this email already exists.');
+      }
+
+      const patch = { ...input, ...(input.email ? { email: input.email.toLowerCase() } : {}) };
+
       const updated = await db.transaction(async (tx) => {
-        const row = await updateUser(tx, id, input);
+        const row = await updateUser(tx, id, patch);
         if (!row) throw new NotFoundError(ErrorCodes.USER_NOT_FOUND, 'The requested user was not found.');
         if (input.role && input.role !== current.role) {
           await recordAudit(tx, {
@@ -75,11 +100,15 @@ export function createUsersService(deps: Container) {
         security.record('user.permission_changed', { actorUserId: actor.id, targetUserId: id, from: current.role, to: input.role }, 'warn');
       }
       log.info({ event: 'user.updated', targetUserId: id, fields: Object.keys(input) }, 'User updated');
+      await Promise.all([
+        cache.delPattern(CACHE_KEYS.users),
+        cache.publish({ type: 'users.updated', queryKeys: [QUERY_KEYS.users as unknown as string[]] }),
+      ]);
       return toPublic(updated);
     },
   };
 }
 
-export function toPublic(user: { id: string; email: string; name: string; role: string; isActive: boolean; createdAt: Date }) {
-  return { id: user.id, email: user.email, name: user.name, role: user.role, isActive: user.isActive, createdAt: user.createdAt.toISOString() };
+export function toPublic(user: { id: string; email: string; name: string; phone?: string | null; role: string; isActive: boolean; createdAt: Date }) {
+  return { id: user.id, email: user.email, name: user.name, phone: user.phone ?? null, role: user.role, isActive: user.isActive, createdAt: user.createdAt.toISOString() };
 }

@@ -14,6 +14,7 @@ import {
 const opportunityStageKeys = OPPORTUNITY_STAGES.map((s) => s.key) as [string, ...string[]];
 
 export const listOpportunitiesQuery = paginationQuery.extend({
+  q: z.string().trim().max(160).optional(),
   stage: z.enum(opportunityStageKeys).optional(),
   status: z.enum(['open', 'won', 'lost']).optional(),
   ownerId: z.uuid().optional(),

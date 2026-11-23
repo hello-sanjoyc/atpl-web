@@ -75,7 +75,7 @@ export const ModernSelect = forwardRef<HTMLSelectElement, ModernSelectProps>(
     useImperativeHandle(forwardedRef, () => selectRef.current as HTMLSelectElement, []);
 
     const [open, setOpen] = useState(false);
-    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0, openUp: false });
     const [activeIndex, setActiveIndex] = useState(-1);
     const [query, setQuery] = useState('');
 
@@ -134,13 +134,25 @@ export const ModernSelect = forwardRef<HTMLSelectElement, ModernSelectProps>(
       [isControlled],
     );
 
-    // Position the portalled list under the trigger, matching its width.
+    // Position the portalled list under the trigger, matching its width. Flips above the trigger
+    // when there isn't enough room below (e.g. a select near the bottom of the viewport, like a
+    // page-size picker next to pagination controls) but there is room above.
     useLayoutEffect(() => {
       if (!open) return;
+      const MENU_MAX_HEIGHT = 288; // matches max-h-72
+      const GAP = 6;
       const update = () => {
         const r = triggerRef.current?.getBoundingClientRect();
         if (!r) return;
-        setCoords({ top: r.bottom + 6, left: r.left, width: r.width });
+        const spaceBelow = window.innerHeight - r.bottom;
+        const spaceAbove = r.top;
+        const openUp = spaceBelow < MENU_MAX_HEIGHT && spaceAbove > spaceBelow;
+        setCoords({
+          top: openUp ? r.top - GAP : r.bottom + GAP,
+          left: r.left,
+          width: r.width,
+          openUp,
+        });
       };
       update();
       window.addEventListener('resize', update);
@@ -311,9 +323,9 @@ export const ModernSelect = forwardRef<HTMLSelectElement, ModernSelectProps>(
               onKeyDown={onMenuKeyDown}
               style={{
                 position: 'fixed',
-                top: coords.top,
                 left: coords.left,
                 width: coords.width,
+                ...(coords.openUp ? { bottom: window.innerHeight - coords.top } : { top: coords.top }),
               }}
               className="z-[400] flex max-h-72 flex-col rounded-2xl border border-[#e2e6f0] bg-white p-1.5 shadow-[0_12px_40px_rgba(16,17,23,.14),0_2px_8px_rgba(16,17,23,.08)] animate-[modernSelectIn_.14s_ease-out]"
             >

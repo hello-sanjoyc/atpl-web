@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { CACHE_TTL, QUERY_KEYS } from '@aranax/contracts';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 
@@ -13,12 +14,12 @@ export interface Country {
   flag: string | null;
 }
 
-/** Reference data — fetched once and cached for the session. */
+/** Reference data — matches backend 24h Redis TTL, then SSE invalidation. */
 export function useCountries() {
   return useQuery<Country[]>({
-    queryKey: ['countries'],
+    queryKey: QUERY_KEYS.countries,
     queryFn: () => http.get<Country[]>(endpoints.geo.countries),
-    staleTime: Infinity,
-    gcTime: Infinity,
+    staleTime: CACHE_TTL.static.ms,
+    gcTime: CACHE_TTL.static.ms,
   });
 }

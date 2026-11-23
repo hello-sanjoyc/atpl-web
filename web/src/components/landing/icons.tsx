@@ -154,6 +154,26 @@ export function ProjectVisual({
     );
 }
 
+export function ChevronDown({ size = 14 }: { size?: number }) {
+    return (
+        <svg
+            width={size}
+            height={size}
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden="true"
+        >
+            <path
+                d="M2.5 5L7 9.5L11.5 5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
+
 export function MailIcon() {
     return (
         <svg

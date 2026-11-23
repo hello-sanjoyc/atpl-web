@@ -6,6 +6,7 @@ import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Field, TextInput, SelectInput, enumOptions } from '../../components/form/fields';
 import { useResourceMutation } from '../_shared/hooks';
+import { useOptions } from '../_shared/useOptions';
 import { FormLayout } from '../../components/form/FormAside';
 import { FORM_INFO } from '../_shared/formInfo';
 import { http } from '../../api/client';
@@ -24,6 +25,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function CampaignForm() {
   const navigate = useNavigate();
+  const { optionsFor } = useOptions();
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
@@ -65,7 +67,7 @@ export default function CampaignForm() {
             <TextInput id="slug" {...register('slug')} aria-invalid={!!errors.slug} placeholder="spring-launch" />
           </Field>
           <Field label="Channel" htmlFor="channel" required error={errors.channel?.message}>
-            <TextInput id="channel" {...register('channel')} aria-invalid={!!errors.channel} placeholder="email" />
+            <SelectInput id="channel" {...register('channel')} options={optionsFor('campaign_channel')} aria-invalid={!!errors.channel} />
           </Field>
           <Field label="Status" htmlFor="status" error={errors.status?.message}>
             <SelectInput id="status" {...register('status')} options={enumOptions(['active', 'paused', 'ended'])} />

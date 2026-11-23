@@ -55,7 +55,12 @@ const customersController: FastifyPluginAsync = async (app) => {
       schema: {
         tags: ['Customers'],
         summary: 'List customers',
-        querystring: paginationQuery.extend({ q: z.string().trim().max(100).optional(), status: z.enum(['active', 'churned']).optional() }),
+        querystring: paginationQuery.extend({
+          q: z.string().trim().max(100).optional(),
+          status: z.enum(['active', 'churned']).optional(),
+          sort: z.enum(['name', 'createdAt']).default('name'),
+          order: z.enum(['asc', 'desc']).default('asc'),
+        }),
         security,
       },
       preHandler: app.authorize('customers.read'),

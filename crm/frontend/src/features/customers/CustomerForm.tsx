@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link } from 'react-router';
@@ -6,12 +6,14 @@ import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Field, TextInput } from '../../components/form/fields';
 import { CountrySelect } from '../../components/form/CountrySelect';
+import { AsyncCombobox } from '../../components/form/AsyncCombobox';
 import { useResourceMutation } from '../_shared/hooks';
 import { FormLayout } from '../../components/form/FormAside';
 import { FORM_INFO } from '../_shared/formInfo';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 import type { Customer } from '../_shared/types';
+import { mapLead } from '../_shared/comboboxMappers';
 
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(120),
@@ -23,7 +25,7 @@ type FormData = z.infer<typeof schema>;
 
 export default function CustomerForm() {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors, isValid } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange',
   });
@@ -60,8 +62,21 @@ export default function CustomerForm() {
           <Field label="Country" htmlFor="country" error={errors.country?.message}>
             <CountrySelect id="country" {...register('country')} aria-invalid={!!errors.country} />
           </Field>
-          <Field label="Source lead ID" htmlFor="sourceLeadId" hint="Optional" error={errors.sourceLeadId?.message}>
-            <TextInput id="sourceLeadId" {...register('sourceLeadId')} placeholder="lead UUID" />
+          <Field label="Source lead" htmlFor="sourceLeadId" hint="Optional" error={errors.sourceLeadId?.message}>
+            <Controller
+              name="sourceLeadId"
+              control={control}
+              render={({ field }) => (
+                <AsyncCombobox
+                  id="sourceLeadId"
+                  url={endpoints.leads.list}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  mapResult={mapLead}
+                  placeholder="Search leads by name or email…"
+                />
+              )}
+            />
           </Field>
         </div>
 

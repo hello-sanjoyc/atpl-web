@@ -29,6 +29,13 @@
       "when": 1795000002000,
       "tag": "0003_currency_options",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795500000000,
+      "tag": "0017_service_interest_options",
+      "breakpoints": true
     }
   ]
 }

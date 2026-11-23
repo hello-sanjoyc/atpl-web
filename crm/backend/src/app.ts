@@ -26,6 +26,16 @@ import customersController from "./modules/customers/customers.controller.js";
 import followUpsController from "./modules/follow-ups/follow-ups.controller.js";
 import leadsController from "./modules/leads/leads.controller.js";
 import publicLeadsController from "./modules/leads/public-leads.controller.js";
+import aiLeadsController from "./modules/ai/conversations.controller.js";
+import captureChatController from "./modules/ai/capture-chat.controller.js";
+import smartAssignmentController from "./modules/ai/smart-assignment.controller.js";
+import phase3Controller from "./modules/ai/phase3.controller.js";
+import llmConfigController from "./modules/ai/llm-config.controller.js";
+import appSettingsController from "./modules/settings/app-settings.controller.js";
+import rbacController from "./modules/rbac/rbac.controller.js";
+import securityEventsController from "./modules/security/security-events.controller.js";
+import auditLogsController from "./modules/audit/audit-logs.controller.js";
+import sseController from "./modules/events/sse.controller.js";
 import opportunitiesController from "./modules/opportunities/opportunities.controller.js";
 import revenueController from "./modules/revenue/revenue.controller.js";
 import usersController from "./modules/users/users.controller.js";
@@ -63,6 +73,10 @@ export async function buildApp(container: Container): Promise<FastifyInstance> {
     await app.register(cors, {
         origin: config.corsOrigins,
         credentials: false,
+        methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        exposedHeaders: [],
+        maxAge: 86400,
     });
     await app.register(rateLimitPlugin);
     await app.register(authPlugin);
@@ -75,10 +89,14 @@ export async function buildApp(container: Container): Promise<FastifyInstance> {
         async (api) => {
             await api.register(authController);
             await api.register(usersController);
+            await api.register(captureChatController);
             await api.register(publicLeadsController);
             await api.register(geoController);
             await api.register(optionsController);
             await api.register(leadsController);
+            await api.register(aiLeadsController);
+            await api.register(smartAssignmentController);
+            await api.register(phase3Controller);
             await api.register(assessmentsController);
             await api.register(opportunitiesController);
             await api.register(followUpsController);
@@ -87,6 +105,12 @@ export async function buildApp(container: Container): Promise<FastifyInstance> {
             await api.register(revenueController);
             await api.register(analyticsController);
             await api.register(bookingController);
+            await api.register(llmConfigController);
+            await api.register(appSettingsController);
+            await api.register(rbacController);
+            await api.register(securityEventsController);
+            await api.register(auditLogsController);
+            await api.register(sseController);
         },
         { prefix: API_PREFIX },
     );

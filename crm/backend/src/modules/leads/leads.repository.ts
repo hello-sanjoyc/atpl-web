@@ -62,6 +62,16 @@ export async function findLeadById(db: DbExecutor, id: string): Promise<LeadRow 
   return row;
 }
 
+export async function listLeadsByReferralId(db: DbExecutor, referralId: string): Promise<LeadRow[]> {
+  return withDbTiming('leads.list_by_referral', () =>
+    db
+      .select()
+      .from(leads)
+      .where(and(eq(leads.referralId, referralId), isNull(leads.deletedAt)))
+      .orderBy(asc(leads.name)),
+  );
+}
+
 export async function findLiveLeadByEmail(db: DbExecutor, email: string): Promise<LeadRow | undefined> {
   const [row] = await withDbTiming('leads.find_by_email', () =>
     db

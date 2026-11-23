@@ -37,4 +37,15 @@ export const createReferralBody = z.object({
   referrerEmail: emailField.optional(),
 });
 
+export const listCampaignsQuery = paginationQuery.extend({
+  status: z.enum(['active', 'paused', 'ended']).optional(),
+  sort: z.enum(['name', 'createdAt']).default('createdAt'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export const listReferralsQuery = paginationQuery.extend({
+  sort: z.enum(['referrerName', 'createdAt']).default('createdAt'),
+  order: z.enum(['asc', 'desc']).default('desc'),
+});
+
 export const listQuery = paginationQuery;
