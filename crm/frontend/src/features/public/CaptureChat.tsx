@@ -9,13 +9,10 @@ interface Message {
   content: string;
 }
 
-interface ChatResponse {
-  success: boolean;
-  data: {
-    text: string;
-    captureComplete: boolean;
-    leadId: string | null;
-  };
+interface ChatResponseData {
+  text: string;
+  captureComplete: boolean;
+  leadId: string | null;
 }
 
 const GREETING = "Hi! I'm here to help connect you with the right Aranax team member. What brings you here today?";
@@ -104,11 +101,11 @@ function AiChat() {
     setError(null);
 
     try {
-      const res = await http.post<ChatResponse['data']>(endpoints.public.chatMessage, {
+      const res = await http.post<ChatResponseData>(endpoints.public.chatMessage, {
         messages: nextMessages,
       });
 
-      const { text: reply, captureComplete } = res.data;
+      const { text: reply, captureComplete } = res;
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
 
       if (captureComplete) {

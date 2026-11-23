@@ -57,15 +57,15 @@ export default function OpportunityDetail() {
   const generateProposalMutation = useResourceMutation(
     () =>
       http.post(endpoints.opportunities.generateProposal(id!), {}).then(async () => {
-        const res = await http.get<{ data: ProposalVersion[] }>(endpoints.opportunities.proposals(id!));
-        setProposals(res.data.data ?? []);
+        const res = await http.get<ProposalVersion[]>(endpoints.opportunities.proposals(id!));
+        setProposals(res ?? []);
       }),
     { successMessage: 'Proposal generated' },
   );
 
   const loadProposals = async () => {
-    const res = await http.get<{ data: ProposalVersion[] }>(endpoints.opportunities.proposals(id!));
-    setProposals(res.data.data ?? []);
+    const res = await http.get<ProposalVersion[]>(endpoints.opportunities.proposals(id!));
+    setProposals(res ?? []);
   };
 
   if (opp.isLoading) return <AppShell><Spinner /></AppShell>;

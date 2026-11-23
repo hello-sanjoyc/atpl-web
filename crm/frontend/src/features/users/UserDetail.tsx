@@ -2,7 +2,6 @@ import { Link, useParams } from 'react-router';
 import { AppShell } from '../../components/layout/AppShell';
 import { PageHeader } from '../../components/PageHeader';
 import { Badge } from '../../components/Badge';
-import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
 import { formatDate } from '../../lib/format';
 import { humanize } from '../../components/form/fields';

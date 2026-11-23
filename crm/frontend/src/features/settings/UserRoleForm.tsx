@@ -11,7 +11,6 @@ import { Field, TextInput } from '../../components/form/fields';
 import { useToast } from '../../components/Toast';
 import { http } from '../../api/client';
 import { endpoints } from '../../api/endpoints';
-import { ROLES } from '@aranax/contracts';
 
 interface RoleMetaRow { role: string; label: string; description: string }
 
@@ -26,17 +25,12 @@ function toSlug(label: string): string {
     .slice(0, 50);
 }
 
-const editSchema = z.object({
+const roleFormSchema = z.object({
   label: z.string().min(1, 'Label is required').max(80),
-  description: z.string().max(400).optional().transform((v) => v ?? ''),
+  description: z.string().max(400),
 });
 
-const createSchema = z.object({
-  label: z.string().min(1, 'Label is required').max(80),
-  description: z.string().max(400).optional().transform((v) => v ?? ''),
-});
-
-type FormData = { label: string; description: string };
+type FormData = z.infer<typeof roleFormSchema>;
 
 const DEFAULT_LABELS: Record<string, string> = {
   super_admin:        'Super Admin',
@@ -54,11 +48,10 @@ export default function UserRoleForm() {
   const queryClient = useQueryClient();
 
   const isNew = !role;
-  const isBuiltIn = !!role && ROLES.includes(role as (typeof ROLES)[number]);
   const isSuperAdmin = role === 'super_admin';
 
   const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
-    resolver: zodResolver(isNew ? createSchema : editSchema),
+    resolver: zodResolver(roleFormSchema),
     defaultValues: { label: '', description: '' },
   });
 

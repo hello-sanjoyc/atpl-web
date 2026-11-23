@@ -55,6 +55,20 @@ export function AsyncCombobox({
     return () => clearTimeout(t);
   }, [query]);
 
+  // Clear the displayed label when the parent resets `value` externally
+  // (e.g. form reset) rather than through a selection or edit made inside
+  // this component — those paths already clear `query`/`selectedLabel`
+  // themselves via pick()/handleInputChange(), so re-clearing here on every
+  // `value` change would wipe out text the user is still typing.
+  const previousValue = useRef(value);
+  useEffect(() => {
+    if (!value && previousValue.current && query === selectedLabel) {
+      setQuery('');
+      setSelectedLabel('');
+    }
+    previousValue.current = value;
+  }, [value]);
+
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);

@@ -15,6 +15,15 @@ export default fp(
     const redis = config.REDIS_URL ? new Redis(config.REDIS_URL, { maxRetriesPerRequest: 1, lazyConnect: false }) : undefined;
 
     if (redis) {
+      // Without a listener, a connection failure here is an uncaught
+      // EventEmitter error that crashes the whole process. Log once per
+      // reconnect attempt instead of letting @fastify/rate-limit's
+      // per-request Redis calls surface as unhandled 500s.
+      const log = app.deps.logger.child({ module: 'rate-limit' });
+      redis.on('error', (error) => {
+        log.error({ event: 'rate_limit.redis_unavailable', err: error }, 'Redis rate-limit store unavailable');
+      });
+
       app.addHook('onClose', async () => {
         redis.disconnect();
       });
